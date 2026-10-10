@@ -3,15 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<% const desc = typeof description === 'string' ? description : 'Make a word-grouping puzzle in two minutes. Send the link. Watch your mates crumble.'; %>
 <title><%= typeof title === 'string' ? title + ' · Quadsort' : 'Quadsort' %></title>
-<meta name="description" content="Make a word-grouping puzzle in two minutes. Send the link. Watch your mates crumble.">
+<meta name="description" content="<%= desc %>">
 <meta property="og:site_name" content="Quadsort">
 <meta property="og:title" content="<%= typeof title === 'string' ? title : 'Quadsort' %>">
+<meta property="og:description" content="<%= desc %>">
 <link rel="preload" href="/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
-<header class="top">
+<header class="top"><div class="top-in">
   <a class="brand" href="/"><%- include('mark') %><span>Quadsort</span></a>
-</header>
+  <nav class="nav" aria-label="Main">
+    <a href="/random">Play one</a>
+    <a class="btn btn-primary btn-sm" href="/create">Make a puzzle</a>
+  </nav>
+</div></header>
 <main>

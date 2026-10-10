@@ -1,0 +1,48 @@
+<%- include('partials/head') %>
+<div class="play" data-puzzle="<%= puzzle.id %>">
+  <section class="play-col" aria-label="Puzzle">
+    <div class="puzzle-head">
+      <h1><%= puzzle.title %></h1>
+      <p class="by">by
+        <% if (creator) { %><a href="/u/<%= creator.username %>"><%= creator.name %></a>
+          <% if (creator.social) { %><a class="chip" href="<%= creator.social %>" rel="nofollow noopener ugc" target="_blank"><%= new URL(creator.social).hostname.replace(/^www\./, '') %> ↗</a><% } %>
+        <% } else { %><strong>Quadsort</strong><% } %>
+      </p>
+      <% if (puzzle.description) { %><p class="desc"><%= puzzle.description %></p><% } %>
+    </div>
+
+    <div class="board">
+      <div class="toast" id="toast" role="status" hidden></div>
+      <div class="rows" id="rows"></div>
+      <div class="grid" id="grid"><% words.forEach(function (w) { %><button type="button" class="tile len<%= lenClass(w) %>" aria-pressed="false" data-w="<%= w %>"><%= w %></button><% }) %></div>
+    </div>
+
+    <div class="lives" id="lives">
+      <span>Mistakes left</span>
+      <span class="dots" id="dots" role="img" aria-label="4 of 4 mistakes left"><i></i><i></i><i></i><i></i></span>
+    </div>
+
+    <div class="controls" id="controls">
+      <button type="button" class="btn" id="shuffle">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>
+        Shuffle</button>
+      <button type="button" class="btn" id="deselect" disabled>Deselect all</button>
+      <button type="button" class="btn btn-ink" id="submit" disabled>Submit</button>
+    </div>
+
+    <div class="end" id="end" hidden></div>
+    <p class="fine">No account needed. Obviously.</p>
+  </section>
+
+  <aside>
+    <div class="card howto">
+      <h2>How this works</h2>
+      <ol>
+        <li>Pick four words that belong together.</li>
+        <li>Hit Submit. Four wrong guesses and you're out.</li>
+        <li>Colours go from Gentle to Devious. Expect the worst.</li>
+      </ol>
+    </div>
+  </aside>
+</div>
+<%- include('partials/foot') %>

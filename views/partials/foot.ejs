@@ -1,3 +1,4 @@
 </main>
-</body>
+<% (typeof scripts !== 'undefined' ? scripts : []).forEach(function (s) { %><script src="<%= s %>" defer></script>
+<% }) %></body>
 </html>
