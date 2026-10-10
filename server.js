@@ -23,6 +23,9 @@ function createApp(db = open()) {
   app.use((req, res, next) => { // who is this? (after static + healthz, so assets never hit the database)
     res.locals.user = req.user = auth.user(req);
     res.locals.initials = initials;
+    // Absolute URLs for canonical links and share images. Production pins the real address (never trust the Host header there).
+    res.locals.origin = process.env.SITE_URL || (process.env.NODE_ENV === 'production' ? 'https://quadsort.com' : `${req.protocol}://${req.get('host')}`);
+    res.locals.canonical = res.locals.origin + req.path;
     next();
   });
   app.use('/api', rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false }));
@@ -30,7 +33,7 @@ function createApp(db = open()) {
   app.use('/admin', require('./routes/admin')(db));
   app.use(require('./routes/auth')(db, auth));
   app.use(require('./routes/pages')(db));
-  app.use((req, res) => res.status(404).render('404', { title: 'Not even close' }));
+  app.use((req, res) => res.status(404).render('404', { title: 'Not even close', noindex: true }));
   return app;
 }
 

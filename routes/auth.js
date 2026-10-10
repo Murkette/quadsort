@@ -10,14 +10,14 @@ module.exports = (db, auth) => {
   const r = express.Router();
   const form = express.urlencoded({ extended: false, limit: '8kb' });
   const limit = rateLimit({ windowMs: 15 * 60_000, limit: 20, standardHeaders: 'draft-7', legacyHeaders: false,
-    handler: (req, res) => res.status(429).render('auth', { title: 'Slow down', mode: req.path.slice(1), next: safeNext(req.body && req.body.next), values: {}, errors: { form: 'Too many attempts. Give it a few minutes.' } }) });
+    handler: (req, res) => res.status(429).render('auth', { title: 'Slow down', noindex: true, mode: req.path.slice(1), next: safeNext(req.body && req.body.next), values: {}, errors: { form: 'Too many attempts. Give it a few minutes.' } }) });
   const byEmail = db.prepare('SELECT id, password_hash FROM users WHERE email = ?');
   const emailTaken = db.prepare('SELECT 1 FROM users WHERE email = ?');
   const nameTaken = db.prepare('SELECT 1 FROM users WHERE username = ?');
   const add = db.prepare('INSERT INTO users (username, email, password_hash, display_name) VALUES (?, ?, ?, ?)');
 
   const page = (res, mode, req, values = {}, errors = {}, status = 200) =>
-    res.status(status).render('auth', { title: mode === 'signup' ? 'Sign up' : 'Log in', mode, next: safeNext(req.body ? req.body.next : req.query.next, ''), values, errors });
+    res.status(status).render('auth', { title: mode === 'signup' ? 'Sign up' : 'Log in', noindex: true, mode, next: safeNext(req.body ? req.body.next : req.query.next, ''), values, errors });
   const need = (req, res, next) => (req.user ? next() : res.redirect('/login?next=' + encodeURIComponent(req.originalUrl)));
 
   for (const mode of ['signup', 'login']) {
@@ -62,7 +62,7 @@ module.exports = (db, auth) => {
   // ---------- profile settings ----------
   const update = db.prepare('UPDATE users SET display_name = ?, bio = ?, social_url = ? WHERE id = ?');
   const settings = (res, req, errors = {}, values, status = 200) => res.status(status).render('settings', {
-    title: 'Settings', errors, saved: !!req.query.saved, LIMITS,
+    title: 'Settings', noindex: true, errors, saved: !!req.query.saved, LIMITS,
     values: values || { display_name: req.user.display_name, bio: req.user.bio, social_url: req.user.social_url || '' },
   });
   r.get('/settings', need, (req, res) => settings(res, req));

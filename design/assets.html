@@ -1,0 +1,55 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Quadsort asset renderer</title>
+<!--
+  Renders the brand images. Not part of the site. To regenerate (needs the dev server running):
+    cp design/assets.html public/_assets.html
+    open /_assets.html?kind=og            at a 1200x630 viewport  -> public/og.png
+    open /_assets.html?kind=icon&size=180&rx=0   at 180x180      -> public/apple-touch-icon.png
+    open /_assets.html?kind=icon&size=N&rx=14    at NxN for 16, 32, 48 -> bundled into public/favicon.ico
+  then screenshot the viewport and delete public/_assets.html.
+-->
+<link rel="stylesheet" href="/css/site.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #EFEEF6; overflow: hidden; }
+  .og { width: 1200px; height: 630px; box-sizing: border-box; padding: 64px 72px; display: flex; align-items: center; justify-content: space-between; gap: 48px; background: #EFEEF6; color: #17142A; }
+  .left { flex: 1; display: flex; flex-direction: column; gap: 30px; }
+  .brandrow { display: flex; align-items: center; gap: 18px; font: 800 60px/1 var(--fd); letter-spacing: -0.035em; }
+  .brandrow svg { width: 68px; height: 68px; }
+  .og h1 { margin: 0; font: 800 56px/1.02 var(--fd); letter-spacing: -0.04em; }
+  .og .pill-url { align-self: flex-start; padding: 10px 24px; border: 3px solid #17142A; border-radius: 999px; background: #FFD84D; box-shadow: 0 4px 0 #17142A; font: 700 28px/1 var(--fd); }
+  .board { display: grid; grid-template-columns: repeat(4, 112px); gap: 10px; }
+  .t { height: 86px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; box-sizing: border-box; padding: 0 4px;
+       border: 3px solid #17142A; border-radius: 16px; box-shadow: 0 5px 0 #17142A; font: 700 20px/1 var(--fd); text-transform: uppercase; }
+  .t.long { font-size: 16px; font-stretch: 75%; letter-spacing: 0; }
+  .t .shape { width: 12px; height: 12px; }
+</style>
+<div id="app"></div>
+<script>
+  const q = new URLSearchParams(location.search);
+  document.documentElement.dataset.theme = 'light';
+  const app = document.getElementById('app');
+  const mark = (rx) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="display:block;width:100vw;height:100vh">
+    <rect width="64" height="64" rx="${rx}" fill="#17142A"/>
+    <rect x="8" y="8" width="22" height="22" rx="6" fill="#FFD84D"/><circle cx="19" cy="19" r="5" fill="#17142A"/>
+    <rect x="34" y="8" width="22" height="22" rx="6" fill="#5EC4E6"/><path d="M45 13.5l5.5 10.5h-11z" fill="#17142A"/>
+    <rect x="8" y="34" width="22" height="22" rx="6" fill="#FF8B4A"/><rect x="14" y="40" width="10" height="10" rx="2" fill="#17142A"/>
+    <rect x="34" y="34" width="22" height="22" rx="6" fill="#5A3DE0"/><path d="M45 39.5l5.5 5.5-5.5 5.5-5.5-5.5z" fill="#fff"/></svg>`;
+
+  if (q.get('kind') === 'icon') {
+    app.innerHTML = mark(q.get('rx') ?? 14);
+  } else {
+    const rows = [
+      [1, ['Brie', 'Feta', 'Edam', 'Halloumi']], [2, ['Surf', 'Key', 'Cup', 'Skate']],
+      [3, ['Mouse', 'Trainers', 'Door', 'Swing']], [4, ['Catastrophe', 'Pigment', 'Battery', 'Rational']],
+    ];
+    const tiles = rows.flatMap(([lv, ws]) => ws.map((w) => `<div class="t lv" data-level="${lv}"><span class="shape" data-level="${lv}"></span>${w}</div>`)).join('');
+    const small = (new DOMParser().parseFromString(mark(14), 'image/svg+xml').documentElement).outerHTML.replace('width:100vw;height:100vh', '');
+    app.innerHTML = `<div class="og"><div class="left">
+        <div class="brandrow">${small}<span>Quadsort</span></div>
+        <h1>Make a word puzzle. Send the link. Watch them suffer.</h1>
+        <span class="pill-url">quadsort.com</span></div>
+      <div class="board">${tiles}</div></div>`;
+    document.querySelectorAll('.t').forEach((t) => { if (t.textContent.trim().length > 8) t.classList.add('long'); });
+  }
+</script>

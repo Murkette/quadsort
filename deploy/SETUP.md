@@ -25,6 +25,15 @@ systemctl enable quadsort && systemctl reload caddy
 ufw allow OpenSSH && ufw allow 80,443/tcp && ufw --force enable
 ```
 
+## Share previews
+
+In production the site pins its address to `https://quadsort.com` for canonical links and share images, so nothing needs configuring. To run it under another address (a staging box), set `SITE_URL=https://staging.example` in `/etc/quadsort.env`.
+
+After the first deploy, paste a puzzle link into each platform's preview checker to confirm the card appears, since they cache what they first see:
+the Facebook Sharing Debugger, the LinkedIn Post Inspector, and the X card validator. WhatsApp, iMessage, Slack and Discord pick it up with no setup.
+
+The share image is `public/og.png`. It is rendered from `design/assets.html` (instructions inside).
+
 ## Making yourself an admin
 
 Sign up on the site first, then on the droplet:

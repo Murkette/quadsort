@@ -30,7 +30,7 @@ module.exports = (db) => {
       featured: count('SELECT COUNT(*) n FROM puzzles WHERE is_featured = 1'),
       reported: count('SELECT COUNT(DISTINCT puzzle_id) n FROM reports WHERE resolved = 0'),
     };
-    const out = { title: 'Admin', tab, q, stats, REASONS, back: req.originalUrl, reports: [], list: [], page: 1, pages: 1, total: 0 };
+    const out = { title: 'Admin', noindex: true, tab, q, stats, REASONS, back: req.originalUrl, reports: [], list: [], page: 1, pages: 1, total: 0 };
 
     if (tab === 'reports') {
       out.reports = queue.all().map((p) => ({ ...p, reasons: reasonsOf.all(p.id), notes: notesOf.all(p.id).map((x) => x.note) }));
