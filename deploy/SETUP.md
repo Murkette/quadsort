@@ -15,6 +15,11 @@ curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt install -y node
 adduser --system --group --home /opt/quadsort quadsort
 git clone https://github.com/Murkette/quadsort.git /opt/quadsort
 mkdir -p /var/lib/quadsort && chown quadsort:quadsort /var/lib/quadsort
+cat > /etc/quadsort.env <<'ENV'
+RESEND_API_KEY=paste-your-key-here
+MAIL_FROM=Quadsort <hello@quadsort.com>
+ENV
+chmod 600 /etc/quadsort.env   # secrets live here only: never in git, never in the code
 cp /opt/quadsort/deploy/quadsort.service /etc/systemd/system/
 cp /opt/quadsort/deploy/Caddyfile /etc/caddy/Caddyfile
 cp /opt/quadsort/deploy/backup.sh /etc/cron.daily/quadsort-backup && chmod +x /etc/cron.daily/quadsort-backup
@@ -24,6 +29,12 @@ systemctl enable quadsort && systemctl reload caddy
 # firewall: ssh + web only
 ufw allow OpenSSH && ufw allow 80,443/tcp && ufw --force enable
 ```
+
+## Email (Resend)
+
+Password reset is the only email the site sends. In Resend, add and verify the domain `quadsort.com` (Domains, then Add). Resend shows a few DNS records, usually SPF and DKIM, to add wherever the domain's DNS is managed. Until the domain shows as verified, Resend only lets `onboarding@resend.dev` send, and only to your own address, so real users would never get the email.
+
+Without `RESEND_API_KEY` the site still runs. In production a reset request logs a clear error and the visitor sees the normal "check your inbox" message. Check the logs with `journalctl -u quadsort -e` if emails do not arrive.
 
 ## Share previews
 

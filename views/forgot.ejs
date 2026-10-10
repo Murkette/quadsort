@@ -1,0 +1,14 @@
+<%- include('partials/head') %>
+<section class="auth">
+  <h1>Forgot it?</h1>
+  <p class="lede">Happens to the best of us. Give us your email and we will send a link to choose a new password.</p>
+  <form class="panel" method="post" action="/forgot" novalidate>
+    <div class="field">
+      <label for="f-email">Email</label>
+      <input id="f-email" name="email" type="email" value="<%= email %>" autocomplete="email" autocapitalize="none">
+    </div>
+    <button class="btn btn-primary btn-wide" type="submit">Send the link</button>
+  </form>
+  <p class="alt"><a href="/login">Back to log in</a></p>
+</section>
+<%- include('partials/foot') %>

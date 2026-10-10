@@ -66,7 +66,7 @@ module.exports = (db) => {
   // ---------- for search engines ----------
   r.get('/robots.txt', (req, res) => res.type('text/plain').send([
     'User-agent: *',
-    ...['/admin', '/api/', '/dashboard', '/settings', '/login', '/signup', '/create', '/random', '/p/*/edit', '/*?q='].map((p) => 'Disallow: ' + p),
+    ...['/admin', '/api/', '/dashboard', '/settings', '/login', '/signup', '/forgot', '/reset/', '/create', '/random', '/p/*/edit', '/*?q='].map((p) => 'Disallow: ' + p),
     '', `Sitemap: ${res.locals.origin}/sitemap.xml`, '',
   ].join('\n')));
 

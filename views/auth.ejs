@@ -32,6 +32,7 @@
     </div>
     <button class="btn btn-primary btn-wide" type="submit"><%= signup ? 'Sign up' : 'Log in' %></button>
   </form>
+  <% if (!signup) { %><p class="alt"><a href="/forgot">Forgot your password?</a></p><% } %>
   <p class="alt"><% if (signup) { %>Already have one? <a href="/login<%= next ? '?next=' + encodeURIComponent(next) : '' %>">Log in</a><% } else { %>New here? <a href="/signup<%= next ? '?next=' + encodeURIComponent(next) : '' %>">Make an account</a><% } %></p>
 </section>
 <%- include('partials/foot') %>

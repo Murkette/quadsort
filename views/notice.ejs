@@ -1,0 +1,7 @@
+<%- include('partials/head') %>
+<section class="auth">
+  <h1><%= heading %></h1>
+  <p class="lede"><%= text %></p>
+  <% if (locals.link) { %><a class="btn btn-primary" href="<%= link.href %>"><%= link.label %></a><% } %>
+</section>
+<%- include('partials/foot') %>

@@ -1,0 +1,14 @@
+<%- include('partials/head') %>
+<section class="auth">
+  <h1>New password.</h1>
+  <p class="lede">Pick something you will remember. Or let a password manager do it.</p>
+  <form class="panel" method="post" action="/reset/<%= token %>" novalidate>
+    <div class="field">
+      <label for="r-pw">New password</label>
+      <input id="r-pw" name="password" type="password" autocomplete="new-password"<%- error ? ' aria-invalid="true"' : '' %>>
+      <span class="ferr err"><%= error || '' %></span>
+    </div>
+    <button class="btn btn-primary btn-wide" type="submit">Save and log in</button>
+  </form>
+</section>
+<%- include('partials/foot') %>
