@@ -5,6 +5,7 @@ const { counts, topWrong, difficulty } = require('../lib/stats');
 const { initials, linkInfo } = require('../lib/util');
 const { LEVELS, TAGS } = require('../public/js/validate');
 const { search } = require('../lib/browse');
+const { REASONS } = require('../lib/reports');
 
 const blankGroup = (level) => ({ name: '', level, words: ['', '', '', ''] });
 const need = (req, res, next) => (req.user ? next() : res.redirect('/login?next=' + encodeURIComponent(req.originalUrl)));
@@ -13,7 +14,7 @@ const rate = (c) => (c.solveRate === null ? '–' : Math.round(c.solveRate * 100
 module.exports = (db) => {
   const r = express.Router();
   const find = db.prepare(`
-    SELECT p.id, p.title, p.description, p.groups_json, p.user_id,
+    SELECT p.id, p.title, p.description, p.groups_json, p.user_id, p.is_flagged,
            u.username, u.display_name, u.social_url
     FROM puzzles p LEFT JOIN users u ON u.id = p.user_id
     WHERE p.id = ? AND p.is_published = 1`);
@@ -35,6 +36,7 @@ module.exports = (db) => {
     const weekly = madeThisWeek.get(Math.floor(Date.now() / 1000) - 7 * 86400).n;
     res.render('index', {
       trending: search(db, { sort: 'trending', per: 4 }).rows, LEVELS, rate,
+      picks: search(db, { featured: true, sort: 'new', per: 4 }).rows,
       weekly: weekly >= 10 ? weekly : 0, // a tiny number looks sad, so only brag when it's real
       scripts: ['/js/common.js', '/js/demo.js'],
     });
@@ -80,6 +82,9 @@ module.exports = (db) => {
   r.get('/p/:id', (req, res, next) => {
     const row = find.get(req.params.id);
     if (!row) return next();
+    // Hidden by a moderator: gone for the public; the creator and admins can still open it (with a banner).
+    const mayView = req.user && (req.user.is_admin || req.user.id === row.user_id);
+    if (row.is_flagged && !mayView) return next();
     const groups = JSON.parse(row.groups_json);
     const words = shuffle(groups.flatMap((g) => g.words));
     const creator = row.username && {
@@ -90,12 +95,12 @@ module.exports = (db) => {
     res.render('play', {
       title: row.title,
       description: row.description || `A Quadsort puzzle by ${creator ? creator.name : 'Quadsort'}. Make four groups of four.`,
-      puzzle: { id: row.id, title: row.title, description: row.description },
+      puzzle: { id: row.id, title: row.title, description: row.description }, hidden: !!row.is_flagged, REASONS,
       // changes whenever the words change, so a player's saved progress never outlives the puzzle it was for
       rev: crypto.createHash('sha1').update(row.groups_json).digest('hex').slice(0, 8),
       creator, words, stats: counts(db, row.id),
       lenClass: (w) => (w.length <= 5 ? 1 : w.length <= 7 ? 2 : w.length <= 9 ? 3 : 4),
-      scripts: ['/js/common.js', '/js/results.js', '/js/play.js'], // results first so it is listening when play finishes
+      scripts: ['/js/common.js', '/js/results.js', '/js/play.js', '/js/report.js'], // results first so it is listening when play finishes
     });
   });
 

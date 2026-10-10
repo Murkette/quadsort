@@ -2,7 +2,7 @@
 <a class="pcard" href="/p/<%= p.id %>">
   <div class="cover" aria-hidden="true"><% for (var i = 0; i < 8; i++) { %><span class="lv" data-level="<%= p.id.charCodeAt(i % p.id.length) % 4 + 1 %>"></span><% } %></div>
   <div class="cbody">
-    <% if (p.tag) { %><span class="ceyebrow"><%= p.tag %></span><% } %>
+    <% if (p.tag || p.featured) { %><span class="ceyebrow"><%= p.tag || '' %><%= p.tag && p.featured ? ' · ' : '' %><%= p.featured ? 'Staff pick' : '' %></span><% } %>
     <span class="ctitle"><%= p.title %></span>
     <% if (p.by) { %><span class="cby">by <%= p.by %></span><% } %>
     <span class="cmeta">

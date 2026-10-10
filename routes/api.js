@@ -3,7 +3,8 @@ const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const { check, replay, bySolution } = require('../lib/puzzle');
 const { counts, topWrong } = require('../lib/stats');
-const { validate } = require('../public/js/validate');
+const { validate, clean } = require('../public/js/validate');
+const { REASONS } = require('../lib/reports');
 
 const B62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const newId = () => Array.from({ length: 8 }, () => B62[crypto.randomInt(62)]).join('');
@@ -42,6 +43,23 @@ module.exports = (db) => {
       insert.run(puzzleId, playerKey, end.won ? 1 : 0, end.mistakes, JSON.stringify(guesses));
     }
     res.json({ ...end, solution: bySolution(groups), stats: { ...counts(db, puzzleId), topWrong: topWrong(db, puzzleId, groups) } });
+  });
+
+  // ---------- reporting ----------
+  const live = db.prepare('SELECT 1 FROM puzzles WHERE id = ? AND is_published = 1 AND is_flagged = 0');
+  const addReport = db.prepare('INSERT OR IGNORE INTO reports (puzzle_id, reporter_key, reason, note) VALUES (?, ?, ?, ?)');
+  const reportLimit = rateLimit({ windowMs: 3600_000, limit: 20, standardHeaders: 'draft-7', legacyHeaders: false,
+    message: { error: 'Too many reports from one place. Thanks, we have the message.' } });
+
+  // One report per player per puzzle; repeats are accepted silently. A person decides what happens next.
+  r.post('/puzzles/:id/report', reportLimit, (req, res) => {
+    const { reason, note, playerKey } = req.body || {};
+    if (!live.get(req.params.id)) return res.status(404).json({ error: 'no such puzzle' });
+    if (!Object.hasOwn(REASONS, reason) || typeof playerKey !== 'string' || playerKey.length < 8 || playerKey.length > 64) {
+      return res.status(400).json({ error: 'bad report' });
+    }
+    addReport.run(req.params.id, playerKey, reason, clean(note).slice(0, 200));
+    res.json({ ok: true });
   });
 
   // ---------- publishing (accounts only) ----------

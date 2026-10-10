@@ -1,0 +1,81 @@
+<%- include('partials/head') %>
+<div class="dash admin">
+  <div class="dash-head">
+    <div>
+      <h1>Admin</h1>
+      <p>Decide what stays up. Be fair, be quick, be a little merciless.</p>
+    </div>
+  </div>
+
+  <div class="statgrid">
+    <div class="card stat"><b><%= stats.reported %></b><span>puzzles with open reports</span></div>
+    <div class="card stat"><b><%= stats.hidden %></b><span>hidden</span></div>
+    <div class="card stat"><b><%= stats.featured %></b><span>staff picks</span></div>
+    <div class="card stat"><b><%= stats.puzzles %></b><span>puzzles</span></div>
+  </div>
+
+  <nav class="tabs" aria-label="Admin sections">
+    <a href="/admin"<%- tab === 'reports' ? ' aria-current="true"' : '' %>>Reports<%= stats.reported ? ' (' + stats.reported + ')' : '' %></a>
+    <a href="/admin?tab=puzzles"<%- tab === 'puzzles' ? ' aria-current="true"' : '' %>>All puzzles</a>
+  </nav>
+
+  <%# one small form per action, so the whole page works without JavaScript %>
+  <% function act(id, action, label, cls) { %><form method="post" action="/admin/puzzles/<%= id %>" class="inline"><input type="hidden" name="back" value="<%= back %>"><button class="btn btn-sm <%= cls || '' %>" name="action" value="<%= action %>"><%= label %></button></form><% } %>
+
+  <% if (tab === 'reports') { %>
+    <% if (!reports.length) { %>
+    <div class="panel emptybox"><h2>All clear.</h2><p>No open reports. Suspiciously well-behaved.</p></div>
+    <% } %>
+    <% reports.forEach(function (p) { %>
+    <div class="panel qitem">
+      <div class="qhead">
+        <div>
+          <a class="qtitle" href="/p/<%= p.id %>"><%= p.title %></a>
+          <div class="qby">by <%= p.username ? p.display_name + ' (@' + p.username + ')' : 'Quadsort' %> · <%= p.n %> report<%= p.n === 1 ? '' : 's' %></div>
+        </div>
+        <% if (p.is_featured) { %><span class="status live">Staff pick</span><% } %>
+      </div>
+      <div class="rchips"><% p.reasons.forEach(function (x) { %><span class="chip"><%= REASONS[x.reason] || x.reason %> × <%= x.n %></span><% }) %></div>
+      <% if (p.notes.length) { %><ul class="rnotes"><% p.notes.forEach(function (n) { %><li><%= n %></li><% }) %></ul><% } %>
+      <div class="acts">
+        <a class="btn btn-sm" href="/p/<%= p.id %>">Look at it</a>
+        <% act(p.id, 'hide', 'Hide puzzle', 'danger') %>
+        <% act(p.id, 'dismiss', 'Dismiss reports') %>
+      </div>
+    </div>
+    <% }) %>
+  <% } else { %>
+    <form class="search" role="search" method="get" action="/admin">
+      <input type="hidden" name="tab" value="puzzles">
+      <label><span class="sr">Search puzzles</span>
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" name="q" value="<%= q %>" placeholder="Title, creator or username" autocomplete="off"></label>
+    </form>
+    <div class="bcount"><b><%= total.toLocaleString('en-US') %> puzzle<%= total === 1 ? '' : 's' %><%= q ? ' for “' + q + '”' : '' %></b></div>
+    <div class="dtable">
+      <% list.forEach(function (p) { %>
+      <div class="drow2 arow">
+        <span class="dtitle"><a href="/p/<%= p.id %>"><%= p.title %></a>
+          <small class="astatus">by <%= p.username ? p.display_name : 'Quadsort' %> · <%= p.plays.toLocaleString('en-US') %> plays<%= p.open_reports ? ' · ' + p.open_reports + ' open report' + (p.open_reports === 1 ? '' : 's') : '' %></small>
+          <span class="badges"><% if (p.is_featured) { %><span class="status live">Staff pick</span><% } %><% if (p.is_flagged) { %><span class="status flag">Hidden</span><% } %></span>
+        </span>
+        <span class="acts">
+          <% if (p.is_flagged) { act(p.id, 'unhide', 'Unhide'); } else { %>
+            <% if (p.is_featured) { act(p.id, 'unfeature', 'Remove pick'); } else { act(p.id, 'feature', 'Make staff pick'); } %>
+            <% act(p.id, 'hide', 'Hide', 'danger') %>
+          <% } %>
+        </span>
+      </div>
+      <% }) %>
+    </div>
+    <% if (pages > 1) { %>
+    <nav class="pager" aria-label="Pages">
+      <% var pg = function (n) { return '/admin?tab=puzzles' + (q ? '&q=' + encodeURIComponent(q) : '') + (n > 1 ? '&page=' + n : ''); }; %>
+      <% if (page > 1) { %><a class="btn btn-sm" href="<%= pg(page - 1) %>">← Previous</a><% } else { %><span></span><% } %>
+      <span>Page <%= page %> of <%= pages %></span>
+      <% if (page < pages) { %><a class="btn btn-sm" href="<%= pg(page + 1) %>">Next →</a><% } else { %><span></span><% } %>
+    </nav>
+    <% } %>
+  <% } %>
+</div>
+<%- include('partials/foot') %>

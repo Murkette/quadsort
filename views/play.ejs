@@ -1,4 +1,5 @@
 <%- include('partials/head') %>
+<% if (hidden) { %><p class="hidden-note" role="status">This puzzle is hidden by a moderator. Only you and the admins can see it.</p><% } %>
 <div class="play" data-puzzle="<%= puzzle.id %>" data-rev="<%= rev %>">
   <section class="play-col" aria-label="Puzzle">
     <div class="puzzle-head">
@@ -114,4 +115,25 @@
     </a>
   </div>
 </div>
+
+<p class="report-row"><button type="button" class="linkbtn" id="report-open">Report this puzzle</button></p>
+<dialog id="report-dialog" aria-labelledby="report-h">
+  <form id="report-form" novalidate>
+    <h2 id="report-h">Report this puzzle</h2>
+    <div class="field">
+      <label for="report-reason">What’s wrong with it?</label>
+      <select id="report-reason"><% Object.keys(REASONS).forEach(function (k) { %><option value="<%= k %>"><%= REASONS[k] %></option><% }) %></select>
+    </div>
+    <div class="field">
+      <label for="report-note">Anything else? <span class="opt">(optional)</span></label>
+      <textarea id="report-note" maxlength="200" rows="3"></textarea>
+    </div>
+    <p class="pub-msg" id="report-msg" role="alert" hidden></p>
+    <div class="dlg-actions">
+      <button type="button" class="btn" id="report-cancel">Cancel</button>
+      <button type="submit" class="btn btn-ink" id="report-send">Send report</button>
+    </div>
+  </form>
+  <p class="report-thanks" id="report-thanks" hidden>Thanks. A human will take a look.</p>
+</dialog>
 <%- include('partials/foot') %>

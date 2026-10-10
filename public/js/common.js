@@ -6,6 +6,15 @@ window.QS = {
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* play on */ } },
     del(k) { try { localStorage.removeItem(k); } catch { /* ignore */ } },
   },
+  // Anonymous, per-browser id: counts a play once and lets one person report a puzzle once.
+  playerKey() {
+    let k = QS.store.get('qs:player');
+    if (!k) {
+      k = (crypto.randomUUID && crypto.randomUUID()) || Math.random().toString(16).slice(2) + Date.now().toString(16);
+      QS.store.set('qs:player', k);
+    }
+    return k;
+  },
   // Shrink a tile's word until it fits; if it still can't at a readable size, let it wrap mid-word
   // rather than clip. Starting sizes come from CSS by word length.
   fit(el) {

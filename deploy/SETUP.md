@@ -25,4 +25,14 @@ systemctl enable quadsort && systemctl reload caddy
 ufw allow OpenSSH && ufw allow 80,443/tcp && ufw --force enable
 ```
 
+## Making yourself an admin
+
+Sign up on the site first, then on the droplet:
+
+```bash
+sudo -u quadsort env DB_PATH=/var/lib/quadsort/quadsort.db node /opt/quadsort/scripts/make-admin.js yourusername
+```
+
+Admin lives at `/admin`. It is a 404 to everyone else. Add `--remove` to take the rights away again.
+
 Every later release: `ssh root@droplet sh /opt/quadsort/deploy/deploy.sh`

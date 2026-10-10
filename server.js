@@ -27,6 +27,7 @@ function createApp(db = open()) {
   });
   app.use('/api', rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false }));
   app.use('/api', express.json({ limit: '16kb' }), require('./routes/api')(db));
+  app.use('/admin', require('./routes/admin')(db));
   app.use(require('./routes/auth')(db, auth));
   app.use(require('./routes/pages')(db));
   app.use((req, res) => res.status(404).render('404', { title: 'Not even close' }));

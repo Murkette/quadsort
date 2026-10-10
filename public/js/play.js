@@ -22,14 +22,7 @@
   const store = QS.store;
   const KEY = `qs:${id}:${root.dataset.rev}`; // rev changes when the puzzle is edited
   const save = () => store.set(KEY, { guesses: S.guesses, solution: S.solution });
-  const uid = () => {
-    let k = store.get('qs:player');
-    if (!k) {
-      k = (crypto.randomUUID && crypto.randomUUID()) || Math.random().toString(16).slice(2) + Date.now().toString(16);
-      store.set('qs:player', k);
-    }
-    return k;
-  };
+  const uid = QS.playerKey;
 
   // ---------- helpers ----------
   const remaining = () => Object.values(tiles);
