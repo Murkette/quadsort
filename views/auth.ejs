@@ -1,0 +1,37 @@
+<% var signup = mode === 'signup'; %>
+<%- include('partials/head') %>
+<section class="auth">
+  <h1><%= signup ? 'Make an account.' : 'Welcome back.' %></h1>
+  <p class="lede"><%= signup
+      ? (next === '/create' ? 'Your puzzle is saved on this device. Make an account and it will be waiting for you.' : 'Free. Takes a minute. Needed to publish, never to play.')
+      : 'Your puzzles are where you left them. So are the people who failed them.' %></p>
+  <form class="panel" method="post" action="/<%= mode %>" novalidate>
+    <input type="hidden" name="next" value="<%= next %>">
+    <% if (errors.form) { %><p class="pub-msg" role="alert"><%= errors.form %></p><% } %>
+    <% if (signup) { %>
+    <div class="field">
+      <label for="a-name">Name, as credited <span class="opt">(optional)</span></label>
+      <input id="a-name" name="display_name" value="<%= values.display_name || '' %>" placeholder="Priya Makes Puzzles" autocomplete="name"<%= errors.display_name ? ' aria-invalid="true"' : '' %>>
+      <span class="ferr err"><%= errors.display_name || '' %></span>
+    </div>
+    <div class="field">
+      <label for="a-user">Username</label>
+      <input id="a-user" name="username" value="<%= values.username || '' %>" placeholder="priyamakes" autocomplete="username" autocapitalize="none" spellcheck="false"<%= errors.username ? ' aria-invalid="true"' : '' %>>
+      <span class="ferr err"><%= errors.username || '' %></span>
+    </div>
+    <% } %>
+    <div class="field">
+      <label for="a-email">Email</label>
+      <input id="a-email" name="email" type="email" value="<%= values.email || '' %>" autocomplete="email" autocapitalize="none"<%= errors.email ? ' aria-invalid="true"' : '' %>>
+      <span class="ferr err"><%= errors.email || '' %></span>
+    </div>
+    <div class="field">
+      <label for="a-pw">Password</label>
+      <input id="a-pw" name="password" type="password" autocomplete="<%= signup ? 'new-password' : 'current-password' %>"<%= errors.password ? ' aria-invalid="true"' : '' %>>
+      <span class="ferr err"><%= errors.password || '' %></span>
+    </div>
+    <button class="btn btn-primary btn-wide" type="submit"><%= signup ? 'Sign up' : 'Log in' %></button>
+  </form>
+  <p class="alt"><% if (signup) { %>Already have one? <a href="/login<%= next ? '?next=' + encodeURIComponent(next) : '' %>">Log in</a><% } else { %>New here? <a href="/signup<%= next ? '?next=' + encodeURIComponent(next) : '' %>">Make an account</a><% } %></p>
+</section>
+<%- include('partials/foot') %>

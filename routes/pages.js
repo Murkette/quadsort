@@ -1,27 +1,18 @@
 const express = require('express');
 const crypto = require('crypto');
 const { shuffle } = require('../lib/puzzle');
-const { counts } = require('../lib/stats');
-const owner = require('../lib/owner');
+const { counts, topWrong, difficulty } = require('../lib/stats');
+const { initials, linkInfo } = require('../lib/util');
 const { LEVELS, TAGS } = require('../public/js/validate');
 
-const lenClass = (w) => (w.length <= 5 ? 1 : w.length <= 7 ? 2 : w.length <= 9 ? 3 : 4);
-const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
-
-// Only http(s) links are ever rendered, so a stored javascript: URL can't become a link.
-function linkInfo(url) {
-  if (!/^https?:\/\//i.test(url || '')) return { social: null, host: null, handle: null };
-  const u = new URL(url);
-  const seg = u.pathname.split('/').filter(Boolean).pop(); // instagram.com/priyamakes -> @priyamakes
-  return { social: url, host: u.hostname.replace(/^www\./, ''), handle: seg ? '@' + seg.replace(/^@/, '') : null };
-}
-
 const blankGroup = (level) => ({ name: '', level, words: ['', '', '', ''] });
+const need = (req, res, next) => (req.user ? next() : res.redirect('/login?next=' + encodeURIComponent(req.originalUrl)));
+const rate = (c) => (c.solveRate === null ? '–' : Math.round(c.solveRate * 100) + '%');
 
 module.exports = (db) => {
   const r = express.Router();
   const find = db.prepare(`
-    SELECT p.id, p.title, p.description, p.groups_json, p.user_id, p.creator_name, p.creator_url,
+    SELECT p.id, p.title, p.description, p.groups_json, p.user_id,
            u.username, u.display_name, u.social_url
     FROM puzzles p LEFT JOIN users u ON u.id = p.user_id
     WHERE p.id = ? AND p.is_published = 1`);
@@ -30,7 +21,12 @@ module.exports = (db) => {
   const countBy = db.prepare('SELECT COUNT(*) n FROM puzzles WHERE user_id = ? AND is_published = 1');
   const moreBy = db.prepare(`SELECT id, title FROM puzzles
     WHERE user_id = ? AND id != ? AND is_published = 1 AND is_flagged = 0 ORDER BY created_at DESC LIMIT 2`);
-  const mine = db.prepare('SELECT * FROM puzzles WHERE id = ? AND owner_key = ?');
+  const mine = db.prepare('SELECT * FROM puzzles WHERE id = ? AND user_id = ?');
+  const userByName = db.prepare('SELECT id, username, display_name, bio, social_url, created_at FROM users WHERE username = ?');
+  const listPublic = db.prepare(`SELECT id, title, created_at FROM puzzles
+    WHERE user_id = ? AND is_published = 1 AND is_flagged = 0 ORDER BY created_at DESC LIMIT 60`);
+  const listAll = db.prepare(`SELECT id, title, groups_json, is_flagged, created_at FROM puzzles
+    WHERE user_id = ? AND is_published = 1 ORDER BY created_at DESC LIMIT 100`);
 
   r.get('/', (req, res) => res.render('index'));
 
@@ -39,52 +35,77 @@ module.exports = (db) => {
     p ? res.redirect(`/p/${p.id}`) : next();
   });
 
+  // ---------- making ----------
   const editor = (res, form, puzzleId = '', plays = 0) => res.render('create', {
     title: puzzleId ? 'Edit puzzle' : 'Make a puzzle', form, puzzleId, plays, LEVELS, TAGS,
     scripts: ['/js/common.js', '/js/validate.js', '/js/create.js'],
   });
 
-  r.get('/create', (req, res) => editor(res, {
-    title: '', creatorName: '', description: '', link: '', tags: [], groups: [1, 2, 3, 4].map(blankGroup),
-  }));
+  r.get('/create', (req, res) => editor(res, { title: '', description: '', tags: [], groups: [1, 2, 3, 4].map(blankGroup) }));
 
-  // Only the browser that published it (owner cookie) can open the editor; everyone else gets a 404.
-  r.get('/p/:id/edit', (req, res, next) => {
-    const key = owner.read(req);
-    const p = key && mine.get(req.params.id, key);
+  r.get('/p/:id/edit', need, (req, res, next) => {
+    const p = mine.get(req.params.id, req.user.id);
     if (!p) return next();
     editor(res, {
-      title: p.title, creatorName: p.creator_name || '', description: p.description, link: p.creator_url || '',
-      tags: p.tags ? p.tags.split(',') : [], groups: JSON.parse(p.groups_json),
+      title: p.title, description: p.description, tags: p.tags ? p.tags.split(',') : [], groups: JSON.parse(p.groups_json),
     }, p.id, counts(db, p.id).plays);
   });
 
+  // ---------- playing ----------
   r.get('/p/:id', (req, res, next) => {
     const row = find.get(req.params.id);
     if (!row) return next();
     const groups = JSON.parse(row.groups_json);
     const words = shuffle(groups.flatMap((g) => g.words));
-
-    let creator = null;
-    if (row.username) {
-      creator = {
-        username: row.username, name: row.display_name, initials: initials(row.display_name), ...linkInfo(row.social_url),
-        puzzles: countBy.get(row.user_id).n,
-        more: moreBy.all(row.user_id, row.id).map((m) => ({ ...m, solveRate: counts(db, m.id).solveRate })),
-      };
-    } else if (row.creator_name) { // published anonymously: credited, but no profile page
-      creator = { username: null, name: row.creator_name, initials: initials(row.creator_name), ...linkInfo(row.creator_url), puzzles: null, more: [] };
-    }
-
+    const creator = row.username && {
+      username: row.username, name: row.display_name, initials: initials(row.display_name), ...linkInfo(row.social_url),
+      puzzles: countBy.get(row.user_id).n,
+      more: moreBy.all(row.user_id, row.id).map((m) => ({ ...m, solveRate: counts(db, m.id).solveRate })),
+    };
     res.render('play', {
       title: row.title,
       description: row.description || `A Quadsort puzzle by ${creator ? creator.name : 'Quadsort'}. Make four groups of four.`,
       puzzle: { id: row.id, title: row.title, description: row.description },
       // changes whenever the words change, so a player's saved progress never outlives the puzzle it was for
       rev: crypto.createHash('sha1').update(row.groups_json).digest('hex').slice(0, 8),
-      creator, words, lenClass, stats: counts(db, row.id),
+      creator, words, stats: counts(db, row.id),
+      lenClass: (w) => (w.length <= 5 ? 1 : w.length <= 7 ? 2 : w.length <= 9 ? 3 : 4),
       scripts: ['/js/common.js', '/js/results.js', '/js/play.js'], // results first so it is listening when play finishes
     });
+  });
+
+  // ---------- creators ----------
+  const totals = (list) => {
+    const t = { puzzles: list.length, plays: 0, wins: 0, mistakes: 0 };
+    list.forEach((p) => { t.plays += p.plays; t.wins += p.wins; t.mistakes += (p.avgMistakes || 0) * p.plays; });
+    t.solve = t.plays ? Math.round((t.wins / t.plays) * 100) + '%' : '–';
+    t.avgMistakes = t.plays ? (t.mistakes / t.plays).toFixed(1) : '–';
+    return t;
+  };
+
+  r.get('/u/:username', (req, res, next) => {
+    const u = userByName.get(req.params.username);
+    if (!u) return next();
+    const list = listPublic.all(u.id).map((p) => {
+      const c = counts(db, p.id);
+      return { ...p, ...c, diff: difficulty(c) };
+    });
+    const sort = { plays: (a, b) => b.plays - a.plays, hard: (a, b) => (b.diff || 0) - (a.diff || 0) || b.plays - a.plays }[req.query.sort];
+    if (sort) list.sort(sort);
+    res.render('profile', {
+      title: u.display_name, description: u.bio || `Puzzles by ${u.display_name} on Quadsort.`,
+      p: { ...u, initials: initials(u.display_name), ...linkInfo(u.social_url),
+        since: new Date(u.created_at * 1000).toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }) },
+      list, totals: totals(list), sort: sort ? req.query.sort : 'new', LEVELS, rate,
+    });
+  });
+
+  r.get('/dashboard', need, (req, res) => {
+    const list = listAll.all(req.user.id).map((p) => {
+      const c = counts(db, p.id);
+      return { id: p.id, title: p.title, flagged: !!p.is_flagged, ...c, wrong: topWrong(db, p.id, JSON.parse(p.groups_json), 500) };
+    });
+    res.render('dashboard', { title: 'My puzzles', list, totals: totals(list), rate, scripts: ['/js/common.js', '/js/dashboard.js'] });
   });
 
   return r;

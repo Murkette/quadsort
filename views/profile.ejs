@@ -1,0 +1,36 @@
+<%- include('partials/head') %>
+<div class="profile">
+  <section class="phead">
+    <span class="avatar big" aria-hidden="true"><%= p.initials %></span>
+    <div class="pinfo">
+      <h1><%= p.display_name %></h1>
+      <div class="psub">@<%= p.username %> · puzzling since <%= p.since %></div>
+      <% if (p.bio) { %><p class="bio"><%= p.bio %></p><% } %>
+      <% if (p.social) { %><div class="links"><a class="chip" href="<%= p.social %>" rel="nofollow noopener ugc" target="_blank"><%= p.handle || p.host %> ↗</a></div><% } %>
+      <% if (user && user.id === p.id) { %><div class="links"><a class="chip" href="/settings">Edit profile</a></div><% } %>
+    </div>
+    <div class="pstats card white">
+      <div class="big3">
+        <div><b><%= totals.puzzles %></b><span>puzzles</span></div>
+        <div><b><%= totals.plays.toLocaleString('en-US') %></b><span>plays</span></div>
+        <div><b><%= totals.solve %></b><span>avg solve</span></div>
+      </div>
+      <% if (p.social) { %><a class="pill dark" href="<%= p.social %>" rel="nofollow noopener ugc" target="_blank">Follow <%= p.display_name.split(/\s+/)[0] %></a><% } %>
+    </div>
+  </section>
+
+  <section class="plist">
+    <div class="plist-head">
+      <h2>Puzzles</h2>
+      <nav class="tabs" aria-label="Sort puzzles">
+        <% [['new', 'Newest', ''], ['plays', 'Most played', '?sort=plays'], ['hard', 'Hardest', '?sort=hard']].forEach(function (t) { %><a href="/u/<%= p.username %><%= t[2] %>"<%= sort === t[0] ? ' aria-current="true"' : '' %>><%= t[1] %></a><% }) %>
+      </nav>
+    </div>
+    <% if (list.length) { %>
+    <div class="pgrid2"><% list.forEach(function (p) { %><%- include('partials/card', { p: p, rate: rate, LEVELS: LEVELS }) %><% }) %></div>
+    <% } else { %>
+    <p class="empty">Nothing here yet. <%= user && user.id === p.id ? 'Your audience is waiting.' : 'Check back later.' %></p>
+    <% } %>
+  </section>
+</div>
+<%- include('partials/foot') %>

@@ -16,7 +16,7 @@ Design source of truth: `design/BRIEF.md` and the 19 boards in `design/mockups/`
 | DB | SQLite via `better-sqlite3` | Zero ops, fits in RAM, one file to back up. Handles thousands of plays/day easily |
 | Templates | Server-rendered HTML with `ejs` | Shareable links need real HTML for OG previews; no SPA, no bundler |
 | Front-end | Vanilla JS + CSS, one `app.js` per page | The game logic is ~300 lines; a framework would be heavier than the app |
-| Auth | Email + password, `bcrypt`, cookie sessions in SQLite | No third-party dependency, no email provider needed on day one |
+| Auth | Email + password hashed with Node's built-in `scrypt`, cookie sessions in SQLite (only a hash of the token is stored) | No dependency, no email provider needed on day one |
 | Fonts | Bricolage Grotesque + Figtree, self-hosted woff2 | Matches mockups; no Google round-trip on a phone |
 | Proxy / TLS | Caddy | Auto HTTPS with a two-line config |
 | Process | systemd | Restart on crash, start on boot |
@@ -152,7 +152,7 @@ quadsort.com {
 }
 ```
 
-`quadsort.service`: runs `node server.js` as `quadsort`, `Environment=DB_PATH=/var/lib/quadsort/quadsort.db SESSION_SECRET=...`, `Restart=always`.
+`quadsort.service`: runs `node server.js` as `quadsort`, `Environment=DB_PATH=/var/lib/quadsort/quadsort.db`, `Restart=always`.
 
 `deploy.sh` (run on the droplet): `git pull && npm ci --omit=dev && systemctl restart quadsort`.
 
@@ -163,7 +163,7 @@ Add 1 GB swap so `npm ci` never OOMs on 1 GB RAM.
 ## 7. Open decisions (defaults chosen, change if you disagree)
 
 - **Name + domain**: Quadsort at `quadsort.com` (confirmed). The mockups still carry the old "Sort Yourself Out" wordmark; redo the wordmark in step 1, keep the dry voice lines ("Not even close.", "One away. Painful.") as microcopy.
-- **Accounts required to publish**: yes, otherwise there is no dashboard, no profile, and no way to edit. Login prompt appears only at the publish step so the creator has already invested two minutes.
+- **Accounts required to publish**: yes (built). The login prompt appears only at the publish step; the half-finished puzzle is kept as a local draft and is waiting after signup. Credit name and social link come from the account profile (`/settings`), not per-puzzle fields.
 - **Email verification / password reset**: skipped at launch. Add Resend or Postmark when the first "I forgot my password" arrives.
 - **Rate limiting**: `express-rate-limit` on `/api/*` and auth routes from day one. Cheap, prevents a bored follower hammering the plays table.
 - **Profanity / abuse**: report button + admin flag only. No automated filter.

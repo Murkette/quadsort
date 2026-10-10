@@ -15,7 +15,6 @@ curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt install -y node
 adduser --system --group --home /opt/quadsort quadsort
 git clone https://github.com/Murkette/quadsort.git /opt/quadsort
 mkdir -p /var/lib/quadsort && chown quadsort:quadsort /var/lib/quadsort
-echo "SESSION_SECRET=$(openssl rand -hex 32)" > /etc/quadsort.env && chmod 600 /etc/quadsort.env
 cp /opt/quadsort/deploy/quadsort.service /etc/systemd/system/
 cp /opt/quadsort/deploy/Caddyfile /etc/caddy/Caddyfile
 cp /opt/quadsort/deploy/backup.sh /etc/cron.daily/quadsort-backup && chmod +x /etc/cron.daily/quadsort-backup

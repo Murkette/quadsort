@@ -6,17 +6,18 @@
   const $ = (s) => root.querySelector(s), $$ = (s) => [...root.querySelectorAll(s)];
   const byId = (id) => document.getElementById(id);
   const published = byId('published');
-  const f = { title: $('#f-title'), creatorName: $('#f-name'), description: $('#f-desc'), link: $('#f-link') };
+  const f = { title: $('#f-title'), description: $('#f-desc') };
   const cards = $$('.gcard'), tagBoxes = $$('input[name="tag"]');
   const publishBtn = $('#publish'), msg = $('#pub-msg');
   const MAX = V.LIMITS.word;
-  const DRAFT = 'qs:draft', CREATOR = 'qs:creator';
+  const DRAFT = 'qs:draft';
+  const loggedIn = root.dataset.auth === '1', myName = root.dataset.name;
   let puzzleId = root.dataset.id || '';
   const isNew = !puzzleId;
   let busy = false;
 
   const read = () => ({
-    title: f.title.value, creatorName: f.creatorName.value, description: f.description.value, link: f.link.value,
+    title: f.title.value, description: f.description.value,
     tags: tagBoxes.filter((b) => b.checked).map((b) => b.value),
     groups: cards.map((c) => ({
       level: Number(c.querySelector('.glevel').value), name: c.querySelector('.gname').value,
@@ -25,8 +26,7 @@
   });
 
   function fill(d) {
-    f.title.value = d.title || ''; f.creatorName.value = d.creatorName || '';
-    f.description.value = d.description || ''; f.link.value = d.link || '';
+    f.title.value = d.title || ''; f.description.value = d.description || '';
     tagBoxes.forEach((b) => (b.checked = (d.tags || []).includes(b.value)));
     cards.forEach((c, i) => {
       const g = (d.groups || [])[i] || {};
@@ -69,7 +69,7 @@
 
     const levels = raw.groups.map((g) => g.level).sort((a, b) => a - b);
     const label = (i) => V.clean(raw.groups[i].name) || `Group ${levels.indexOf(raw.groups[i].level) + 1}`;
-    const issues = real('title').concat(real('creatorName'), real('description'), real('link'), real('tags')).map((e) => e.msg);
+    const issues = real('title').concat(real('description'), real('tags')).map((e) => e.msg);
     let missWords = 0, missNames = 0;
 
     cards.forEach((c, i) => {
@@ -110,7 +110,6 @@
     });
 
     if (by.title && !real('title').length) issues.push(by.title[0].msg);
-    if (by.creatorName && !real('creatorName').length) issues.push(by.creatorName[0].msg);
     if (missNames) issues.push(missNames === 1 ? '1 group name missing.' : `${missNames} group names missing.`);
     if (missWords) issues.push(missWords === 1 ? '1 word still to write.' : `${missWords} words still to write.`);
 
@@ -122,7 +121,7 @@
       t.className = 'pt len' + lenClass(w.length) + (!w ? ' empty' : w.length > MAX ? ' long' : '');
     });
     byId('pv-title').textContent = V.clean(raw.title) || 'Your puzzle title';
-    byId('pv-by').textContent = 'by ' + (V.clean(raw.creatorName) || 'you');
+    byId('pv-by').textContent = 'by ' + (myName || 'you');
 
     byId('issues').hidden = !issues.length;
     byId('ready').hidden = !!issues.length;
@@ -154,8 +153,11 @@
 
   // ---------- publish ----------
   const say = (t) => { msg.textContent = t; msg.hidden = !t; };
+  // Not logged in: the puzzle is already saved as a local draft, so signing up costs nothing but a minute.
+  const toSignup = () => { clearTimeout(draftTimer); store.set(DRAFT, read()); location.href = '/signup?next=' + encodeURIComponent('/create'); };
   publishBtn.onclick = async () => {
     if (publishBtn.disabled) return;
+    if (!loggedIn) return toSignup();
     busy = true; say(''); render();
     try {
       const res = await fetch(puzzleId ? `/api/puzzles/${puzzleId}` : '/api/puzzles', {
@@ -165,6 +167,7 @@
       if (!res.ok) throw Object.assign(new Error('publish failed'), { status: res.status, body });
       done(body);
     } catch (e) {
+      if (e.status === 401) return toSignup();
       say(e.status === 429 ? (e.body.error || 'Slow down.')
         : e.status === 400 ? 'The server disagrees with something in the form. Check the highlighted bits.'
         : e.status === 404 ? "This puzzle isn't yours to edit from this browser."
@@ -176,7 +179,6 @@
     const wasNew = !puzzleId;
     puzzleId = body.id;
     store.del(DRAFT);
-    store.set(CREATOR, { name: V.clean(f.creatorName.value), link: f.link.value });
     history.replaceState(null, '', `/p/${puzzleId}/edit`); // a refresh now reopens the editor, not a blank form
     const url = location.origin + body.url;
     const title = V.clean(f.title.value);
@@ -216,8 +218,6 @@
   if (isNew) {
     const d = store.get(DRAFT, null);
     if (d) fill(d);
-    const me = store.get(CREATOR, null);
-    if (me) { if (!f.creatorName.value) f.creatorName.value = me.name || ''; if (!f.link.value) f.link.value = me.link || ''; }
   }
   cards.forEach((c) => { const s = c.querySelector('.glevel'); s.dataset.prev = s.value; });
   render();

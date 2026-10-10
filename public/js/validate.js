@@ -3,7 +3,7 @@
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else root.QSValidate = factory();
 })(typeof self !== 'undefined' ? self : this, function () {
-  const LIMITS = { title: 60, description: 140, name: 40, group: 40, word: 14, link: 200, tags: 3 };
+  const LIMITS = { title: 60, description: 140, name: 40, group: 40, word: 14, link: 200, tags: 3, bio: 160 };
   const LEVELS = ['Gentle', 'Tricky', 'Sneaky', 'Devious'];
   const TAGS = [
     { id: 'pop-culture', label: 'Pop culture' }, { id: 'sport', label: 'Sport' },
@@ -34,17 +34,10 @@
     const errors = [];
     const bad = (field, msg, tone = 'err') => errors.push({ field, msg, tone });
 
-    const title = clean(raw.title), description = clean(raw.description), creatorName = clean(raw.creatorName);
+    const title = clean(raw.title), description = clean(raw.description);
     if (!title) bad('title', 'Give it a title.', 'missing');
     else if (title.length > LIMITS.title) bad('title', `Title is too long (${title.length}/${LIMITS.title}).`, 'warn');
-    if (!creatorName) bad('creatorName', 'Credit yourself. You earned it.', 'missing');
-    else if (creatorName.length > LIMITS.name) bad('creatorName', `Name is too long (${creatorName.length}/${LIMITS.name}).`, 'warn');
     if (description.length > LIMITS.description) bad('description', `Description is too long (${description.length}/${LIMITS.description}).`, 'warn');
-
-    const linkRaw = clean(raw.link);
-    const link = normUrl(linkRaw);
-    if (link === null) bad('link', "That doesn't look like a link.");
-    else if (link.length > LIMITS.link) bad('link', 'That link is too long.', 'warn');
 
     const tags = Array.isArray(raw.tags) ? [...new Set(raw.tags)] : [];
     if (tags.some((t) => !TAGS.some((x) => x.id === t))) bad('tags', 'Unknown topic.');
@@ -81,7 +74,7 @@
 
     return {
       ok: !errors.length, errors,
-      value: { title, description, creatorName, link: link || '', tags, groups: groups.slice().sort((a, b) => a.level - b.level) },
+      value: { title, description, tags, groups: groups.slice().sort((a, b) => a.level - b.level) },
     };
   }
 

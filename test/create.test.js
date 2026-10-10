@@ -5,7 +5,7 @@ const open = require('../db');
 const { validate, normUrl } = require('../public/js/validate');
 
 const good = () => ({
-  title: 'Group Chat Chaos', creatorName: 'Priya', description: 'Allegedly.', link: 'instagram.com/priyamakes', tags: ['food'],
+  title: 'Group Chat Chaos', description: 'Allegedly.', tags: ['food'],
   groups: [
     { level: 1, name: 'Cheeses', words: ['Brie', 'Feta', 'Edam', 'Halloumi'] },
     { level: 2, name: '___board', words: ['Surf', 'Key', 'Cup', 'Skate'] },
@@ -18,7 +18,6 @@ const fields = (r) => r.errors.map((e) => e.field).sort();
 test('validate: a good puzzle passes and is normalised', () => {
   const r = validate(good());
   assert.ok(r.ok, JSON.stringify(r.errors));
-  assert.equal(r.value.link, 'https://instagram.com/priyamakes');
   assert.deepEqual(r.value.groups.map((g) => g.level), [1, 2, 3, 4]);
 });
 
@@ -45,11 +44,10 @@ test('validate: links must be http(s); scripts and junk are refused', () => {
   assert.equal(normUrl('nodots'), null);
   assert.equal(normUrl(''), '');
   assert.equal(normUrl('https://tiktok.com/@priya'), 'https://tiktok.com/@priya');
-  assert.deepEqual(fields(validate({ ...good(), link: 'javascript:alert(1)' })), ['link']);
 });
 
 test('validate: missing basics, topics, and garbage input', () => {
-  assert.deepEqual(fields(validate({ ...good(), title: '', creatorName: '' })), ['creatorName', 'title']);
+  assert.deepEqual(fields(validate({ ...good(), title: '' })), ['title']);
   assert.deepEqual(fields(validate({ ...good(), tags: ['food', 'nope'] })), ['tags']);
   assert.deepEqual(fields(validate({ ...good(), tags: ['food', 'sport', 'music', 'gaming'] })), ['tags']);
   assert.ok(!validate(null).ok);
@@ -57,85 +55,82 @@ test('validate: missing basics, topics, and garbage input', () => {
   assert.equal(validate({ ...good(), title: 'a\u0000b\n  c' }).value.title, 'a b c', 'control chars and runs of space collapse');
 });
 
-// ---------- API ----------
-const serve = async (t, db = open(':memory:')) => {
-  const srv = createApp(db).listen(0);
-  t.after(() => srv.close());
-  const url = `http://127.0.0.1:${srv.address().port}`;
-  const call = (method, path, body, cookie) => fetch(url + path, {
-    method, headers: { 'Content-Type': 'application/json', ...(cookie ? { cookie } : {}) }, body: body === undefined ? undefined : JSON.stringify(body),
-  });
-  return { url, call, db };
-};
-const cookieOf = (res) => res.headers.get('set-cookie').split(';')[0];
 
-test('publish: creates a playable puzzle credited to the creator, owner cookie set', async (t) => {
-  const { call, url } = await serve(t);
-  const res = await call('POST', '/api/puzzles', good());
+// ---------- API (needs an account) ----------
+const { serve, good: goodPuzzle } = require('./helpers');
+
+test('publishing needs an account, and the puzzle is credited to it', async (t) => {
+  const { person } = await serve(t);
+  const anon = person();
+  assert.equal((await anon.post('/api/puzzles', goodPuzzle())).status, 401);
+
+  const me = person();
+  assert.equal((await me.signup()).status, 302);
+  const res = await me.post('/api/puzzles', goodPuzzle());
   assert.equal(res.status, 201);
   const { id, url: path } = await res.json();
   assert.match(id, /^[0-9a-zA-Z]{8}$/);
-  assert.equal(path, `/p/${id}`);
-  const sc = res.headers.get('set-cookie');
-  assert.match(sc, /qs_owner=/);
-  assert.match(sc, /HttpOnly/i);
 
-  const html = await (await fetch(url + path)).text();
-  assert.match(html, /<strong>Priya<\/strong>/);
-  assert.match(html, /href="https:\/\/instagram\.com\/priyamakes"/);
+  const html = await (await anon.get(path)).text();
+  assert.match(html, /href="\/u\/priya">Priya Makes Puzzles/);
   assert.match(html, /data-w="Halloumi"/);
   assert.doesNotMatch(html, /Things that squeak/, 'answers still hidden');
-
-  const check = await (await call('POST', '/api/plays/check', { puzzleId: id, words: ['Brie', 'Feta', 'Edam', 'Halloumi'] })).json();
+  const check = await (await anon.post('/api/plays/check', { puzzleId: id, words: ['Brie', 'Feta', 'Edam', 'Halloumi'] })).json();
   assert.equal(check.result, 'correct');
 });
 
-test('publish: invalid puzzles are refused with field errors; bad bodies do not crash', async (t) => {
-  const { call } = await serve(t);
-  const p = good(); p.groups[0].words[0] = '';
-  const res = await call('POST', '/api/puzzles', p);
+test('invalid puzzles are refused with field errors; bad bodies do not crash', async (t) => {
+  const { person } = await serve(t);
+  const me = person(); await me.signup();
+  const p = goodPuzzle(); p.groups[0].words[0] = '';
+  const res = await me.post('/api/puzzles', p);
   assert.equal(res.status, 400);
   assert.equal((await res.json()).errors[0].field, 'g0.w0');
-  assert.equal((await call('POST', '/api/puzzles', undefined)).status, 400);
-  assert.equal((await fetch(res.url, { method: 'POST' })).status, 400, 'no JSON content-type at all');
-  assert.equal((await fetch(res.url.replace('/puzzles', '/plays/check'), { method: 'POST' })).status, 404);
+  assert.equal((await me.post('/api/puzzles', undefined)).status, 400);
+  assert.equal((await me.post('/api/plays/check', undefined)).status, 404);
 });
 
-test('edit: only the owner; changing groups clears plays, changing text does not', async (t) => {
-  const { call, url, db } = await serve(t);
-  const created = await call('POST', '/api/puzzles', good());
-  const cookie = cookieOf(created);
-  const { id } = await created.json();
+test('edit and delete: only the owner; changing groups clears plays, changing text does not', async (t) => {
+  const { person, db } = await serve(t);
+  const me = person(); await me.signup();
+  const other = person(); await other.signup({ username: 'sam', email: 's@x.com' });
+  const { id } = await (await me.post('/api/puzzles', goodPuzzle())).json();
   db.prepare("INSERT INTO plays (puzzle_id, player_key, won, mistakes, guesses_json) VALUES (?, 'someone-1', 1, 0, '[]')").run(id);
 
-  assert.equal((await fetch(`${url}/p/${id}/edit`)).status, 404, 'no cookie, no editor');
-  assert.equal((await fetch(`${url}/p/${id}/edit`, { headers: { cookie: 'qs_owner=' + 'x'.repeat(32) } })).status, 404);
-  assert.equal((await call('PUT', `/api/puzzles/${id}`, good(), 'qs_owner=' + 'x'.repeat(32))).status, 404);
+  const anon = person();
+  const redirect = await anon.get(`/p/${id}/edit`);
+  assert.equal(redirect.status, 302);
+  assert.match(redirect.headers.get('location'), /^\/login\?next=/);
+  assert.equal((await other.get(`/p/${id}/edit`)).status, 404);
+  assert.equal((await other.put(`/api/puzzles/${id}`, goodPuzzle())).status, 404);
+  assert.equal((await other.del(`/api/puzzles/${id}`)).status, 404);
+  assert.equal((await anon.put(`/api/puzzles/${id}`, goodPuzzle())).status, 401);
 
-  const page = await fetch(`${url}/p/${id}/edit`, { headers: { cookie } });
+  const page = await me.get(`/p/${id}/edit`);
   assert.equal(page.status, 200);
   assert.match(await page.text(), /value="Group Chat Chaos"/);
 
-  const retitle = { ...good(), title: 'Renamed' };
-  const r1 = await (await call('PUT', `/api/puzzles/${id}`, retitle, cookie)).json();
+  const r1 = await (await me.put(`/api/puzzles/${id}`, { ...goodPuzzle(), title: 'Renamed' })).json();
   assert.equal(r1.statsReset, false);
   assert.equal(db.prepare('SELECT COUNT(*) n FROM plays').get().n, 1);
-  assert.equal(db.prepare('SELECT title FROM puzzles WHERE id = ?').get(id).title, 'Renamed');
-
-  const regroup = good(); regroup.groups[0].words[0] = 'Cheddar';
-  const r2 = await (await call('PUT', `/api/puzzles/${id}`, regroup, cookie)).json();
-  assert.equal(r2.statsReset, true);
+  const regroup = goodPuzzle(); regroup.groups[0].words[0] = 'Cheddar';
+  assert.equal((await (await me.put(`/api/puzzles/${id}`, regroup)).json()).statsReset, true);
   assert.equal(db.prepare('SELECT COUNT(*) n FROM plays').get().n, 0);
+
+  assert.equal((await me.del(`/api/puzzles/${id}`)).status, 200);
+  assert.equal((await me.get(`/p/${id}`)).status, 404);
 });
 
 test('create page renders; saved play progress is tied to the words (rev)', async (t) => {
-  const { call, url } = await serve(t);
-  const html = await (await fetch(url + '/create')).text();
+  const { person } = await serve(t);
+  const me = person(); await me.signup();
+  const html = await (await me.get('/create')).text();
   assert.match(html, /Make a puzzle/);
-  assert.match(html, /Publish puzzle/);
-  const a = await (await call('POST', '/api/puzzles', good())).json();
-  const g2 = good(); g2.groups[0].words[0] = 'Cheddar';
-  const b = await (await call('POST', '/api/puzzles', g2)).json();
-  const rev = async (id) => /data-rev="(\w+)"/.exec(await (await fetch(`${url}/p/${id}`)).text())[1];
+  assert.match(html, /Publishing as <b>Priya Makes Puzzles<\/b>/);
+  assert.match(await (await person().get('/create')).text(), /free account when you publish/);
+  const a = await (await me.post('/api/puzzles', goodPuzzle())).json();
+  const g2 = goodPuzzle(); g2.groups[0].words[0] = 'Cheddar';
+  const b = await (await me.post('/api/puzzles', g2)).json();
+  const rev = async (id) => /data-rev="(\w+)"/.exec(await (await me.get(`/p/${id}`)).text())[1];
   assert.notEqual(await rev(a.id), await rev(b.id));
 });

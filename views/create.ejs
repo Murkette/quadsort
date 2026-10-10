@@ -1,5 +1,5 @@
 <%- include('partials/head') %>
-<div class="create" id="create" data-id="<%= puzzleId %>" data-plays="<%= plays %>">
+<div class="create" id="create" data-id="<%= puzzleId %>" data-plays="<%= plays %>" data-auth="<%= user ? 1 : 0 %>" data-name="<%= user ? user.display_name : '' %>">
   <form class="create-main" id="form" novalidate autocomplete="off">
     <div class="create-head">
       <h1><%= puzzleId ? 'Edit your puzzle' : 'Make a puzzle' %></h1>
@@ -8,26 +8,16 @@
 
     <section class="panel">
       <h2>The basics</h2>
-      <div class="basics">
+      <div class="basics one">
         <div class="field">
           <label for="f-title">Puzzle title</label>
           <input id="f-title" value="<%= form.title %>" placeholder="Group Chat Chaos">
           <span class="ferr" data-for="title" aria-live="polite"></span>
         </div>
         <div class="field">
-          <label for="f-name">Your name, as credited</label>
-          <input id="f-name" value="<%= form.creatorName %>" placeholder="Priya Makes Puzzles">
-          <span class="ferr" data-for="creatorName" aria-live="polite"></span>
-        </div>
-        <div class="field">
           <label for="f-desc">Description <span class="opt">(optional)</span></label>
           <input id="f-desc" value="<%= form.description %>" placeholder="A little taunt for the players">
           <span class="ferr" data-for="description" aria-live="polite"></span>
-        </div>
-        <div class="field">
-          <label for="f-link">Social profile link <span class="opt">(optional)</span></label>
-          <input id="f-link" type="text" inputmode="url" value="<%= form.link %>" placeholder="instagram.com/yourname">
-          <span class="ferr" data-for="link" aria-live="polite"></span>
         </div>
       </div>
       <fieldset class="topics">
@@ -94,6 +84,7 @@
       </div>
       <p class="ready" id="ready" hidden>All sixteen present and correct. Suspicious.</p>
       <% if (plays > 0) { %><p class="warn-note">⚠ <%= plays %> player<%= plays === 1 ? ' has' : 's have' %> played this. Changing the words or groups clears the plays and stats.</p><% } %>
+      <p class="as"><% if (user) { %>Publishing as <b><%= user.display_name %></b> · <a href="/settings">change</a><% } else { %>You’ll make a free account when you publish. Your puzzle waits for you.<% } %></p>
       <button type="button" class="btn btn-primary btn-wide" id="publish" disabled><%= puzzleId ? 'Save changes' : 'Publish puzzle' %></button>
       <p class="pub-msg" id="pub-msg" role="alert" hidden></p>
     </div>

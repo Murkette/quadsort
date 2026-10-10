@@ -1,0 +1,11 @@
+<%# One puzzle card: p = {id, title, plays, solveRate, diff}. Used by profile (and browse later). %>
+<a class="pcard" href="/p/<%= p.id %>">
+  <div class="cover" aria-hidden="true"><% for (var i = 0; i < 8; i++) { %><span class="lv" data-level="<%= p.id.charCodeAt(i % p.id.length) % 4 + 1 %>"></span><% } %></div>
+  <div class="cbody">
+    <span class="ctitle"><%= p.title %></span>
+    <span class="cmeta">
+      <span><%= p.plays.toLocaleString('en-US') %> play<%= p.plays === 1 ? '' : 's' %><%= p.plays ? ' · ' + rate(p) + ' solve' : '' %></span>
+      <span class="cdiff"><% if (p.diff) { %><span class="bars" aria-hidden="true"><% for (var b = 1; b <= 4; b++) { %><i class="<%= b <= p.diff ? 'on' : '' %>"></i><% } %></span><%= LEVELS[p.diff - 1] %><% } else { %>New<% } %></span>
+    </span>
+  </div>
+</a>

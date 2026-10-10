@@ -2,6 +2,8 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const open = require('./db');
+const { sessions } = require('./lib/auth');
+const { initials } = require('./lib/util');
 
 function createApp(db = open()) {
   const app = express();
@@ -17,10 +19,17 @@ function createApp(db = open()) {
     db.prepare('SELECT 1').get();
     res.type('text').send('ok');
   });
+  const auth = sessions(db);
+  app.use((req, res, next) => { // who is this? (after static + healthz, so assets never hit the database)
+    res.locals.user = req.user = auth.user(req);
+    res.locals.initials = initials;
+    next();
+  });
   app.use('/api', rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false }));
   app.use('/api', express.json({ limit: '16kb' }), require('./routes/api')(db));
+  app.use(require('./routes/auth')(db, auth));
   app.use(require('./routes/pages')(db));
-  app.use((req, res) => res.status(404).render('404'));
+  app.use((req, res) => res.status(404).render('404', { title: 'Not even close' }));
   return app;
 }
 

@@ -1,0 +1,44 @@
+<%- include('partials/head') %>
+<div class="dash">
+  <div class="dash-head">
+    <div>
+      <h1>My puzzles</h1>
+      <p>Your people have been busy failing. Here’s the damage.</p>
+    </div>
+    <a class="btn btn-primary" href="/create">+ New puzzle</a>
+  </div>
+
+  <div class="statgrid">
+    <div class="card stat"><b><%= totals.puzzles %></b><span>puzzles</span></div>
+    <div class="card stat"><b><%= totals.plays.toLocaleString('en-US') %></b><span>total plays</span></div>
+    <div class="card stat"><b><%= totals.solve %></b><span>solve rate</span></div>
+    <div class="card stat"><b><%= totals.avgMistakes %></b><span>avg mistakes</span></div>
+  </div>
+
+  <% if (list.length) { %>
+  <div class="dtable" role="table" aria-label="Your puzzles">
+    <div class="dhead" role="row"><span role="columnheader">Puzzle</span><span role="columnheader">Plays</span><span role="columnheader">Solve rate</span><span role="columnheader">Most common wrong guess</span><span role="columnheader">Actions</span></div>
+    <% list.forEach(function (r) { %>
+    <div class="drow2" role="row" data-id="<%= r.id %>">
+      <span class="dtitle" role="cell"><a href="/p/<%= r.id %>"><%= r.title %></a><small class="status <%= r.flagged ? 'flag' : r.plays ? 'live' : '' %>"><%= r.flagged ? 'Hidden by moderators' : r.plays ? 'Live' : 'Waiting for players' %></small></span>
+      <span role="cell" data-label="Plays"><b><%= r.plays.toLocaleString('en-US') %></b></span>
+      <span role="cell" data-label="Solve rate" class="solve"><span class="meter"><span style="width: <%= r.solveRate === null ? 0 : Math.round(r.solveRate * 100) %>%"></span></span><b><%= rate(r) %></b></span>
+      <span role="cell" data-label="Most common wrong guess" class="wrong"><%= r.wrong ? r.wrong.words.join(', ') + ' (' + r.wrong.count + ' players)' : (r.plays < 2 ? 'Not enough plays yet.' : 'No clear favourite.') %></span>
+      <span role="cell" class="acts">
+        <a class="btn btn-sm" href="/p/<%= r.id %>/edit">Edit</a>
+        <button type="button" class="btn btn-sm" data-copy="/p/<%= r.id %>">Copy link</button>
+        <button type="button" class="btn btn-sm danger" data-delete="<%= r.id %>" data-title="<%= r.title %>">Delete</button>
+      </span>
+    </div>
+    <% }) %>
+  </div>
+  <% } else { %>
+  <div class="panel emptybox">
+    <h2>Nothing here yet.</h2>
+    <p>Your audience is waiting. Make them suffer.</p>
+    <a class="btn btn-primary" href="/create">Make a puzzle</a>
+  </div>
+  <% } %>
+  <p class="foot-links"><a href="/settings">Profile settings</a> · <a href="/u/<%= user.username %>">View public profile</a></p>
+</div>
+<%- include('partials/foot') %>

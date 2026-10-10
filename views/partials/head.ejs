@@ -17,6 +17,8 @@
   <a class="brand" href="/"><%- include('mark') %><span>Quadsort</span></a>
   <nav class="nav" aria-label="Main">
     <a href="/random">Play one</a>
+    <% if (user) { %><a href="/dashboard">My puzzles</a><a class="avatar-sm" href="/u/<%= user.username %>" aria-label="Your profile"><%= initials(user.display_name) %></a>
+    <% } else { %><a class="nav-login" href="/login">Log in</a><% } %>
     <a class="btn btn-primary btn-sm" href="/create">Make a puzzle</a>
   </nav>
 </div></header>

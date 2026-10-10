@@ -4,7 +4,6 @@ const rateLimit = require('express-rate-limit');
 const { check, replay, bySolution } = require('../lib/puzzle');
 const { counts, topWrong } = require('../lib/stats');
 const { validate } = require('../public/js/validate');
-const owner = require('../lib/owner');
 
 const B62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const newId = () => Array.from({ length: 8 }, () => B62[crypto.randomInt(62)]).join('');
@@ -45,25 +44,25 @@ module.exports = (db) => {
     res.json({ ...end, solution: bySolution(groups), stats: { ...counts(db, puzzleId), topWrong: topWrong(db, puzzleId, groups) } });
   });
 
-  // ---------- publishing ----------
+  // ---------- publishing (accounts only) ----------
   const publishLimit = rateLimit({ windowMs: 3600_000, limit: 30, standardHeaders: 'draft-7', legacyHeaders: false,
     message: { error: 'Too many puzzles from one place. Take a breather and try again later.' } });
-  const make = db.prepare(`INSERT INTO puzzles (id, user_id, title, description, groups_json, tags, creator_name, creator_url, owner_key)
-    VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?)`);
-  const owned = db.prepare('SELECT groups_json FROM puzzles WHERE id = ? AND owner_key = ?');
-  const update = db.prepare(`UPDATE puzzles SET title = ?, description = ?, groups_json = ?, tags = ?, creator_name = ?,
-    creator_url = ?, updated_at = unixepoch() WHERE id = ? AND owner_key = ?`);
+  const login = (req, res, next) => (req.user ? next() : res.status(401).json({ error: 'login' }));
+  const make = db.prepare('INSERT INTO puzzles (id, user_id, title, description, groups_json, tags) VALUES (?, ?, ?, ?, ?, ?)');
+  const owned = db.prepare('SELECT groups_json FROM puzzles WHERE id = ? AND user_id = ?');
+  const update = db.prepare(`UPDATE puzzles SET title = ?, description = ?, groups_json = ?, tags = ?, updated_at = unixepoch()
+    WHERE id = ? AND user_id = ?`);
   const wipePlays = db.prepare('DELETE FROM plays WHERE puzzle_id = ?');
+  const remove = db.prepare('DELETE FROM puzzles WHERE id = ? AND user_id = ?'); // plays go with it (ON DELETE CASCADE)
 
-  r.post('/puzzles', publishLimit, (req, res) => {
+  r.post('/puzzles', login, publishLimit, (req, res) => {
     const v = validate(req.body);
     if (!v.ok) return res.status(400).json({ errors: v.errors });
     const p = v.value;
-    const key = owner.ensure(req, res);
     for (let tries = 0; tries < 5; tries++) {
       const id = newId();
       try {
-        make.run(id, p.title, p.description, JSON.stringify(p.groups), p.tags.join(','), p.creatorName, p.link || null, key);
+        make.run(id, req.user.id, p.title, p.description, JSON.stringify(p.groups), p.tags.join(','));
         return res.status(201).json({ id, url: `/p/${id}` });
       } catch (e) {
         if (e.code !== 'SQLITE_CONSTRAINT_PRIMARYKEY') throw e; // id collision: roll again
@@ -73,9 +72,8 @@ module.exports = (db) => {
   });
 
   // Edit. Changing the words or groups makes old plays and stats meaningless, so they are cleared.
-  r.put('/puzzles/:id', publishLimit, (req, res) => {
-    const key = owner.read(req);
-    const row = key && owned.get(req.params.id, key);
+  r.put('/puzzles/:id', login, publishLimit, (req, res) => {
+    const row = owned.get(req.params.id, req.user.id);
     if (!row) return res.status(404).json({ error: 'no such puzzle' });
     const v = validate(req.body);
     if (!v.ok) return res.status(400).json({ errors: v.errors });
@@ -83,10 +81,14 @@ module.exports = (db) => {
     const groupsJson = JSON.stringify(p.groups);
     const changed = groupsJson !== row.groups_json;
     db.transaction(() => {
-      update.run(p.title, p.description, groupsJson, p.tags.join(','), p.creatorName, p.link || null, req.params.id, key);
+      update.run(p.title, p.description, groupsJson, p.tags.join(','), req.params.id, req.user.id);
       if (changed) wipePlays.run(req.params.id);
     })();
     res.json({ id: req.params.id, url: `/p/${req.params.id}`, statsReset: changed });
+  });
+
+  r.delete('/puzzles/:id', login, (req, res) => {
+    remove.run(req.params.id, req.user.id).changes ? res.json({ ok: true }) : res.status(404).json({ error: 'no such puzzle' });
   });
 
   return r;
