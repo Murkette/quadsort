@@ -5,7 +5,7 @@
       <h1><%= puzzle.title %></h1>
       <p class="by">by
         <% if (creator) { %><a href="/u/<%= creator.username %>"><%= creator.name %></a>
-          <% if (creator.social) { %><a class="chip" href="<%= creator.social %>" rel="nofollow noopener ugc" target="_blank"><%= new URL(creator.social).hostname.replace(/^www\./, '') %> ↗</a><% } %>
+          <% if (creator.social) { %><a class="chip" href="<%= creator.social %>" rel="nofollow noopener ugc" target="_blank"><%= creator.host %> ↗</a><% } %>
         <% } else { %><strong>Quadsort</strong><% } %>
       </p>
       <% if (puzzle.description) { %><p class="desc"><%= puzzle.description %></p><% } %>
@@ -43,6 +43,75 @@
         <li>Colours go from Gentle to Devious. Expect the worst.</li>
       </ol>
     </div>
+    <div class="tiles2">
+      <div class="card stat"><b><%= stats.plays.toLocaleString('en-US') %></b><span>plays</span></div>
+      <div class="card stat"><b><%= stats.solveRate === null ? '–' : Math.round(stats.solveRate * 100) + '%' %></b><span>solve it</span></div>
+    </div>
   </aside>
+</div>
+
+<%# Results: filled in by results.js once a game is over. Nothing here reveals the answers. %>
+<div class="results" id="results" hidden>
+  <div class="res-a">
+    <div class="res-head">
+      <button type="button" class="back" id="back">← Back to the puzzle</button>
+      <span class="kicker"><%= puzzle.title %> · by <%= creator ? creator.name : 'Quadsort' %></span>
+      <h1 id="r-head"></h1>
+      <p id="r-sub"></p>
+    </div>
+
+    <div class="share-card">
+      <div class="share-top"><h2>Your guesses</h2><span id="r-score"></span></div>
+      <div class="squares" id="r-grid" role="img"></div>
+      <div class="linkbar">
+        <span class="url" id="r-url"></span>
+        <button type="button" class="btn btn-ink" id="copy">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          <span id="copy-label">Copy result</span></button>
+      </div>
+      <span class="hint">Copies the squares and the link. Paste it somewhere smug.</span>
+    </div>
+
+    <div class="answers"><h2>The answers</h2><div id="r-answers"></div></div>
+  </div>
+
+  <div class="res-b">
+    <div class="card white" id="r-stats">
+      <h2>You vs everyone</h2>
+      <div class="big3">
+        <div><b id="s-rate"></b><span>solve rate</span></div>
+        <div><b id="s-avg"></b><span>avg mistakes</span></div>
+        <div><b id="s-you"></b><span>yours</span></div>
+      </div>
+      <div class="dist" id="s-dist"></div>
+      <p class="verdict" id="s-verdict"></p>
+      <p class="muted" id="s-wrong" hidden></p>
+    </div>
+
+    <% if (creator) { %>
+    <div class="card creator">
+      <div class="who">
+        <span class="avatar" aria-hidden="true"><%= creator.initials %></span>
+        <div>
+          <div class="eyebrow">Made by</div>
+          <div class="cname"><%= creator.name %></div>
+          <div class="csub"><%= creator.handle ? creator.handle + ' · ' : '' %><%= creator.puzzles %> puzzle<%= creator.puzzles === 1 ? '' : 's' %></div>
+        </div>
+      </div>
+      <div class="cbtns">
+        <% if (creator.social) { %><a class="pill dark" href="<%= creator.social %>" rel="nofollow noopener ugc" target="_blank"><%= creator.handle ? 'Follow ' + creator.handle : 'Visit ' + creator.host %></a><% } %>
+        <a class="pill light" href="/u/<%= creator.username %>">More by <%= creator.name.split(/\s+/)[0] %></a>
+      </div>
+      <% if (creator.more.length) { %><div class="more">
+        <% creator.more.forEach(function (m) { %><a href="/p/<%= m.id %>"><span><%= m.title %></span><span class="sr"><%= m.solveRate === null ? 'new' : Math.round(m.solveRate * 100) + '% solve' %></span></a>
+        <% }) %></div><% } %>
+    </div>
+    <% } %>
+
+    <a class="make-own" href="/create">
+      <span><b>Reckon you could do meaner?</b><small>Make your own. Two minutes. No excuses.</small></span>
+      <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
 </div>
 <%- include('partials/foot') %>

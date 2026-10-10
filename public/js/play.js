@@ -16,7 +16,7 @@
   const tiles = {}; // word -> button
   grid.querySelectorAll('.tile').forEach((t) => (tiles[t.dataset.w] = t));
 
-  const S = { sel: [], solved: [], mistakes: 0, guesses: [], over: null, posted: false, solution: null, busy: false };
+  const S = { sel: [], solved: [], mistakes: 0, guesses: [], over: null, solution: null, busy: false };
 
   // ---------- persistence (a reload from a social app's in-app browser must not reset your lives) ----------
   const KEY = 'qs:' + id;
@@ -24,7 +24,7 @@
     get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode: play on */ } },
   };
-  const save = () => store.set(KEY, { guesses: S.guesses, posted: S.posted, solution: S.solution });
+  const save = () => store.set(KEY, { guesses: S.guesses, solution: S.solution });
   const uid = () => {
     let k = store.get('qs:player');
     if (!k) {
@@ -78,7 +78,7 @@
   // ---------- rows ----------
   function addRow(g, revealed) {
     const row = document.createElement('div');
-    row.className = 'row' + (revealed ? ' revealed' : '');
+    row.className = 'row lv' + (revealed ? ' revealed' : '');
     row.dataset.level = g.level;
     row.setAttribute('role', 'group');
     row.setAttribute('aria-label', `${g.name}: ${g.words.join(', ')}`);
@@ -129,7 +129,7 @@
   }
 
   // ---------- end of game ----------
-  function showEnd() {
+  function showEnd(hasResults) {
     controls.hidden = true;
     lives.hidden = S.over === 'won';
     endEl.className = 'end ' + S.over;
@@ -138,6 +138,7 @@
     endEl.innerHTML = S.over === 'won'
       ? `<h2>Sorted. Annoyingly well.</h2><p>${m ? `Solved with ${m} mistake${m > 1 ? 's' : ''}.` : 'No mistakes. Show-off.'}</p>`
       : '<h2>Sort yourself out.</h2><p>Out of lives. The answers are above, for your shame.</p>';
+    if (hasResults) endEl.insertAdjacentHTML('beforeend', '<button type="button" class="btn" data-act="results">See how you did</button>');
     if (!reduced()) anim(endEl, [{ transform: 'translateY(16px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 320, easing: 'cubic-bezier(.2,.9,.3,1.25)' });
   }
 
@@ -145,21 +146,24 @@
     S.over = S.solved.length === 4 ? 'won' : 'lost';
     S.sel = [];
     sync();
-    // The server replays our guesses, logs the play once, and (only now) reveals the solution.
-    if (!S.solution || !S.posted) {
-      try {
-        const res = await fetch('/api/plays', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ puzzleId: id, playerKey: uid(), guesses: S.guesses.map((g) => g.words) }),
-        });
-        if (!res.ok) throw new Error(res.status);
-        S.solution = (await res.json()).solution;
-        S.posted = true;
-        save();
-      } catch {
-        if (S.over === 'lost') toast("Couldn't fetch the answers. Reload to retry.", 4000);
-      }
+    // The server replays our guesses, logs the play once, and (only now) reveals the solution and stats.
+    // Always asked, even for a saved game: it is idempotent and the stats are live.
+    let stats = null;
+    try {
+      const res = await fetch('/api/plays', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ puzzleId: id, playerKey: uid(), guesses: S.guesses.map((g) => g.words) }),
+      });
+      if (!res.ok) throw new Error(res.status);
+      const body = await res.json();
+      S.solution = body.solution;
+      stats = body.stats;
+      save();
+    } catch {
+      if (S.over === 'lost' && !S.solution) toast("Couldn't fetch the answers. Reload to retry.", 4000);
     }
+    // After a win every group was solved, so the solution is already known even offline.
+    const solution = S.solution || (S.over === 'won' ? S.solved : null);
     if (S.over === 'lost' && S.solution) {
       const open = S.solution.filter((g) => !S.solved.some((s) => s.name === g.name));
       for (const g of open) {
@@ -170,7 +174,14 @@
       sync();
     }
     if (animate && S.over === 'won') await sleep(reduced() ? 0 : 450);
-    showEnd();
+    showEnd(!!solution);
+    if (solution) {
+      dispatchEvent(new CustomEvent('qs:finished', { detail: {
+        id, won: S.over === 'won', mistakes: S.mistakes, guesses: S.guesses.map((g) => g.words),
+        found: S.solved.map((g) => g.name), solution, stats,
+        auto: !animate, // a saved game goes straight to the results
+      } }));
+    }
   }
 
   // ---------- actions ----------
@@ -241,7 +252,6 @@
       if (g.result === 'correct' && g.group) solve(g.group, false);
       else S.mistakes++;
     }
-    S.posted = !!saved.posted;
     S.solution = saved.solution || null;
     if (S.solved.length === 4 || S.mistakes >= LIVES) finish(false);
   }

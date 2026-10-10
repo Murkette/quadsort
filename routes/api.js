@@ -1,5 +1,6 @@
 const express = require('express');
 const { check, replay, bySolution } = require('../lib/puzzle');
+const { counts, topWrong } = require('../lib/stats');
 
 module.exports = (db) => {
   const r = express.Router();
@@ -21,7 +22,7 @@ module.exports = (db) => {
     res.json(out);
   });
 
-  // Finished game: verify it by replaying the guesses, log it once per player, reveal the solution.
+  // Finished game: verify it by replaying the guesses, log it once per player, reveal the solution and stats.
   r.post('/plays', (req, res) => {
     const { puzzleId, playerKey, guesses } = req.body;
     const groups = load(puzzleId);
@@ -33,7 +34,7 @@ module.exports = (db) => {
     if (!played.get(puzzleId, playerKey)) {
       insert.run(puzzleId, playerKey, end.won ? 1 : 0, end.mistakes, JSON.stringify(guesses));
     }
-    res.json({ ...end, solution: bySolution(groups) });
+    res.json({ ...end, solution: bySolution(groups), stats: { ...counts(db, puzzleId), topWrong: topWrong(db, puzzleId, groups) } });
   });
 
   return r;

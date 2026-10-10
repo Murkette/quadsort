@@ -70,12 +70,17 @@ test('finished game is verified, logged once, and reveals the solution', async (
   assert.equal(body.won, false);
   assert.equal(body.solution.length, 4);
   assert.equal(body.solution[0].name, 'Cheeses');
+  assert.equal(body.stats.plays, 1);
+  assert.equal(body.stats.solveRate, 0);
+  assert.deepEqual(body.stats.dist, [0, 0, 0, 0, 1]);
 
   await post('/api/plays', { puzzleId: 'demo0001', playerKey: 'player-key-1', guesses: lost });
   assert.equal(db.prepare('SELECT COUNT(*) n FROM plays').get().n, 1, 'same player is counted once');
 
   const won = await (await post('/api/plays', { puzzleId: 'demo0001', playerKey: 'player-key-2', guesses: [CHEESE, BOARD, SQUEAK, ANIMAL] })).json();
   assert.deepEqual([won.won, won.mistakes], [true, 0]);
+  assert.equal(won.stats.plays, 2);
+  assert.equal(won.stats.solveRate, 0.5);
 });
 
 test('creator byline renders, and only http(s) social links become links', async (t) => {
@@ -86,4 +91,25 @@ test('creator byline renders, and only http(s) social links become links', async
   const html = await (await fetch(url + '/p/demo0001')).text();
   assert.match(html, /href="\/u\/priya">Priya Makes Puzzles/);
   assert.doesNotMatch(html, /javascript:/);
+});
+
+test('results panel: creator card, follow link and more-by, still no answers', async (t) => {
+  const db = open(':memory:');
+  db.prepare("INSERT INTO users (id, username, email, password_hash, display_name, social_url) VALUES (1,'priya','p@x.com','x','Priya Makes Puzzles','https://www.instagram.com/priyamakes')").run();
+  db.prepare("UPDATE puzzles SET user_id = 1 WHERE id = 'demo0001'").run();
+  db.prepare("INSERT INTO puzzles (id, user_id, title, groups_json) VALUES ('other001', 1, 'Villains With Good Points', '[]')").run();
+  const { url } = await serve(t, db);
+  const html = await (await fetch(url + '/p/demo0001')).text();
+  assert.match(html, /Follow @priyamakes/);
+  assert.match(html, /href="https:\/\/www\.instagram\.com\/priyamakes"/);
+  assert.match(html, /More by Priya/);
+  assert.match(html, /href="\/p\/other001"[^>]*>.*Villains With Good Points/s);
+  assert.doesNotMatch(html, /Cheeses|Hiding an animal/);
+});
+
+test('play page without a creator has no creator card but still asks you to make your own', async (t) => {
+  const { url } = await serve(t);
+  const html = await (await fetch(url + '/p/demo0001')).text();
+  assert.doesNotMatch(html, /Made by/);
+  assert.match(html, /Reckon you could do meaner/);
 });
