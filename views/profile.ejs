@@ -23,7 +23,7 @@
     <div class="plist-head">
       <h2>Puzzles</h2>
       <nav class="tabs" aria-label="Sort puzzles">
-        <% [['new', 'Newest', ''], ['plays', 'Most played', '?sort=plays'], ['hard', 'Hardest', '?sort=hard']].forEach(function (t) { %><a href="/u/<%= p.username %><%= t[2] %>"<%= sort === t[0] ? ' aria-current="true"' : '' %>><%= t[1] %></a><% }) %>
+        <% [['new', 'Newest', ''], ['plays', 'Most played', '?sort=plays'], ['hard', 'Hardest', '?sort=hard']].forEach(function (t) { %><a href="/u/<%= p.username %><%= t[2] %>"<%- sort === t[0] ? ' aria-current="true"' : '' %>><%= t[1] %></a><% }) %>
       </nav>
     </div>
     <% if (list.length) { %>

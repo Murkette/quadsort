@@ -1,0 +1,43 @@
+<%- include('partials/head') %>
+<div class="browse">
+  <h1>Find something to fail at.</h1>
+  <form class="search" role="search" method="get" action="/browse">
+    <label><span class="sr">Search puzzles</span>
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" name="q" value="<%= q %>" placeholder="Search titles, creators, topics" enterkeyhint="search" autocomplete="off"></label>
+    <% if (tag) { %><input type="hidden" name="tag" value="<%= tag %>"><% } %>
+    <% if (sort !== 'trending') { %><input type="hidden" name="sort" value="<%= sort %>"><% } %>
+  </form>
+
+  <nav class="tabs" aria-label="Sort">
+    <% [['trending', 'Trending'], ['new', 'New'], ['plays', 'Most played']].forEach(function (t) { %><a href="<%= href({ sort: t[0] }) %>"<%- sort === t[0] ? ' aria-current="true"' : '' %>><%= t[1] %></a><% }) %>
+  </nav>
+  <nav class="chips" aria-label="Topics">
+    <a href="<%= href({ tag: '' }) %>"<%- !tag ? ' aria-current="true"' : '' %>>All topics</a>
+    <% TAGS.forEach(function (t) { %><a href="<%= href({ tag: t.id }) %>"<%- tag === t.id ? ' aria-current="true"' : '' %>><%= t.label %></a><% }) %>
+  </nav>
+
+  <div class="bcount">
+    <b><%= total.toLocaleString('en-US') %> puzzle<%= total === 1 ? '' : 's' %><%= q ? ' for “' + q + '”' : '' %></b>
+    <span>Difficulty is from real players, not the creator’s ego.</span>
+  </div>
+
+  <% if (!rows.length) { %>
+  <div class="panel emptybox">
+    <h2>Nothing. Not a sausage.</h2>
+    <p>Nobody’s made that one yet. Could be you.</p>
+    <a class="btn btn-primary" href="/create">Make it yourself</a>
+  </div>
+  <% } else { %>
+  <div class="pgrid2"><% rows.forEach(function (p) { %><%- include('partials/card', { p: p, rate: rate, LEVELS: LEVELS }) %><% }) %></div>
+  <% } %>
+
+  <% if (pages > 1) { %>
+  <nav class="pager" aria-label="Pages">
+    <% if (page > 1) { %><a class="btn btn-sm" href="<%= href({ page: page - 1 }) %>" rel="prev">← Previous</a><% } else { %><span></span><% } %>
+    <span>Page <%= page %> of <%= pages %></span>
+    <% if (page < pages) { %><a class="btn btn-sm" href="<%= href({ page: page + 1 }) %>" rel="next">Next →</a><% } else { %><span></span><% } %>
+  </nav>
+  <% } %>
+</div>
+<%- include('partials/foot') %>

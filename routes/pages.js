@@ -4,6 +4,7 @@ const { shuffle } = require('../lib/puzzle');
 const { counts, topWrong, difficulty } = require('../lib/stats');
 const { initials, linkInfo } = require('../lib/util');
 const { LEVELS, TAGS } = require('../public/js/validate');
+const { search } = require('../lib/browse');
 
 const blankGroup = (level) => ({ name: '', level, words: ['', '', '', ''] });
 const need = (req, res, next) => (req.user ? next() : res.redirect('/login?next=' + encodeURIComponent(req.originalUrl)));
@@ -28,7 +29,31 @@ module.exports = (db) => {
   const listAll = db.prepare(`SELECT id, title, groups_json, is_flagged, created_at FROM puzzles
     WHERE user_id = ? AND is_published = 1 ORDER BY created_at DESC LIMIT 100`);
 
-  r.get('/', (req, res) => res.render('index'));
+  const madeThisWeek = db.prepare('SELECT COUNT(*) n FROM puzzles WHERE is_published = 1 AND created_at > ?');
+
+  r.get('/', (req, res) => {
+    const weekly = madeThisWeek.get(Math.floor(Date.now() / 1000) - 7 * 86400).n;
+    res.render('index', {
+      trending: search(db, { sort: 'trending', per: 4 }).rows, LEVELS, rate,
+      weekly: weekly >= 10 ? weekly : 0, // a tiny number looks sad, so only brag when it's real
+      scripts: ['/js/common.js', '/js/demo.js'],
+    });
+  });
+
+  r.get('/browse', (req, res) => {
+    const found = search(db, req.query);
+    // /browse?sort=new&tag=food&q=cheese&page=2, dropping anything that's still the default
+    const href = (o) => {
+      const v = { q: found.q, tag: found.tag, sort: found.sort, page: 1, ...o };
+      const p = new URLSearchParams();
+      if (v.q) p.set('q', v.q);
+      if (v.tag) p.set('tag', v.tag);
+      if (v.sort !== 'trending') p.set('sort', v.sort);
+      if (v.page > 1) p.set('page', v.page);
+      return '/browse' + (p.size ? '?' + p : '');
+    };
+    res.render('browse', { title: 'Browse', description: 'Word-grouping puzzles made by people, scored by real players.', ...found, href, TAGS, LEVELS, rate });
+  });
 
   r.get('/random', (req, res, next) => {
     const p = random.get();

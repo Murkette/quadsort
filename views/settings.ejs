@@ -6,17 +6,17 @@
     <% if (saved) { %><p class="saved" role="status">Saved. Looking good.</p><% } %>
     <div class="field">
       <label for="s-name">Name, as credited</label>
-      <input id="s-name" name="display_name" value="<%= values.display_name %>"<%= errors.display_name ? ' aria-invalid="true"' : '' %>>
+      <input id="s-name" name="display_name" value="<%= values.display_name %>"<%- errors.display_name ? ' aria-invalid="true"' : '' %>>
       <span class="ferr err"><%= errors.display_name || '' %></span>
     </div>
     <div class="field">
       <label for="s-bio">Bio <span class="opt">(optional)</span></label>
-      <input id="s-bio" name="bio" value="<%= values.bio %>" placeholder="Weekly puzzles for people who think they know everything."<%= errors.bio ? ' aria-invalid="true"' : '' %>>
+      <input id="s-bio" name="bio" value="<%= values.bio %>" placeholder="Weekly puzzles for people who think they know everything."<%- errors.bio ? ' aria-invalid="true"' : '' %>>
       <span class="ferr err"><%= errors.bio || '' %></span>
     </div>
     <div class="field">
       <label for="s-link">Social profile link <span class="opt">(optional)</span></label>
-      <input id="s-link" name="social_url" value="<%= values.social_url %>" placeholder="instagram.com/yourname" inputmode="url"<%= errors.social_url ? ' aria-invalid="true"' : '' %>>
+      <input id="s-link" name="social_url" value="<%= values.social_url %>" placeholder="instagram.com/yourname" inputmode="url"<%- errors.social_url ? ' aria-invalid="true"' : '' %>>
       <span class="ferr err"><%= errors.social_url || '' %></span>
     </div>
     <p class="hint">Username <b>@<%= user.username %></b> and email <b><%= user.email %></b> are fixed for now.</p>

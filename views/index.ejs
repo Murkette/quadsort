@@ -1,10 +1,65 @@
 <%- include('partials/head') %>
-<section class="hero">
-  <h1>Sort<br>yourself<br>out<span class="dot"></span></h1>
-  <p class="lede">Make a word-grouping puzzle in two minutes. Send the link. Watch your mates crumble.</p>
-  <div class="actions">
-    <a class="btn btn-primary" href="/create">Make a puzzle</a>
-    <a class="btn" href="/random">Play one</a>
+<section class="lhero">
+  <div class="hero-copy">
+    <% if (weekly) { %><span class="pill-note"><i></i><%= weekly.toLocaleString('en-US') %> puzzles made this week</span><% } %>
+    <h1>Make a word puzzle. Send the link. Watch them suffer.</h1>
+    <p class="lede">Sixteen words, four hidden groups. Build one in two minutes, share it anywhere, and see exactly how badly your followers did.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/create">Make a puzzle</a>
+      <a class="btn" href="/random">Play one</a>
+    </div>
+    <span class="fine-l">Free. Players never need an account.</span>
+  </div>
+
+  <div class="demo panel" id="demo">
+    <div class="demo-top"><b>Warm-up: two groups</b><span>Tap four</span></div>
+    <div class="board">
+      <div class="toast" id="demo-toast" role="status" hidden></div>
+      <div class="rows" id="demo-rows"></div>
+      <div class="grid" id="demo-grid"></div>
+    </div>
+    <div class="demo-done" id="demo-done" hidden>
+      <b>Easy, was it? Make a harder one.</b>
+      <a class="btn btn-primary btn-sm" href="/create">Go on then</a>
+    </div>
+    <span class="hint" id="demo-hint">Hint: one of these is not a planet. Or is it?</span>
+  </div>
+</section>
+
+<section class="band">
+  <div class="band-head">
+    <div>
+      <h2>Trending. Apparently.</h2>
+      <p>What everyone’s getting wrong this week.</p>
+    </div>
+    <a class="seeall" href="/browse">See all</a>
+  </div>
+  <div class="pgrid2 four"><% trending.forEach(function (p) { %><%- include('partials/card', { p: p, rate: rate, LEVELS: LEVELS }) %><% }) %></div>
+</section>
+
+<section class="band">
+  <h2>How it works</h2>
+  <div class="steps">
+    <div class="step"><span class="num lv" data-level="1" aria-hidden="true">1</span><h3>Write it</h3><p>Sixteen words, four sneaky groups, one colour each from Gentle to Devious. Two minutes, tops.</p></div>
+    <div class="step"><span class="num lv" data-level="2" aria-hidden="true">2</span><h3>Share it</h3><p>You get one short link. Bio, story, newsletter, group chat. Nobody has to sign up to play.</p></div>
+    <div class="step"><span class="num lv" data-level="3" aria-hidden="true">3</span><h3>Watch people struggle</h3><p>Solve rates, average mistakes, and the wrong guess everyone makes. Enjoy it. Responsibly.</p></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="creator-band">
+    <div class="cb-copy">
+      <span class="eyebrow">For creators, teachers, group chats</span>
+      <h2>Your puzzle. Your name on it. Your followers, humbled.</h2>
+      <p>Every puzzle credits you and links back to your profile. Results cards send players straight to “more by you”.</p>
+      <a class="btn btn-primary" href="/create">Start making</a>
+    </div>
+    <div class="cb-stats">
+      <div><b>2 min</b><span>to build one</span></div>
+      <div><b>0</b><span>sign-up walls for players</span></div>
+      <div><b>Live</b><span>solve rate &amp; mistakes</span></div>
+      <div><b>1 link</b><span>quadsort.com/p/…</span></div>
+    </div>
   </div>
 </section>
 <%- include('partials/foot') %>
