@@ -35,9 +35,9 @@
         <h2>Your four groups</h2>
         <span>Easiest at the top, most devious at the bottom.</span>
       </div>
-      <div class="ggrid">
+      <div class="ggrid" id="ggrid">
         <% form.groups.forEach(function (g, i) { %>
-        <div class="gcard" data-i="<%= i %>" style="order: <%= g.level %>">
+        <div class="gcard" data-i="<%= i %>">
           <div class="gband lv" data-level="<%= g.level %>">
             <span class="gtitle"><span class="shape" data-level="<%= g.level %>" aria-hidden="true"></span>Group <b class="gpos"><%= g.level %></b></span>
             <label class="diff">Difficulty

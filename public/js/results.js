@@ -69,9 +69,12 @@
     $('#s-dist').replaceChildren(...['0 mistakes', '1 mistake', '2 mistakes', '3 mistakes', 'Lost'].map((label, i) => {
       const row = h('div', 'drow' + (i === mine ? ' mine' : ''));
       const bar = h('span', 'bar');
+      bar.setAttribute('aria-hidden', 'true'); // the percentage beside it says the same thing
       bar.style.width = (pct[i] / top) * 100 + '%';
       const track = h('span', 'track'); track.append(bar);
-      row.append(h('span', '', label), track, h('span', 'pct', pct[i] + '%'));
+      const name = h('span', '', label);
+      if (i === mine) name.append(h('span', 'sr', ' (your result)')); // the highlight is colour only
+      row.append(name, track, h('span', 'pct', pct[i] + '%'));
       return row;
     }));
     const worse = st.dist.reduce((a, n, i) => (i > mine ? a + n : a), 0); // players who did worse than you
@@ -85,8 +88,13 @@
     if (st.topWrong) w.textContent = `Most common wrong guess: ${st.topWrong.words.join(', ')}.`;
   }
 
-  const show = () => { play.hidden = true; root.hidden = false; scrollTo(0, 0); };
-  const hide = () => { root.hidden = true; play.hidden = false; scrollTo(0, 0); };
+  // Swapping views changes the whole page, so move focus into the new one (or screen reader users are left on a vanished button).
+  const show = () => { play.hidden = true; root.hidden = false; scrollTo(0, 0); const h = $('#r-head'); h.tabIndex = -1; h.focus({ preventScroll: true }); };
+  const hide = () => {
+    root.hidden = true; play.hidden = false; scrollTo(0, 0);
+    const b = document.querySelector('[data-act="results"]');
+    if (b) b.focus({ preventScroll: true });
+  };
 
   let t;
   $('#copy').onclick = async () => {

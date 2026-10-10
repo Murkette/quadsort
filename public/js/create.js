@@ -74,7 +74,6 @@
 
     cards.forEach((c, i) => {
       const g = raw.groups[i];
-      c.style.order = g.level;
       c.querySelector('.gband').dataset.level = g.level;
       c.querySelector('.shape').dataset.level = g.level;
       c.querySelector('.gpos').textContent = levels.indexOf(g.level) + 1;
@@ -131,6 +130,14 @@
     publishBtn.textContent = busy ? 'Publishing…' : puzzleId ? 'Save changes' : 'Publish puzzle';
   }
 
+  // Cards sit in difficulty order in the page itself (not just on screen), so Tab goes the way the eye does.
+  const reorder = () => {
+    const had = document.activeElement; // moving a node can drop focus; put it back
+    const lv = (c) => Number(c.querySelector('.glevel').value);
+    [...cards].sort((a, b) => lv(a) - lv(b)).forEach((c) => byId('ggrid').append(c));
+    if (had && had !== document.body && document.contains(had) && document.activeElement !== had) had.focus({ preventScroll: true });
+  };
+
   // ---------- input ----------
   let draftTimer;
   const changed = () => {
@@ -146,6 +153,7 @@
       const other = cards.map((c) => c.querySelector('.glevel')).find((s) => s !== sel && s.value === sel.value);
       if (other) { other.value = old; other.dataset.prev = old; }
       sel.dataset.prev = sel.value;
+      reorder();
     }
     changed();
   });
@@ -220,5 +228,6 @@
     if (d) fill(d);
   }
   cards.forEach((c) => { const s = c.querySelector('.glevel'); s.dataset.prev = s.value; });
+  reorder();
   render();
 })();

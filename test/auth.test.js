@@ -83,7 +83,7 @@ test('nav changes with login state', async (t) => {
   const me = person(); await me.signup();
   const html = await (await me.get('/')).text();
   assert.match(html, /My puzzles/);
-  assert.match(html, /aria-label="Your profile">PM</);
+  assert.match(html, /aria-hidden="true">PM</);
 });
 
 test('settings: update credit, bio and link; refuses scripts', async (t) => {

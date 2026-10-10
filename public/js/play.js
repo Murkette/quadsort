@@ -36,7 +36,9 @@
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(fitAll);
 
   let toastTimer;
-  function toast(msg, hold = 1800) {
+  // `spoken` is what a screen reader hears; the toast itself vanishes too fast to rely on.
+  function toast(msg, hold = 1800, spoken = msg) {
+    QS.say(spoken);
     clearTimeout(toastTimer);
     toastEl.textContent = msg;
     toastEl.hidden = false;
@@ -94,6 +96,10 @@
     S.solved.push(g);
     const row = addRow(g, false);
     sync();
+    if (animate) { // keep keyboard users in the game: the tile (or the now-disabled Submit) they were on is gone
+      const a = document.activeElement;
+      if (!a || a === document.body || a.disabled || !document.contains(a)) { const t = remaining()[0]; if (t) t.focus({ preventScroll: true }); }
+    }
     if (!animate) return;
     if (!before) { anim(row, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 }); return; }
     const to = row.getBoundingClientRect();
@@ -123,6 +129,9 @@
     if (hasResults) endEl.insertAdjacentHTML('beforeend', '<button type="button" class="btn" data-act="results">See how you did</button>');
     if (!reduced()) anim(endEl, [{ transform: 'translateY(16px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 320, easing: 'cubic-bezier(.2,.9,.3,1.25)' });
   }
+  const endSpoken = () => (S.over === 'won'
+    ? `You solved it${S.mistakes ? ` with ${S.mistakes} mistake${S.mistakes > 1 ? 's' : ''}` : ' with no mistakes'}.`
+    : 'Out of lives. The remaining groups are now shown.');
 
   async function finish(animate) {
     S.over = S.solved.length === 4 ? 'won' : 'lost';
@@ -157,6 +166,11 @@
     }
     if (animate && S.over === 'won') await sleep(reduced() ? 0 : 450);
     showEnd(!!solution);
+    if (animate) { // a live game just ended: tell the player, and park focus on the next thing to do
+      QS.say(endSpoken());
+      const next = endEl.querySelector('button');
+      if (next) next.focus({ preventScroll: true });
+    }
     if (solution) {
       dispatchEvent(new CustomEvent('qs:finished', { detail: {
         id, won: S.over === 'won', mistakes: S.mistakes, guesses: S.guesses.map((g) => g.words),
@@ -211,7 +225,7 @@
       solve(out.group, true);
       save();
       if (S.solved.length === 4) return finish(true);
-      return toast(PRAISE[S.solved.length - 1]);
+      return toast(PRAISE[S.solved.length - 1], 1800, `Correct. ${out.group.name}: ${out.group.words.join(', ')}. ${LIVES - S.mistakes} mistakes left.`);
     }
     S.mistakes++;
     sync();
@@ -222,7 +236,9 @@
     }
     save();
     if (S.mistakes >= LIVES) return finish(true);
-    toast(out.result === 'one_away' ? 'One away. Painful.' : 'Not even close.');
+    const left = LIVES - S.mistakes;
+    const verdict = out.result === 'one_away' ? 'One away. Painful.' : 'Not even close.';
+    toast(verdict, 1800, `${verdict} ${left} mistake${left === 1 ? '' : 's'} left.`);
   };
 
   // ---------- restore a saved game ----------

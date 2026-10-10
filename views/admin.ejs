@@ -20,7 +20,7 @@
   </nav>
 
   <%# one small form per action, so the whole page works without JavaScript %>
-  <% function act(id, action, label, cls) { %><form method="post" action="/admin/puzzles/<%= id %>" class="inline"><input type="hidden" name="back" value="<%= back %>"><button class="btn btn-sm <%= cls || '' %>" name="action" value="<%= action %>"><%= label %></button></form><% } %>
+  <% function act(id, action, label, cls, title) { %><form method="post" action="/admin/puzzles/<%= id %>" class="inline"><input type="hidden" name="back" value="<%= back %>"><button class="btn btn-sm <%= cls || '' %>" name="action" value="<%= action %>" aria-label="<%= label %>: <%= title %>"><%= label %></button></form><% } %>
 
   <% if (tab === 'reports') { %>
     <% if (!reports.length) { %>
@@ -38,9 +38,9 @@
       <div class="rchips"><% p.reasons.forEach(function (x) { %><span class="chip"><%= REASONS[x.reason] || x.reason %> × <%= x.n %></span><% }) %></div>
       <% if (p.notes.length) { %><ul class="rnotes"><% p.notes.forEach(function (n) { %><li><%= n %></li><% }) %></ul><% } %>
       <div class="acts">
-        <a class="btn btn-sm" href="/p/<%= p.id %>">Look at it</a>
-        <% act(p.id, 'hide', 'Hide puzzle', 'danger') %>
-        <% act(p.id, 'dismiss', 'Dismiss reports') %>
+        <a class="btn btn-sm" href="/p/<%= p.id %>" aria-label="Look at it: <%= p.title %>">Look at it</a>
+        <% act(p.id, 'hide', 'Hide puzzle', 'danger', p.title) %>
+        <% act(p.id, 'dismiss', 'Dismiss reports', '', p.title) %>
       </div>
     </div>
     <% }) %>
@@ -60,9 +60,9 @@
           <span class="badges"><% if (p.is_featured) { %><span class="status live">Staff pick</span><% } %><% if (p.is_flagged) { %><span class="status flag">Hidden</span><% } %></span>
         </span>
         <span class="acts">
-          <% if (p.is_flagged) { act(p.id, 'unhide', 'Unhide'); } else { %>
-            <% if (p.is_featured) { act(p.id, 'unfeature', 'Remove pick'); } else { act(p.id, 'feature', 'Make staff pick'); } %>
-            <% act(p.id, 'hide', 'Hide', 'danger') %>
+          <% if (p.is_flagged) { act(p.id, 'unhide', 'Unhide', '', p.title); } else { %>
+            <% if (p.is_featured) { act(p.id, 'unfeature', 'Remove pick', '', p.title); } else { act(p.id, 'feature', 'Make staff pick', '', p.title); } %>
+            <% act(p.id, 'hide', 'Hide', 'danger', p.title) %>
           <% } %>
         </span>
       </div>

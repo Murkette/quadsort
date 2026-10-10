@@ -44,7 +44,7 @@
       <h2>Trending. Apparently.</h2>
       <p>What everyone’s getting wrong this week.</p>
     </div>
-    <a class="seeall" href="/browse">See all</a>
+    <a class="seeall" href="/browse" aria-label="See all puzzles">See all</a>
   </div>
   <div class="pgrid2 four"><% trending.forEach(function (p) { %><%- include('partials/card', { p: p, rate: rate, LEVELS: LEVELS }) %><% }) %></div>
 </section>

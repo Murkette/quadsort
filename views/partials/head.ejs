@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>try{var t=localStorage.getItem('qs:theme');if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <% const desc = typeof description === 'string' ? description : 'Make a word-grouping puzzle in two minutes. Send the link. Watch your mates crumble.'; %>
 <title><%= typeof title === 'string' ? title + ' · Quadsort' : 'Quadsort' %></title>
 <meta name="description" content="<%= desc %>">
@@ -13,14 +15,15 @@
 <link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="top-in">
   <a class="brand" href="/"><%- include('mark') %><span>Quadsort</span></a>
   <nav class="nav" aria-label="Main">
     <a href="/browse">Browse</a>
     <a href="/random">Play one</a>
-    <% if (user) { %><a href="/dashboard">My puzzles</a><a class="avatar-sm" href="/u/<%= user.username %>" aria-label="Your profile"><%= initials(user.display_name) %></a>
+    <% if (user) { %><a href="/dashboard">My puzzles</a><a class="avatar-sm" href="/u/<%= user.username %>"><span aria-hidden="true"><%= initials(user.display_name) %></span><span class="sr">Your profile</span></a>
     <% } else { %><a class="nav-login" href="/login">Log in</a><% } %>
     <a class="btn btn-primary btn-sm" href="/create">Make a puzzle</a>
   </nav>
 </div></header>
-<main>
+<main id="main" tabindex="-1">

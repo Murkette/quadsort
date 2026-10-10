@@ -25,9 +25,9 @@
       <span role="cell" data-label="Solve rate" class="solve"><span class="meter"><span style="width: <%= r.solveRate === null ? 0 : Math.round(r.solveRate * 100) %>%"></span></span><b><%= rate(r) %></b></span>
       <span role="cell" data-label="Most common wrong guess" class="wrong"><%= r.wrong ? r.wrong.words.join(', ') + ' (' + r.wrong.count + ' players)' : (r.plays < 2 ? 'Not enough plays yet.' : 'No clear favourite.') %></span>
       <span role="cell" class="acts">
-        <a class="btn btn-sm" href="/p/<%= r.id %>/edit">Edit</a>
-        <button type="button" class="btn btn-sm" data-copy="/p/<%= r.id %>">Copy link</button>
-        <button type="button" class="btn btn-sm danger" data-delete="<%= r.id %>" data-title="<%= r.title %>">Delete</button>
+        <a class="btn btn-sm" href="/p/<%= r.id %>/edit" aria-label="Edit <%= r.title %>">Edit</a>
+        <button type="button" class="btn btn-sm" data-copy="/p/<%= r.id %>" aria-label="Copy link to <%= r.title %>">Copy link</button>
+        <button type="button" class="btn btn-sm danger" data-delete="<%= r.id %>" data-title="<%= r.title %>" aria-label="Delete <%= r.title %>">Delete</button>
       </span>
     </div>
     <% }) %>

@@ -15,7 +15,7 @@
     <div class="board">
       <div class="toast" id="toast" role="status" hidden></div>
       <div class="rows" id="rows"></div>
-      <div class="grid" id="grid"><% words.forEach(function (w) { %><button type="button" class="tile len<%= lenClass(w) %>" aria-pressed="false" data-w="<%= w %>"><%= w %></button><% }) %></div>
+      <div class="grid" id="grid" role="group" aria-label="Sixteen words. Pick four that belong together."><% words.forEach(function (w) { %><button type="button" class="tile len<%= lenClass(w) %>" aria-pressed="false" data-w="<%= w %>"><%= w %></button><% }) %></div>
     </div>
 
     <div class="lives" id="lives">

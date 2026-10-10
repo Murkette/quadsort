@@ -6,6 +6,13 @@ window.QS = {
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* play on */ } },
     del(k) { try { localStorage.removeItem(k); } catch { /* ignore */ } },
   },
+  // Say something to screen readers without showing it. (Toasts that appear and vanish are not reliably announced.)
+  say(msg) {
+    const el = document.getElementById('qs-live');
+    if (!el) return;
+    el.textContent = '';
+    setTimeout(() => (el.textContent = msg), 60); // clearing first makes a repeated message announce again
+  },
   // Anonymous, per-browser id: counts a play once and lets one person report a puzzle once.
   playerKey() {
     let k = QS.store.get('qs:player');

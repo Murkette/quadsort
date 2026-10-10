@@ -6,7 +6,14 @@
     <a href="/create">Make a puzzle</a>
     <% if (user) { %><a href="/dashboard">My puzzles</a><% } else { %><a href="/login">Log in</a><% } %>
   </nav>
+  <div class="theme" role="group" aria-label="Theme" hidden>
+    <button type="button" data-theme-set="auto" aria-pressed="true">Auto</button>
+    <button type="button" data-theme-set="light" aria-pressed="false">Light</button>
+    <button type="button" data-theme-set="dark" aria-pressed="false">Dark</button>
+  </div>
 </div></footer>
+<div id="qs-live" class="sr" aria-live="polite" aria-atomic="true"></div>
+<script src="/js/theme.js" defer></script>
 <% (typeof scripts !== 'undefined' ? scripts : []).forEach(function (s) { %><script src="<%= s %>" defer></script>
 <% }) %></body>
 </html>

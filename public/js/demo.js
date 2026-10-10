@@ -26,7 +26,8 @@
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(fitAll);
   addEventListener('resize', fitAll);
 
-  const say = (msg) => {
+  const say = (msg, spoken = msg) => {
+    QS.say(spoken);
     clearTimeout(tt);
     toastEl.textContent = msg;
     toastEl.hidden = !msg;
@@ -49,11 +50,11 @@
       rows.append(row);
       solved++;
       if (solved === 2) {
-        say('');
+        say('', `Correct. ${g.name}: ${g.words.join(', ')}. Both groups found.`);
         grid.hidden = true;
         root.querySelector('#demo-hint').hidden = true;
         root.querySelector('#demo-done').hidden = false;
-      } else say('Sorted. Smug yet?');
+      } else say('Sorted. Smug yet?', `Correct. ${g.name}: ${g.words.join(', ')}.`);
     } else {
       say(hits === 3 || hits === 1 ? 'One away. Painful.' : 'Not even close.');
       grid.classList.remove('shake'); void grid.offsetWidth; grid.classList.add('shake');
