@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Priya Makes Puzzles — creator profile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="{{root}}">
+
+  <sc-if value="{{d}}" hint-placeholder-val="{{ true }}">
+    <header style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 40px; border-bottom: 2.5px solid var(--line); background: var(--surf)">
+      <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink)">
+        <span aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; width: 30px; height: 30px">
+          <span style="border-radius: 5px; background: var(--d1); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d2); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d3); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d4); border: 2px solid var(--line)"></span>
+        </span>
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 22px; letter-spacing: -0.03em">Sort Yourself Out</span>
+      </a>
+      <nav aria-label="Main" style="display: flex; align-items: center; gap: 6px">
+        <a href="Browse.dc.html" style="padding: 12px 16px; border-radius: 999px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 16px">Browse</a>
+        <a href="Dashboard.dc.html" style="padding: 12px 16px; border-radius: 999px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 16px">My puzzles</a>
+        <a href="Create.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; margin-left: 8px; border-radius: 999px; border: 2.5px solid var(--line); background: var(--d1); color: #17142A; font-family: var(--fd); font-weight: 700; font-size: 16px; text-decoration: none; box-shadow: 0 3px 0 var(--shadow)">Make a puzzle</a>
+      </nav>
+    </header>
+  </sc-if>
+  <sc-if value="{{m}}" hint-placeholder-val="{{ false }}">
+    <header style="display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 8px 16px; border-bottom: 2.5px solid var(--line); background: var(--surf)">
+      <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink)">
+        <span aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; width: 24px; height: 24px">
+          <span style="border-radius: 4px; background: var(--d1); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d2); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d3); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d4); border: 2px solid var(--line)"></span>
+        </span>
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 17px; letter-spacing: -0.03em">Sort Yourself Out</span>
+      </a>
+      <button type="button" aria-label="Menu" style="width: 44px; height: 44px; border: 0; background: transparent; color: var(--ink); display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+      </button>
+    </header>
+  </sc-if>
+
+  <main style="{{wrap}}">
+    <section style="{{head}}">
+      <span aria-hidden="true" style="{{avatar}}">PM</span>
+      <div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+        <div>
+          <h1 style="{{h1}}">Priya Makes Puzzles</h1>
+          <div style="font-size: 16px; font-weight: 600; color: var(--mute); margin-top: 6px">@priyamakes · puzzling since March</div>
+        </div>
+        <p style="margin: 0; font-size: 17px; line-height: 1.5; max-width: 560px">Weekly puzzles for people who think they know everything. New one every Friday, answers never.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <a href="https://instagram.com" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: var(--surf2); color: var(--ink); font-weight: 700; font-size: 14px; text-decoration: none">Instagram<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></a>
+          <a href="https://tiktok.com" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: var(--surf2); color: var(--ink); font-weight: 700; font-size: 14px; text-decoration: none">TikTok<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></a>
+          <a href="https://example.com" style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: var(--surf2); color: var(--ink); font-weight: 700; font-size: 14px; text-decoration: none">Newsletter<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></a>
+        </div>
+      </div>
+      <div style="{{statsBox}}">
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+          <div><div style="font-family: var(--fd); font-weight: 800; font-size: 28px">38</div><div style="font-size: 13px; font-weight: 600; color: var(--mute)">puzzles</div></div>
+          <div><div style="font-family: var(--fd); font-weight: 800; font-size: 28px">214k</div><div style="font-size: 13px; font-weight: 600; color: var(--mute)">plays</div></div>
+          <div><div style="font-family: var(--fd); font-weight: 800; font-size: 28px">51%</div><div style="font-size: 13px; font-weight: 600; color: var(--mute)">avg solve</div></div>
+        </div>
+        <a href="https://instagram.com" style="display: inline-flex; align-items: center; justify-content: center; min-height: 50px; border-radius: 999px; border: 2.5px solid var(--line); background: var(--inv); color: var(--invInk); font-family: var(--fd); font-weight: 700; font-size: 17px; text-decoration: none; box-shadow: 0 3px 0 var(--shadow)">Follow Priya</a>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+        <h2 style="margin: 0; font-family: var(--fd); font-weight: 800; font-size: 28px">Puzzles</h2>
+        <div role="group" aria-label="Sort puzzles" style="display: flex; gap: 6px; padding: 4px; border-radius: 999px; background: var(--surf2)">
+          <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+            <button type="button" aria-pressed="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="{{grid}}">
+        <sc-for list="{{cards}}" as="c" hint-placeholder-count="8">
+          <a href="Play.dc.html" style="display: flex; flex-direction: column; border-radius: 22px; border: 2.5px solid var(--line); background: var(--surf); box-shadow: 0 4px 0 var(--shadow); overflow: hidden; color: var(--ink); text-decoration: none">
+            <div style="{{c.cover}}">
+              <sc-for list="{{c.cells}}" as="cell" hint-placeholder-count="8"><span style="{{cell}}"></span></sc-for>
+            </div>
+            <div style="padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px">
+              <span style="font-family: var(--fd); font-weight: 800; font-size: 19px; line-height: 1.12">{{c.title}}</span>
+              <span style="display: flex; flex-wrap: wrap; gap: 6px; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700">
+                <span>{{c.plays}} plays · {{c.solve}} solve</span>
+                <span style="display: inline-flex; align-items: center; gap: 6px">
+                  <span style="display: flex; gap: 2px" aria-hidden="true"><sc-for list="{{c.bars}}" as="b" hint-placeholder-count="4"><span style="{{b}}"></span></sc-for></span>{{c.diff}}</span>
+              </span>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"device":{"editor":"enum","options":["desktop","mobile"],"default":"desktop"},"dark":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const m = (this.props.device ?? 'desktop') === 'mobile';
+    const vars = dark
+      ? '--bg:#13111C;--surf:#1E1B2A;--surf2:#2A2639;--ink:#F3F1FA;--mute:#A9A4BE;--line:#4A4561;--tile:#2A2639;--tileInk:#F3F1FA;--shadow:#000000;--inv:#F3F1FA;--invInk:#13111C;'
+      : '--bg:#EFEEF6;--surf:#FFFFFF;--surf2:#E3E1EE;--ink:#17142A;--mute:#5B5770;--line:#17142A;--tile:#FFFFFF;--tileInk:#17142A;--shadow:#17142A;--inv:#17142A;--invInk:#FFFFFF;';
+    const base = '--d1:#FFD84D;--d2:#5EC4E6;--d3:#FF8B4A;--d4:#5A3DE0;--fd:"Bricolage Grotesque",sans-serif;--fb:"Figtree",sans-serif;';
+    const P = [
+      ['Group Chat Chaos', 12.4, 61, 2, 'Fair', 1],
+      ['Villains With Good Points', 8.8, 34, 3, 'Spicy', 2],
+      ['Things My Dad Calls “Lovely”', 6.1, 72, 1, 'Gentle', 3],
+      ['Reality TV or Medieval Torture?', 21.7, 29, 4, 'Brutal', 4],
+      ['Words That Sound Rude But Aren’t', 30.2, 48, 3, 'Spicy', 5],
+      ['Crisps, Ranked by Crunch', 4.0, 66, 2, 'Fair', 6],
+      ['Famous Steves', 5.5, 58, 2, 'Fair', 7],
+      ['Office Jargon Bingo', 9.9, 41, 3, 'Spicy', 8],
+    ];
+    const sort = (this.state && this.state.sort) || 'new';
+    const list = sort === 'plays' ? P.slice().sort((a, b) => b[1] - a[1]) : sort === 'hard' ? P.slice().sort((a, b) => a[2] - b[2]) : P;
+    const covers = ['#5EC4E6', '#FF8B4A', '#FFD84D', '#5A3DE0'];
+    const cards = list.map((p) => {
+      const seed = p[5];
+      return {
+        title: p[0], plays: p[1] + 'k', solve: p[2] + '%', diff: p[4],
+        cover: 'display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:14px;background:' + covers[(p[3] - 1) % 4] + ';border-bottom:2.5px solid var(--line);',
+        cells: [0, 1, 2, 3, 4, 5, 6, 7].map((k) => 'height:18px;border-radius:5px;border:2px solid #17142A;background:' + ((k * 3 + seed) % 5 === 0 ? '#17142A' : '#FFFFFF') + ';'),
+        bars: [1, 2, 3, 4].map((k) => 'width:6px;height:12px;border-radius:2px;' + (k <= p[3] ? 'background:var(--ink);' : 'border:1.5px solid var(--ink);box-sizing:border-box;')),
+      };
+    });
+    const tabs = [['new', 'Newest'], ['plays', 'Most played'], ['hard', 'Hardest']].map(([k, label]) => ({
+      label, on: sort === k, pick: () => this.setState({ sort: k }),
+      style: 'min-height:40px;padding:0 14px;border-radius:999px;border:0;font-family:var(--fd);font-weight:700;font-size:14px;cursor:pointer;' + (sort === k ? 'background:var(--inv);color:var(--invInk);' : 'background:transparent;color:var(--ink);'),
+    }));
+    return {
+      m, d: !m, cards, tabs,
+      root: vars + base + 'width:100%;box-sizing:border-box;background:var(--bg);color:var(--ink);font-family:var(--fb);',
+      wrap: 'display:flex;flex-direction:column;gap:' + (m ? 32 : 48) + 'px;max-width:1240px;margin:0 auto;padding:' + (m ? '24px 16px 48px' : '56px 40px 80px') + ';box-sizing:border-box;',
+      head: 'display:flex;flex-wrap:wrap;gap:' + (m ? 20 : 36) + 'px;align-items:' + (m ? 'flex-start' : 'center') + ';',
+      avatar: 'flex:none;width:' + (m ? 96 : 148) + 'px;height:' + (m ? 96 : 148) + 'px;border-radius:50%;background:var(--d2);border:3px solid var(--line);box-shadow:0 5px 0 var(--shadow);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:800;font-size:' + (m ? 34 : 52) + 'px;color:#17142A;',
+      h1: 'margin:0;font-family:var(--fd);font-weight:800;letter-spacing:-0.04em;line-height:1;font-size:' + (m ? 36 : 60) + 'px;',
+      statsBox: 'flex:1 1 300px;max-width:' + (m ? 'none' : '360px') + ';display:flex;flex-direction:column;gap:16px;padding:20px;border-radius:24px;background:var(--surf);border:2.5px solid var(--line);box-shadow:0 4px 0 var(--shadow);',
+      grid: 'display:grid;grid-template-columns:' + (m ? 'repeat(2,minmax(0,1fr))' : 'repeat(4,minmax(0,1fr))') + ';gap:' + (m ? 12 : 20) + 'px;',
+    };
+  }
+}
+</script>
+</body>
+</html>

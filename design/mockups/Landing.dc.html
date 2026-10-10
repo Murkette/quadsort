@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sort Yourself Out — make a word puzzle</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="{{root}}">
+
+  <sc-if value="{{d}}" hint-placeholder-val="{{ true }}">
+    <header style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 40px; border-bottom: 2.5px solid var(--line); background: var(--surf)">
+      <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink)">
+        <span aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; width: 30px; height: 30px">
+          <span style="border-radius: 5px; background: var(--d1); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d2); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d3); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d4); border: 2px solid var(--line)"></span>
+        </span>
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 22px; letter-spacing: -0.03em">Sort Yourself Out</span>
+      </a>
+      <nav aria-label="Main" style="display: flex; align-items: center; gap: 6px">
+        <a href="Browse.dc.html" style="padding: 12px 16px; border-radius: 999px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 16px">Browse</a>
+        <a href="Dashboard.dc.html" style="padding: 12px 16px; border-radius: 999px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 16px">My puzzles</a>
+        <a href="Create.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; margin-left: 8px; border-radius: 999px; border: 2.5px solid var(--line); background: var(--d1); color: #17142A; font-family: var(--fd); font-weight: 700; font-size: 16px; text-decoration: none; box-shadow: 0 3px 0 var(--shadow)">Make a puzzle</a>
+      </nav>
+    </header>
+  </sc-if>
+  <sc-if value="{{m}}" hint-placeholder-val="{{ false }}">
+    <header style="display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 8px 16px; border-bottom: 2.5px solid var(--line); background: var(--surf)">
+      <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink)">
+        <span aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; width: 24px; height: 24px">
+          <span style="border-radius: 4px; background: var(--d1); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d2); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d3); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d4); border: 2px solid var(--line)"></span>
+        </span>
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 17px; letter-spacing: -0.03em">Sort Yourself Out</span>
+      </a>
+      <button type="button" aria-label="Menu" style="width: 44px; height: 44px; border: 0; background: transparent; color: var(--ink); display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+      </button>
+    </header>
+  </sc-if>
+
+  <section style="{{hero}}">
+    <div style="{{heroCopy}}">
+      <span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--surf); border: 2px solid var(--line); font-weight: 700; font-size: 14px">
+        <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--d3)"></span>2,140 puzzles made this week</span>
+      <h1 style="{{h1}}">Make a word puzzle. Send the link. Watch them suffer.</h1>
+      <p style="{{lede}}">Sixteen words, four hidden groups. Build one in two minutes, share it anywhere, and see exactly how badly your followers did.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px">
+        <a href="Create.dc.html" style="{{ctaMain}}">Make a puzzle</a>
+        <a href="Browse.dc.html" style="{{ctaSec}}">Play one</a>
+      </div>
+      <span style="font-size: 14px; color: var(--mute)">Free. Players never need an account.</span>
+    </div>
+
+    <div style="{{demoCard}}">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 20px">Warm-up: two groups</span>
+        <span style="font-size: 13px; font-weight: 600; color: var(--mute)">Tap four</span>
+      </div>
+      <div style="position: relative; display: flex; flex-direction: column; gap: 8px">
+        <sc-if value="{{toast}}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="position: absolute; left: 50%; top: -6px; transform: translate(-50%, -50%); z-index: 2; white-space: nowrap; padding: 9px 16px; border-radius: 999px; background: var(--inv); color: var(--invInk); font-family: var(--fd); font-weight: 700; font-size: 15px">{{toast}}</div>
+        </sc-if>
+        <sc-for list="{{demoRows}}" as="r" hint-placeholder-count="0">
+          <div style="{{r.style}}">
+            <span style="display: flex; align-items: center; gap: 6px; font-family: var(--fd); font-weight: 800; font-size: 15px; text-transform: uppercase"><span style="{{r.shape}}"></span>{{r.name}}</span>
+            <span style="font-size: 13px; font-weight: 600">{{r.words}}</span>
+          </div>
+        </sc-for>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+          <sc-for list="{{demoTiles}}" as="t" hint-placeholder-count="8">
+            <button type="button" aria-pressed="{{t.on}}" onClick="{{t.tap}}" style="{{t.style}}">{{t.w}}</button>
+          </sc-for>
+        </div>
+      </div>
+      <sc-if value="{{demoDone}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+          <span style="font-family: var(--fd); font-weight: 700; font-size: 17px">Easy, was it? Make a harder one.</span>
+          <a href="Create.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; background: var(--inv); color: var(--invInk); font-family: var(--fd); font-weight: 700; font-size: 15px; text-decoration: none">Go on then</a>
+        </div>
+      </sc-if>
+      <sc-if value="{{demoOpen}}" hint-placeholder-val="{{ true }}">
+        <span style="font-size: 14px; color: var(--mute)">Hint: one of these is not a planet. Or is it?</span>
+      </sc-if>
+    </div>
+  </section>
+
+  <section style="{{band}}">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px">
+      <div>
+        <h2 style="{{h2}}">Trending. Apparently.</h2>
+        <p style="margin: 6px 0 0; color: var(--mute); font-size: 16px">What everyone’s getting wrong this week.</p>
+      </div>
+      <a href="Browse.dc.html" style="flex: none; color: var(--ink); font-weight: 700; font-size: 16px; text-underline-offset: 4px; text-decoration-thickness: 2px; padding: 10px 0">See all</a>
+    </div>
+    <div style="{{cardRow}}">
+      <sc-for list="{{cards}}" as="c" hint-placeholder-count="4">
+        <a href="Play.dc.html" style="{{c.cardStyle}}">
+          <div style="{{c.cover}}">
+            <sc-for list="{{c.cells}}" as="cell" hint-placeholder-count="8">
+              <span style="{{cell}}"></span>
+            </sc-for>
+          </div>
+          <div style="padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mute)">{{c.tag}}</span>
+            <span style="font-family: var(--fd); font-weight: 800; font-size: 19px; line-height: 1.12">{{c.title}}</span>
+            <span style="font-size: 14px; color: var(--mute)">by {{c.by}}</span>
+            <span style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; margin-top: 6px">
+              <span>{{c.plays}} plays</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px">
+                <span style="display: flex; gap: 2px" aria-hidden="true">
+                  <sc-for list="{{c.bars}}" as="b" hint-placeholder-count="4"><span style="{{b}}"></span></sc-for>
+                </span>{{c.diff}}</span>
+            </span>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="{{band}}">
+    <h2 style="{{h2}}">How it works</h2>
+    <div style="{{steps}}">
+      <div style="flex: 1 1 280px; padding: 26px; border-radius: 26px; background: var(--surf); border: 2.5px solid var(--line); box-shadow: 0 4px 0 var(--shadow); display: flex; flex-direction: column; gap: 14px">
+        <span aria-hidden="true" style="width: 56px; height: 56px; border-radius: 16px; background: var(--d1); border: 2.5px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--fd); font-weight: 800; font-size: 26px; color: #17142A">1</span>
+        <h3 style="margin: 0; font-family: var(--fd); font-weight: 800; font-size: 26px">Write it</h3>
+        <p style="margin: 0; font-size: 16px; line-height: 1.5; color: var(--mute)">Sixteen words, four sneaky groups, one colour each from Gentle to Devious. Two minutes, tops.</p>
+      </div>
+      <div style="flex: 1 1 280px; padding: 26px; border-radius: 26px; background: var(--surf); border: 2.5px solid var(--line); box-shadow: 0 4px 0 var(--shadow); display: flex; flex-direction: column; gap: 14px">
+        <span aria-hidden="true" style="width: 56px; height: 56px; border-radius: 16px; background: var(--d2); border: 2.5px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--fd); font-weight: 800; font-size: 26px; color: #17142A">2</span>
+        <h3 style="margin: 0; font-family: var(--fd); font-weight: 800; font-size: 26px">Share it</h3>
+        <p style="margin: 0; font-size: 16px; line-height: 1.5; color: var(--mute)">You get one short link. Bio, story, newsletter, group chat. Nobody has to sign up to play.</p>
+      </div>
+      <div style="flex: 1 1 280px; padding: 26px; border-radius: 26px; background: var(--surf); border: 2.5px solid var(--line); box-shadow: 0 4px 0 var(--shadow); display: flex; flex-direction: column; gap: 14px">
+        <span aria-hidden="true" style="width: 56px; height: 56px; border-radius: 16px; background: var(--d4); border: 2.5px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--fd); font-weight: 800; font-size: 26px; color: #FFFFFF">3</span>
+        <h3 style="margin: 0; font-family: var(--fd); font-weight: 800; font-size: 26px">Watch people struggle</h3>
+        <p style="margin: 0; font-size: 16px; line-height: 1.5; color: var(--mute)">Solve rates, average mistakes, and the wrong guess everyone makes. Enjoy it. Responsibly.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="{{band}}">
+    <div style="{{creatorBand}}">
+      <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 16px">
+        <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.7">For creators, teachers, group chats</span>
+        <h2 style="{{h2}}">Your puzzle. Your name on it. Your followers, humbled.</h2>
+        <p style="margin: 0; font-size: 17px; line-height: 1.5; opacity: 0.85">Every puzzle credits you and links back to your profile. Results cards send players straight to “more by you”.</p>
+        <a href="Create.dc.html" style="align-self: flex-start; display: inline-flex; align-items: center; min-height: 52px; padding: 0 26px; border-radius: 999px; background: var(--d1); color: #17142A; border: 2.5px solid var(--d1); font-family: var(--fd); font-weight: 700; font-size: 17px; text-decoration: none">Start making</a>
+      </div>
+      <div style="flex: 1 1 300px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <div style="padding: 18px; border-radius: 20px; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.18)">
+          <div style="font-family: var(--fd); font-weight: 800; font-size: 34px">2 min</div>
+          <div style="font-size: 14px; opacity: 0.8">to build one</div>
+        </div>
+        <div style="padding: 18px; border-radius: 20px; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.18)">
+          <div style="font-family: var(--fd); font-weight: 800; font-size: 34px">0</div>
+          <div style="font-size: 14px; opacity: 0.8">sign-up walls for players</div>
+        </div>
+        <div style="padding: 18px; border-radius: 20px; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.18)">
+          <div style="font-family: var(--fd); font-weight: 800; font-size: 34px">Live</div>
+          <div style="font-size: 14px; opacity: 0.8">solve rate &amp; mistakes</div>
+        </div>
+        <div style="padding: 18px; border-radius: 20px; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.18)">
+          <div style="font-family: var(--fd); font-weight: 800; font-size: 34px">1 link</div>
+          <div style="font-size: 14px; opacity: 0.8">soy.fun/yourname</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="{{foot}}">
+    <span style="font-family: var(--fd); font-weight: 800; font-size: 20px">Sort Yourself Out</span>
+    <nav aria-label="Footer" style="display: flex; flex-wrap: wrap; gap: 20px; font-size: 15px">
+      <a href="Browse.dc.html" style="color: var(--ink)">Browse</a>
+      <a href="Create.dc.html" style="color: var(--ink)">Make a puzzle</a>
+      <a href="Landing.dc.html" style="color: var(--ink)">Terms</a>
+      <a href="Landing.dc.html" style="color: var(--ink)">Privacy</a>
+    </nav>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"device":{"editor":"enum","options":["desktop","mobile"],"default":"desktop"},"dark":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":2500}}'>
+class Component extends DCLogic {
+  shape(s, size, color) {
+    const b = 'display:inline-block;flex:none;width:' + size + 'px;height:' + size + 'px;background:' + color + ';';
+    if (s === 'circle') return b + 'border-radius:50%;';
+    if (s === 'triangle') return b + 'clip-path:polygon(50% 6%,100% 94%,0 94%);';
+    if (s === 'square') return b + 'border-radius:2px;';
+    return b + 'transform:rotate(45deg) scale(0.78);border-radius:2px;';
+  }
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const m = (this.props.device ?? 'desktop') === 'mobile';
+    const vars = dark
+      ? '--bg:#13111C;--surf:#1E1B2A;--surf2:#2A2639;--ink:#F3F1FA;--mute:#A9A4BE;--line:#4A4561;--tile:#2A2639;--tileInk:#F3F1FA;--shadow:#000000;--inv:#F3F1FA;--invInk:#13111C;'
+      : '--bg:#EFEEF6;--surf:#FFFFFF;--surf2:#E3E1EE;--ink:#17142A;--mute:#5B5770;--line:#17142A;--tile:#FFFFFF;--tileInk:#17142A;--shadow:#17142A;--inv:#17142A;--invInk:#FFFFFF;';
+    const base = '--d1:#FFD84D;--d2:#5EC4E6;--d3:#FF8B4A;--d4:#5A3DE0;--fd:"Bricolage Grotesque",sans-serif;--fb:"Figtree",sans-serif;';
+
+    // Demo: two groups, eight words
+    const G = [
+      { name: 'Planets', words: ['VENUS', 'SATURN', 'JUPITER', 'EARTH'], c: '#5EC4E6', s: 'triangle' },
+      { name: 'Chocolate bars', words: ['MARS', 'GALAXY', 'TWIX', 'BOUNTY'], c: '#FF8B4A', s: 'square' },
+    ];
+    const ORDER = ['MARS', 'VENUS', 'TWIX', 'GALAXY', 'EARTH', 'BOUNTY', 'SATURN', 'JUPITER'];
+    const st = this.state || {};
+    const sel = st.sel || [];
+    const solved = st.solved || [];
+    const toast = st.toast || '';
+    const say = (patch, msg) => {
+      clearTimeout(this.tm);
+      this.setState({ ...patch, toast: msg });
+      if (msg) this.tm = setTimeout(() => this.setState({ toast: '' }), 1600);
+    };
+    const tap = (w) => () => {
+      if (sel.includes(w)) return this.setState({ sel: sel.filter((x) => x !== w) });
+      const next = [...sel, w];
+      if (next.length < 4) return this.setState({ sel: next });
+      const gi = G.findIndex((g) => g.words.includes(next[0]));
+      const hits = next.filter((x) => G[gi].words.includes(x)).length;
+      if (hits === 4) return say({ sel: [], solved: [...solved, gi] }, solved.length ? '' : 'Sorted. Smug yet?');
+      say({ sel: [] }, hits === 3 || hits === 1 ? 'One away. Painful.' : 'Not even close.');
+    };
+    const gone = solved.flatMap((i) => G[i].words);
+    const tileH = m ? 60 : 72;
+    const demoTiles = ORDER.filter((w) => !gone.includes(w)).map((w) => {
+      const on = sel.includes(w);
+      return {
+        w, on, tap: tap(w),
+        style: 'height:' + tileH + 'px;min-width:0;padding:0 4px;border-radius:14px;border:2.5px solid var(--line);font-family:var(--fd);font-weight:700;text-transform:uppercase;cursor:pointer;transition:transform .14s cubic-bezier(.3,1.6,.5,1),box-shadow .14s;font-size:' + (w.length > 6 ? (m ? 12.5 : 15) : (m ? 14 : 17)) + 'px;' + (w.length > 6 ? 'font-stretch:85%;' : '') +
+          (on ? 'background:var(--inv);color:var(--invInk);transform:translateY(3px);box-shadow:0 1px 0 var(--shadow);' : 'background:var(--tile);color:var(--tileInk);box-shadow:0 4px 0 var(--shadow);'),
+      };
+    });
+    const demoRows = solved.map((i) => ({
+      name: G[i].name, words: G[i].words.join(', '),
+      shape: this.shape(G[i].s, 12, '#17142A'),
+      style: 'height:' + tileH + 'px;box-sizing:border-box;border-radius:14px;border:2.5px solid var(--line);background:' + G[i].c + ';color:#17142A;box-shadow:0 4px 0 var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;',
+    }));
+
+    const covers = ['#5EC4E6', '#5A3DE0', '#FFD84D', '#FF8B4A'];
+    const pat = [[2, 5], [1, 7], [0, 3, 6], [4]];
+    const C = [
+      { title: 'Group Chat Chaos', by: 'Priya Makes Puzzles', plays: '12.4k', diff: 'Fair', lvl: 2, tag: 'Pop culture' },
+      { title: 'Is It a Pasta or a Wrestler?', by: 'Big Dom Eats', plays: '48.9k', diff: 'Brutal', lvl: 4, tag: 'Food' },
+      { title: 'Ringtones of 2004', by: 'Ringtone Archive', plays: '9.1k', diff: 'Gentle', lvl: 1, tag: 'Music' },
+      { title: 'Away Kits Nobody Asked For', by: 'The Kit Room', plays: '31.2k', diff: 'Spicy', lvl: 3, tag: 'Sport' },
+    ];
+    const cards = C.map((c, i) => ({
+      ...c,
+      cardStyle: 'display:flex;flex-direction:column;border-radius:22px;border:2.5px solid var(--line);background:var(--surf);box-shadow:0 4px 0 var(--shadow);overflow:hidden;color:var(--ink);text-decoration:none;' + (m ? 'flex:0 0 250px;scroll-snap-align:start;' : ''),
+      cover: 'display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:16px;background:' + covers[i] + ';border-bottom:2.5px solid var(--line);',
+      cells: [0, 1, 2, 3, 4, 5, 6, 7].map((k) => 'height:20px;border-radius:6px;border:2px solid #17142A;background:' + (pat[i].includes(k) ? '#17142A' : '#FFFFFF') + ';'),
+      bars: [1, 2, 3, 4].map((k) => 'width:6px;height:12px;border-radius:2px;' + (k <= c.lvl ? 'background:var(--ink);' : 'border:1.5px solid var(--ink);box-sizing:border-box;')),
+    }));
+
+    const pad = m ? 16 : 40;
+    return {
+      m, d: !m, toast, demoTiles, demoRows, cards,
+      demoDone: solved.length === 2, demoOpen: solved.length < 2,
+      root: vars + base + 'width:100%;box-sizing:border-box;background:var(--bg);color:var(--ink);font-family:var(--fb);',
+      hero: 'display:flex;flex-wrap:wrap;align-items:center;gap:' + (m ? 32 : 56) + 'px;max-width:1280px;margin:0 auto;padding:' + (m ? '32px 16px 40px' : '80px 40px 88px') + ';box-sizing:border-box;',
+      heroCopy: 'flex:1 1 520px;min-width:0;display:flex;flex-direction:column;gap:' + (m ? 18 : 24) + 'px;',
+      h1: 'margin:0;font-family:var(--fd);font-weight:800;letter-spacing:-0.045em;line-height:0.95;font-size:' + (m ? 46 : 84) + 'px;',
+      lede: 'margin:0;font-size:' + (m ? 17 : 20) + 'px;line-height:1.5;color:var(--mute);max-width:560px;',
+      ctaMain: 'display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 28px;border-radius:999px;border:2.5px solid var(--line);background:var(--d1);color:#17142A;font-family:var(--fd);font-weight:700;font-size:18px;text-decoration:none;box-shadow:0 4px 0 var(--shadow);' + (m ? 'flex:1;' : ''),
+      ctaSec: 'display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 28px;border-radius:999px;border:2.5px solid var(--line);background:var(--surf);color:var(--ink);font-family:var(--fd);font-weight:700;font-size:18px;text-decoration:none;box-shadow:0 4px 0 var(--shadow);' + (m ? 'flex:1;' : ''),
+      demoCard: 'flex:1 1 420px;min-width:0;max-width:520px;display:flex;flex-direction:column;gap:18px;padding:' + (m ? 18 : 26) + 'px;border-radius:28px;background:var(--surf);border:2.5px solid var(--line);box-shadow:0 6px 0 var(--shadow);transform:rotate(' + (m ? 0 : 1.2) + 'deg);',
+      band: 'max-width:1280px;margin:0 auto;padding:' + (m ? '28px 16px' : '48px 40px') + ';box-sizing:border-box;display:flex;flex-direction:column;gap:' + (m ? 20 : 28) + 'px;',
+      h2: 'margin:0;font-family:var(--fd);font-weight:800;letter-spacing:-0.035em;line-height:1;font-size:' + (m ? 32 : 48) + 'px;',
+      cardRow: m ? 'display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:4px 16px 12px;' : 'display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;',
+      steps: 'display:flex;flex-wrap:wrap;gap:' + (m ? 14 : 20) + 'px;',
+      creatorBand: 'display:flex;flex-wrap:wrap;gap:' + (m ? 24 : 48) + 'px;align-items:center;padding:' + (m ? '28px 22px' : '56px') + ';border-radius:32px;background:#17142A;color:#FFFFFF;' + (dark ? 'border:2.5px solid var(--line);' : ''),
+      foot: 'display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;max-width:1280px;margin:0 auto;padding:' + (m ? '32px 16px 40px' : '48px 40px 64px') + ';box-sizing:border-box;border-top:2.5px solid var(--line);',
+    };
+  }
+  componentWillUnmount() { clearTimeout(this.tm); }
+}
+</script>
+</body>
+</html>

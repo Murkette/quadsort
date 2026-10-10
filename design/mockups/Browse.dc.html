@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Browse puzzles</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="{{root}}">
+
+  <sc-if value="{{d}}" hint-placeholder-val="{{ true }}">
+    <header style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 40px; border-bottom: 2.5px solid var(--line); background: var(--surf)">
+      <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink)">
+        <span aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; width: 30px; height: 30px">
+          <span style="border-radius: 5px; background: var(--d1); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d2); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d3); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d4); border: 2px solid var(--line)"></span>
+        </span>
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 22px; letter-spacing: -0.03em">Sort Yourself Out</span>
+      </a>
+      <nav aria-label="Main" style="display: flex; align-items: center; gap: 6px">
+        <a href="Browse.dc.html" aria-current="page" style="padding: 12px 16px; border-radius: 999px; background: var(--surf2); color: var(--ink); text-decoration: none; font-weight: 700; font-size: 16px">Browse</a>
+        <a href="Dashboard.dc.html" style="padding: 12px 16px; border-radius: 999px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 16px">My puzzles</a>
+        <a href="Create.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; margin-left: 8px; border-radius: 999px; border: 2.5px solid var(--line); background: var(--d1); color: #17142A; font-family: var(--fd); font-weight: 700; font-size: 16px; text-decoration: none; box-shadow: 0 3px 0 var(--shadow)">Make a puzzle</a>
+      </nav>
+    </header>
+  </sc-if>
+  <sc-if value="{{m}}" hint-placeholder-val="{{ false }}">
+    <header style="display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 8px 16px; border-bottom: 2.5px solid var(--line); background: var(--surf)">
+      <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink)">
+        <span aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; width: 24px; height: 24px">
+          <span style="border-radius: 4px; background: var(--d1); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d2); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d3); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d4); border: 2px solid var(--line)"></span>
+        </span>
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 17px; letter-spacing: -0.03em">Sort Yourself Out</span>
+      </a>
+      <button type="button" aria-label="Menu" style="width: 44px; height: 44px; border: 0; background: transparent; color: var(--ink); display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+      </button>
+    </header>
+  </sc-if>
+
+  <main style="{{wrap}}">
+    <div style="display: flex; flex-direction: column; gap: 18px">
+      <h1 style="{{h1}}">Find something to fail at.</h1>
+      <label style="position: relative; display: block; max-width: 720px">
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search puzzles</span>
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--ink)"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+        <input type="search" value="{{q}}" onChange="{{setQ}}" placeholder="Search titles, creators, topics" style="width: 100%; height: 60px; padding: 0 18px 0 52px; border-radius: 999px; border: 2.5px solid var(--line); background: var(--surf); color: var(--ink); font-family: var(--fb); font-size: 17px; font-weight: 600; box-shadow: 0 4px 0 var(--shadow); box-sizing: border-box">
+      </label>
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <div role="group" aria-label="Sort" style="display: flex; gap: 6px; padding: 4px; border-radius: 999px; background: var(--surf2); align-self: flex-start">
+          <sc-for list="{{sorts}}" as="t" hint-placeholder-count="3">
+            <button type="button" aria-pressed="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+          </sc-for>
+        </div>
+        <div role="group" aria-label="Topics" style="{{chipRow}}">
+          <sc-for list="{{topics}}" as="t" hint-placeholder-count="8">
+            <button type="button" aria-pressed="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+      <span style="font-size: 15px; font-weight: 700">{{countLabel}}</span>
+      <span style="font-size: 14px; color: var(--mute)">Difficulty is from real players, not the creator’s ego.</span>
+    </div>
+
+    <sc-if value="{{empty}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 48px 20px; border-radius: 26px; border: 2.5px dashed var(--line); text-align: center">
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 28px">Nothing. Not a sausage.</span>
+        <span style="font-size: 16px; color: var(--mute)">Nobody’s made that one yet. Could be you.</span>
+        <a href="Create.dc.html" style="display: inline-flex; align-items: center; min-height: 50px; padding: 0 24px; border-radius: 999px; border: 2.5px solid var(--line); background: var(--d1); color: #17142A; font-family: var(--fd); font-weight: 700; font-size: 17px; text-decoration: none; box-shadow: 0 3px 0 var(--shadow)">Make it yourself</a>
+      </div>
+    </sc-if>
+
+    <div style="{{grid}}">
+      <sc-for list="{{cards}}" as="c" hint-placeholder-count="12">
+        <a href="Play.dc.html" style="display: flex; flex-direction: column; border-radius: 22px; border: 2.5px solid var(--line); background: var(--surf); box-shadow: 0 4px 0 var(--shadow); overflow: hidden; color: var(--ink); text-decoration: none">
+          <div style="{{c.cover}}">
+            <sc-for list="{{c.cells}}" as="cell" hint-placeholder-count="8"><span style="{{cell}}"></span></sc-for>
+          </div>
+          <div style="padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mute)">{{c.tag}}</span>
+            <span style="font-family: var(--fd); font-weight: 800; font-size: 18px; line-height: 1.12">{{c.title}}</span>
+            <span style="font-size: 14px; color: var(--mute)">by {{c.by}}</span>
+            <span style="display: flex; flex-wrap: wrap; gap: 6px; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; margin-top: auto; padding-top: 6px">
+              <span>{{c.plays}} plays</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px">
+                <span style="display: flex; gap: 2px" aria-hidden="true"><sc-for list="{{c.bars}}" as="b" hint-placeholder-count="4"><span style="{{b}}"></span></sc-for></span>{{c.diff}}</span>
+            </span>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"device":{"editor":"enum","options":["desktop","mobile"],"default":"desktop"},"dark":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const m = (this.props.device ?? 'desktop') === 'mobile';
+    const vars = dark
+      ? '--bg:#13111C;--surf:#1E1B2A;--surf2:#2A2639;--ink:#F3F1FA;--mute:#A9A4BE;--line:#4A4561;--tile:#2A2639;--tileInk:#F3F1FA;--shadow:#000000;--inv:#F3F1FA;--invInk:#13111C;'
+      : '--bg:#EFEEF6;--surf:#FFFFFF;--surf2:#E3E1EE;--ink:#17142A;--mute:#5B5770;--line:#17142A;--tile:#FFFFFF;--tileInk:#17142A;--shadow:#17142A;--inv:#17142A;--invInk:#FFFFFF;';
+    const base = '--d1:#FFD84D;--d2:#5EC4E6;--d3:#FF8B4A;--d4:#5A3DE0;--fd:"Bricolage Grotesque",sans-serif;--fb:"Figtree",sans-serif;';
+    // title, creator, plays(k), solve, level 1-4, topic, trend rank, age rank
+    const P = [
+      ['Name That Era', 'Swift Facts Daily', 72.0, 47, 3, 'Fandoms', 1, 9],
+      ['Is It a Pasta or a Wrestler?', 'Big Dom Eats', 48.9, 22, 4, 'Food', 2, 6],
+      ['Away Kits Nobody Asked For', 'The Kit Room', 31.2, 38, 3, 'Sport', 3, 4],
+      ['Words That Sound Rude But Aren’t', 'Priya Makes Puzzles', 30.2, 48, 3, 'Wordplay', 4, 11],
+      ['Group Chat Chaos', 'Priya Makes Puzzles', 12.4, 61, 2, 'Pop culture', 5, 1],
+      ['Ringtones of 2004', 'Ringtone Archive', 9.1, 54, 1, 'Music', 6, 3],
+      ['Dog Breed or Cheese?', 'Ms Hart’s Year 9', 3.3, 70, 1, 'Teachers', 7, 2],
+      ['Soap Villains, Ranked', 'Telly Addict', 14.6, 44, 2, 'TV', 8, 7],
+      ['Dragon Names or Dad Names?', 'Lore Goblin', 18.8, 31, 4, 'Fandoms', 9, 5],
+      ['Snooker Nicknames', 'Baize Boys', 2.1, 35, 3, 'Sport', 10, 8],
+      ['Crisp Flavours That Should Not Exist', 'Big Dom Eats', 22.3, 52, 2, 'Food', 11, 10],
+      ['Reality TV or Medieval Torture?', 'Priya Makes Puzzles', 21.7, 29, 4, 'TV', 12, 12],
+    ];
+    const S = this.state || {};
+    const q = S.q ?? '';
+    const sort = S.sort || 'trending';
+    const topic = S.topic || 'All';
+    const needle = q.trim().toLowerCase();
+    let list = P.filter((p) => (topic === 'All' || p[5] === topic) && (!needle || (p[0] + ' ' + p[1] + ' ' + p[5]).toLowerCase().includes(needle)));
+    list = list.slice().sort((a, b) => sort === 'new' ? a[7] - b[7] : sort === 'hardest' ? a[3] - b[3] : a[6] - b[6]);
+    const covers = ['#FFD84D', '#5EC4E6', '#FF8B4A', '#5A3DE0'];
+    const diffName = ['', 'Gentle', 'Fair', 'Spicy', 'Brutal'];
+    const cards = list.map((p) => ({
+      title: p[0], by: p[1], plays: p[2] + 'k', tag: p[5], diff: diffName[p[4]] + ' · ' + p[3] + '%',
+      cover: 'display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:14px;background:' + covers[p[4] - 1] + ';border-bottom:2.5px solid var(--line);',
+      cells: [0, 1, 2, 3, 4, 5, 6, 7].map((k) => 'height:18px;border-radius:5px;border:2px solid #17142A;background:' + ((k * 5 + p[6]) % 7 < 2 ? '#17142A' : '#FFFFFF') + ';'),
+      bars: [1, 2, 3, 4].map((k) => 'width:6px;height:12px;border-radius:2px;' + (k <= p[4] ? 'background:var(--ink);' : 'border:1.5px solid var(--ink);box-sizing:border-box;')),
+    }));
+    const pill = (on) => 'min-height:44px;padding:0 16px;border-radius:999px;font-family:var(--fd);font-weight:700;font-size:15px;cursor:pointer;white-space:nowrap;flex:none;';
+    const sorts = [['trending', 'Trending'], ['new', 'New'], ['hardest', 'Hardest']].map(([k, label]) => ({
+      label, on: sort === k, pick: () => this.setState({ sort: k }),
+      style: pill() + 'border:0;' + (sort === k ? 'background:var(--inv);color:var(--invInk);' : 'background:transparent;color:var(--ink);'),
+    }));
+    const topics = ['All', 'Pop culture', 'Sport', 'Food', 'Music', 'TV', 'Fandoms', 'Wordplay', 'Teachers'].map((t) => ({
+      label: t, on: topic === t, pick: () => this.setState({ topic: t }),
+      style: pill() + 'border:2.5px solid var(--line);' + (topic === t ? 'background:var(--d2);color:#17142A;box-shadow:0 3px 0 var(--shadow);' : 'background:var(--surf);color:var(--ink);'),
+    }));
+    return {
+      m, d: !m, q, cards, sorts, topics,
+      empty: cards.length === 0,
+      countLabel: cards.length === 1 ? '1 puzzle' : cards.length + ' puzzles',
+      setQ: (e) => this.setState({ q: e.target.value }),
+      root: vars + base + 'width:100%;box-sizing:border-box;background:var(--bg);color:var(--ink);font-family:var(--fb);',
+      wrap: 'display:flex;flex-direction:column;gap:' + (m ? 20 : 28) + 'px;max-width:1240px;margin:0 auto;padding:' + (m ? '24px 16px 48px' : '48px 40px 80px') + ';box-sizing:border-box;',
+      h1: 'margin:0;font-family:var(--fd);font-weight:800;letter-spacing:-0.04em;line-height:1;font-size:' + (m ? 36 : 60) + 'px;',
+      chipRow: m ? 'display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:2px 16px 8px;' : 'display:flex;flex-wrap:wrap;gap:8px;',
+      grid: 'display:grid;grid-template-columns:' + (m ? 'repeat(2,minmax(0,1fr))' : 'repeat(4,minmax(0,1fr))') + ';gap:' + (m ? 12 : 20) + 'px;',
+    };
+  }
+}
+</script>
+</body>
+</html>

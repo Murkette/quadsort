@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Results — mobile, win and lose</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 956px; min-height: 2300px; box-sizing: border-box; padding: 48px 64px; background: {{bg}}; display: flex; gap: 48px; align-items: flex-start; font-family: 'Figtree', sans-serif">
+  <div style="display: flex; flex-direction: column; gap: 16px; width: 390px; flex: none">
+    <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px; color: {{ink}}">Win</span>
+    <div style="width: 390px; border-radius: 36px; overflow: hidden; border: 2.5px solid {{frame}}">
+      <dc-import name="Results" device="mobile" outcome="win" dark="{{dark}}" hint-size="390px,2100px"></dc-import>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 16px; width: 390px; flex: none">
+    <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px; color: {{ink}}">Lose</span>
+    <div style="width: 390px; border-radius: 36px; overflow: hidden; border: 2.5px solid {{frame}}">
+      <dc-import name="Results" device="mobile" outcome="lose" dark="{{dark}}" hint-size="390px,2100px"></dc-import>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":956,"height":2300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    return { dark, bg: dark ? '#0B0A12' : '#DAD8E6', ink: dark ? '#F3F1FA' : '#17142A', frame: dark ? '#4A4561' : '#17142A' };
+  }
+}
+</script>
+</body>
+</html>

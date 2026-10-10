@@ -1,0 +1,18 @@
+[Unit]
+Description=Quadsort
+After=network.target
+
+[Service]
+User=quadsort
+WorkingDirectory=/opt/quadsort
+Environment=NODE_ENV=production PORT=3000 DB_PATH=/var/lib/quadsort/quadsort.db
+EnvironmentFile=-/etc/quadsort.env
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+ProtectSystem=full
+ReadWritePaths=/var/lib/quadsort
+
+[Install]
+WantedBy=multi-user.target

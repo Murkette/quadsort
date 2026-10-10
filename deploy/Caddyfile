@@ -1,0 +1,6 @@
+quadsort.com, www.quadsort.com {
+	@www host www.quadsort.com
+	redir @www https://quadsort.com{uri} permanent
+	encode gzip
+	reverse_proxy 127.0.0.1:3000
+}

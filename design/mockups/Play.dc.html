@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Play — Group Chat Chaos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="{{root}}">
+
+  <sc-if value="{{d}}" hint-placeholder-val="{{ true }}">
+    <header style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 40px; border-bottom: 2.5px solid var(--line); background: var(--surf)">
+      <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink)">
+        <span aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; width: 30px; height: 30px">
+          <span style="border-radius: 5px; background: var(--d1); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d2); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d3); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d4); border: 2px solid var(--line)"></span>
+        </span>
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 22px; letter-spacing: -0.03em">Sort Yourself Out</span>
+      </a>
+      <nav aria-label="Main" style="display: flex; align-items: center; gap: 6px">
+        <a href="Browse.dc.html" style="padding: 12px 16px; border-radius: 999px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 16px">Browse</a>
+        <a href="Dashboard.dc.html" style="padding: 12px 16px; border-radius: 999px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 16px">My puzzles</a>
+        <a href="Create.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; margin-left: 8px; border-radius: 999px; border: 2.5px solid var(--line); background: var(--d1); color: #17142A; font-family: var(--fd); font-weight: 700; font-size: 16px; text-decoration: none; box-shadow: 0 3px 0 var(--shadow)">Make a puzzle</a>
+      </nav>
+    </header>
+  </sc-if>
+  <sc-if value="{{m}}" hint-placeholder-val="{{ false }}">
+    <header style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px 8px 16px; border-bottom: 2.5px solid var(--line); background: var(--surf)">
+      <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink)">
+        <span aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; width: 24px; height: 24px">
+          <span style="border-radius: 4px; background: var(--d1); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d2); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d3); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d4); border: 2px solid var(--line)"></span>
+        </span>
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 17px; letter-spacing: -0.03em">Sort Yourself Out</span>
+      </a>
+      <div style="display: flex; gap: 4px">
+        <button type="button" aria-label="How to play" style="width: 44px; height: 44px; border: 0; background: transparent; color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+        </button>
+        <button type="button" aria-label="Share this puzzle" style="width: 44px; height: 44px; border: 0; background: transparent; color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8h16v-8"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v13"></path></svg>
+        </button>
+      </div>
+    </header>
+  </sc-if>
+
+  <main style="{{wrap}}">
+    <section aria-label="Puzzle" style="{{playCol}}">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <h1 style="{{titleStyle}}">Group Chat Chaos</h1>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+          <span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 50%; background: var(--d2); border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--fd); font-weight: 800; font-size: 12px; color: #17142A">PM</span>
+          <span style="font-size: 15px">by <a href="Profile.dc.html" style="color: var(--ink); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px">Priya Makes Puzzles</a></span>
+          <a href="https://instagram.com" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; background: var(--surf2); color: var(--ink); font-size: 13px; font-weight: 600; text-decoration: none">@priyamakes<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg></a>
+        </div>
+        <p style="margin: 0; font-size: 15px; color: var(--mute)">Make four groups of four. The group chat managed it. Allegedly.</p>
+      </div>
+
+      <div style="position: relative; display: flex; flex-direction: column; gap: {{gap}}px">
+        <sc-if value="{{toast}}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="position: absolute; left: 50%; top: -14px; transform: translate(-50%, -50%); z-index: 3; white-space: nowrap; padding: 11px 20px; border-radius: 999px; background: var(--inv); color: var(--invInk); font-family: var(--fd); font-weight: 700; font-size: 17px; box-shadow: 0 6px 18px rgba(10,8,20,0.28)">{{toast}}</div>
+        </sc-if>
+        <div ref="{{setRows}}" style="display: flex; flex-direction: column; gap: {{gap}}px">
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="0">
+            <div style="{{r.style}}">
+              <div style="display: flex; align-items: center; gap: 8px">
+                <span style="{{r.shape}}"></span>
+                <span style="font-family: var(--fd); font-weight: 800; font-size: {{rowTitle}}px; text-transform: uppercase; letter-spacing: 0.02em">{{r.name}}</span>
+              </div>
+              <div style="font-weight: 600; font-size: {{rowWords}}px; opacity: 0.9">{{r.words}}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div ref="{{setGrid}}" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: {{gap}}px">
+          <sc-for list="{{tiles}}" as="t" hint-placeholder-count="16">
+            <button type="button" aria-pressed="{{t.pressed}}" onClick="{{t.toggle}}" style="{{t.style}}">{{t.w}}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px">
+        <span style="font-size: 15px; font-weight: 600; color: var(--mute)">Mistakes left</span>
+        <div style="display: flex; gap: 8px" aria-label="{{livesLabel}}" role="img">
+          <sc-for list="{{lives}}" as="l" hint-placeholder-count="4">
+            <span style="{{l}}"></span>
+          </sc-for>
+        </div>
+      </div>
+
+      <sc-if value="{{playing}}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; gap: 10px; justify-content: center">
+          <button type="button" onClick="{{shuffle}}" style="{{btnSec}}">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>Shuffle</button>
+          <button type="button" onClick="{{deselect}}" disabled="{{noSel}}" style="{{btnDes}}">Deselect all</button>
+          <button type="button" onClick="{{submit}}" disabled="{{noSubmit}}" style="{{btnSub}}">Submit</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{won}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 20px; border-radius: 22px; background: var(--d1); color: #17142A; border: 2.5px solid var(--line); box-shadow: 0 4px 0 var(--shadow); text-align: center">
+          <div style="font-family: var(--fd); font-weight: 800; font-size: 28px; letter-spacing: -0.02em">Sorted. Annoyingly well.</div>
+          <div style="font-size: 15px; font-weight: 600">{{mistakesText}}</div>
+          <a href="Results.dc.html" style="display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 26px; border-radius: 999px; background: #17142A; color: #FFFFFF; font-family: var(--fd); font-weight: 700; font-size: 17px; text-decoration: none">See your results</a>
+        </div>
+      </sc-if>
+      <sc-if value="{{lost}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 20px; border-radius: 22px; background: var(--inv); color: var(--invInk); text-align: center">
+          <div style="font-family: var(--fd); font-weight: 800; font-size: 30px; letter-spacing: -0.02em">Sort yourself out.</div>
+          <div style="font-size: 15px; font-weight: 600; opacity: 0.85">Out of lives. The answers are above, for your shame.</div>
+          <a href="Results-Lose.dc.html" style="display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 26px; border-radius: 999px; background: var(--d1); color: #17142A; font-family: var(--fd); font-weight: 700; font-size: 17px; text-decoration: none">See how everyone else did</a>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{m}}" hint-placeholder-val="{{ false }}">
+        <p style="margin: 0; text-align: center; font-size: 13px; color: var(--mute)">No account needed. Obviously.</p>
+      </sc-if>
+    </section>
+
+    <sc-if value="{{d}}" hint-placeholder-val="{{ true }}">
+      <aside style="flex: 0 1 320px; display: flex; flex-direction: column; gap: 20px; padding-top: 8px">
+        <div style="padding: 22px; border-radius: 24px; background: var(--surf); border: 2.5px solid var(--line); box-shadow: 0 4px 0 var(--shadow); display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <span aria-hidden="true" style="width: 52px; height: 52px; border-radius: 50%; background: var(--d2); border: 2.5px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--fd); font-weight: 800; font-size: 18px; color: #17142A">PM</span>
+            <div>
+              <div style="font-family: var(--fd); font-weight: 800; font-size: 19px">Priya Makes Puzzles</div>
+              <div style="font-size: 14px; color: var(--mute)">38 puzzles · 214k plays</div>
+            </div>
+          </div>
+          <p style="margin: 0; font-size: 15px; line-height: 1.45">Weekly puzzles for people who think they know everything. You don’t.</p>
+          <a href="Profile.dc.html" style="display: inline-flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 999px; border: 2.5px solid var(--line); background: var(--surf); color: var(--ink); font-family: var(--fd); font-weight: 700; font-size: 15px; text-decoration: none; box-shadow: 0 3px 0 var(--shadow)">More by Priya</a>
+        </div>
+        <div style="padding: 22px; border-radius: 24px; background: var(--surf2); display: flex; flex-direction: column; gap: 12px">
+          <div style="font-family: var(--fd); font-weight: 800; font-size: 18px">How this works</div>
+          <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.4">
+            <li>Pick four words that belong together.</li>
+            <li>Hit Submit. Four wrong guesses and you’re out.</li>
+            <li>Colours go from Gentle to Devious. Expect the worst.</li>
+          </ol>
+        </div>
+        <div style="display: flex; gap: 12px">
+          <div style="flex: 1; padding: 16px; border-radius: 20px; border: 2.5px solid var(--line); background: var(--surf)">
+            <div style="font-family: var(--fd); font-weight: 800; font-size: 26px">12,408</div>
+            <div style="font-size: 13px; color: var(--mute); font-weight: 600">plays</div>
+          </div>
+          <div style="flex: 1; padding: 16px; border-radius: 20px; border: 2.5px solid var(--line); background: var(--surf)">
+            <div style="font-family: var(--fd); font-weight: 800; font-size: 26px">61%</div>
+            <div style="font-size: 13px; color: var(--mute); font-weight: 600">solve it</div>
+          </div>
+        </div>
+      </aside>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"scenario":{"editor":"enum","options":["fresh","selected","solved","wrong","won","lost"],"default":"fresh"},"device":{"editor":"enum","options":["desktop","mobile"],"default":"desktop"},"dark":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  data() {
+    return {
+      groups: [
+        { name: 'Cheeses', lv: 0, words: ['BRIE', 'FETA', 'EDAM', 'HALLOUMI'] },
+        { name: '___board', lv: 1, words: ['SURF', 'KEY', 'CUP', 'SKATE'] },
+        { name: 'Things that squeak', lv: 2, words: ['MOUSE', 'TRAINERS', 'DOOR', 'SWING'] },
+        { name: 'Hiding an animal', lv: 3, words: ['CATASTROPHE', 'PIGMENT', 'BATTERY', 'RATIONAL'] },
+      ],
+      order: ['SURF', 'PIGMENT', 'BRIE', 'DOOR', 'CATASTROPHE', 'KEY', 'HALLOUMI', 'SWING', 'FETA', 'MOUSE', 'BATTERY', 'CUP', 'TRAINERS', 'EDAM', 'RATIONAL', 'SKATE'],
+      levels: [
+        { c: '#FFD84D', ink: '#17142A', s: 'circle' },
+        { c: '#5EC4E6', ink: '#17142A', s: 'triangle' },
+        { c: '#FF8B4A', ink: '#17142A', s: 'square' },
+        { c: '#5A3DE0', ink: '#FFFFFF', s: 'diamond' },
+      ],
+    };
+  }
+  init(sc) {
+    const D = this.data();
+    const g = { order: D.order.slice(), sel: [], solved: [], revealed: [], mistakes: 0, keys: [], over: null, jiggle: false, toast: '' };
+    if (sc === 'selected') g.sel = ['BRIE', 'FETA', 'HALLOUMI', 'EDAM'];
+    if (sc === 'solved') { g.solved = [0]; g.mistakes = 1; g.toast = 'Sorted. Smug yet?'; }
+    if (sc === 'wrong') { g.solved = [0]; g.mistakes = 2; g.sel = ['MOUSE', 'DOOR', 'SWING', 'BATTERY']; g.toast = 'One away. Painful.'; g.jiggle = true; }
+    if (sc === 'won') { g.solved = [0, 2, 1, 3]; g.mistakes = 1; g.over = 'won'; }
+    if (sc === 'lost') { g.solved = [0, 1]; g.revealed = [2, 3]; g.mistakes = 4; g.over = 'lost'; }
+    return g;
+  }
+  game() {
+    return (this.state && this.state.g) || this.init(this.props.scenario ?? 'fresh');
+  }
+  toastNow() {
+    if (this.state && 'toast' in this.state) return this.state.toast;
+    return this.init(this.props.scenario ?? 'fresh').toast;
+  }
+  reduced() {
+    return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  say(g, msg, after) {
+    clearTimeout(this.tm);
+    this.setState({ g, toast: msg }, after);
+    if (msg && !g.over) this.tm = setTimeout(() => this.setState({ toast: '' }), 1800);
+  }
+  componentWillUnmount() { clearTimeout(this.tm); }
+  shape(s, size, color) {
+    const b = 'display:inline-block;flex:none;width:' + size + 'px;height:' + size + 'px;background:' + color + ';';
+    if (s === 'circle') return b + 'border-radius:50%;';
+    if (s === 'triangle') return b + 'clip-path:polygon(50% 6%,100% 94%,0 94%);';
+    if (s === 'square') return b + 'border-radius:2px;';
+    return b + 'transform:rotate(45deg) scale(0.78);border-radius:2px;';
+  }
+  fit(w, m) {
+    const n = w.length;
+    if (m) {
+      if (n <= 5) return 'font-size:17px;';
+      if (n <= 7) return 'font-size:15px;';
+      if (n <= 9) return 'font-size:14px;font-stretch:85%;';
+      return 'font-size:12.5px;font-stretch:75%;';
+    }
+    if (n <= 5) return 'font-size:22px;';
+    if (n <= 7) return 'font-size:20px;';
+    if (n <= 9) return 'font-size:19px;font-stretch:88%;';
+    return 'font-size:18px;font-stretch:78%;';
+  }
+  renderVals() {
+    const D = this.data();
+    const dark = this.props.dark ?? false;
+    const m = (this.props.device ?? 'desktop') === 'mobile';
+    const g = this.game();
+    const toast = this.toastNow();
+    const vars = dark
+      ? '--bg:#13111C;--surf:#1E1B2A;--surf2:#2A2639;--ink:#F3F1FA;--mute:#A9A4BE;--line:#4A4561;--tile:#2A2639;--tileInk:#F3F1FA;--shadow:#000000;--inv:#F3F1FA;--invInk:#13111C;'
+      : '--bg:#EFEEF6;--surf:#FFFFFF;--surf2:#E3E1EE;--ink:#17142A;--mute:#5B5770;--line:#17142A;--tile:#FFFFFF;--tileInk:#17142A;--shadow:#17142A;--inv:#17142A;--invInk:#FFFFFF;';
+    const base = '--d1:#FFD84D;--d2:#5EC4E6;--d3:#FF8B4A;--d4:#5A3DE0;--fd:"Bricolage Grotesque",sans-serif;--fb:"Figtree",sans-serif;';
+    const tileH = m ? 74 : 94;
+    const gap = m ? 8 : 12;
+    const gone = [...g.solved, ...g.revealed].flatMap((i) => D.groups[i].words);
+    const remaining = g.order.filter((w) => !gone.includes(w));
+
+    const toggle = (w) => () => {
+      const cur = this.game();
+      if (cur.over) return;
+      let sel = cur.sel.includes(w) ? cur.sel.filter((x) => x !== w) : cur.sel.length < 4 ? [...cur.sel, w] : cur.sel;
+      this.setState({ g: { ...cur, sel, jiggle: false }, toast: this.toastNow() });
+    };
+    const shuffle = () => {
+      const cur = this.game();
+      const o = cur.order.slice();
+      for (let i = o.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; }
+      this.setState({ g: { ...cur, order: o, jiggle: false }, toast: '' }, () => {
+        if (this.grid && !this.reduced()) Array.from(this.grid.children).forEach((el, i) => el.animate && el.animate([{ transform: 'rotateY(90deg) scale(.9)', opacity: 0.2 }, { transform: 'none', opacity: 1 }], { duration: 260, delay: i * 20, easing: 'ease-out', fill: 'backwards' }));
+      });
+    };
+    const deselect = () => { const cur = this.game(); this.setState({ g: { ...cur, sel: [], jiggle: false }, toast: '' }); };
+    const submit = () => {
+      const cur = this.game();
+      if (cur.over || cur.sel.length !== 4) return;
+      const key = cur.sel.slice().sort().join('|');
+      if (cur.keys.includes(key)) return this.say({ ...cur, jiggle: false }, 'You tried that. Focus.');
+      const owners = cur.sel.map((w) => D.groups.findIndex((gr) => gr.words.includes(w)));
+      const counts = [0, 0, 0, 0];
+      owners.forEach((i) => counts[i]++);
+      const best = Math.max(...counts);
+      const keys = [...cur.keys, key];
+      if (best === 4) {
+        const solved = [...cur.solved, owners[0]];
+        const won = solved.length === 4;
+        const praise = ['Sorted. Smug yet?', 'Fine. Two down.', 'Alright, show-off.'];
+        this.say({ ...cur, solved, sel: [], keys, over: won ? 'won' : null, jiggle: false }, won ? '' : praise[solved.length - 1], () => {
+          const last = this.rows && this.rows.lastElementChild;
+          if (last && last.animate && !this.reduced()) last.animate([{ transform: 'translateY(24px) scale(.94)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 420, easing: 'cubic-bezier(.2,.9,.3,1.25)' });
+        });
+      } else {
+        const mistakes = cur.mistakes + 1;
+        const lost = mistakes >= 4;
+        const revealed = lost ? [0, 1, 2, 3].filter((i) => !cur.solved.includes(i)) : [];
+        this.say({ ...cur, mistakes, keys, revealed, over: lost ? 'lost' : null, sel: lost ? [] : cur.sel, jiggle: false }, lost ? '' : best === 3 ? 'One away. Painful.' : 'Not even close.', () => {
+          if (!lost && this.grid && this.grid.animate && !this.reduced()) this.grid.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-8px)' }, { transform: 'translateX(8px)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(5px)' }, { transform: 'translateX(0)' }], { duration: 380, easing: 'ease-in-out' });
+        });
+      }
+    };
+
+    const tileBase = 'height:' + tileH + 'px;min-width:0;box-sizing:border-box;padding:0 6px;border-radius:' + (m ? 14 : 18) + 'px;border:2.5px solid var(--line);font-family:var(--fd);font-weight:700;text-transform:uppercase;letter-spacing:0.01em;line-height:1.05;display:flex;align-items:center;justify-content:center;text-align:center;overflow-wrap:anywhere;cursor:pointer;transition:transform .14s cubic-bezier(.3,1.6,.5,1),box-shadow .14s,background-color .1s,color .1s;';
+    let k = 0;
+    const tiles = remaining.map((w) => {
+      const on = g.sel.includes(w);
+      const jig = on && g.jiggle ? (k++ % 2 ? 'rotate(2deg) translateX(4px)' : 'rotate(-2deg) translateX(-4px)') : '';
+      const look = on
+        ? 'background:var(--inv);color:var(--invInk);transform:translateY(3px) ' + jig + ';box-shadow:0 1px 0 var(--shadow);'
+        : 'background:var(--tile);color:var(--tileInk);box-shadow:0 4px 0 var(--shadow);';
+      return { w, pressed: on, toggle: toggle(w), style: tileBase + this.fit(w, m) + look + (g.over ? 'cursor:default;opacity:.5;' : '') };
+    });
+
+    const rowStyle = (lv, revealed) => 'height:' + tileH + 'px;box-sizing:border-box;border-radius:' + (m ? 14 : 18) + 'px;border:2.5px ' + (revealed ? 'dashed' : 'solid') + ' var(--line);background:' + D.levels[lv].c + ';color:' + D.levels[lv].ink + ';display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;padding:0 10px;' + (revealed ? 'opacity:.82;' : 'box-shadow:0 4px 0 var(--shadow);');
+    const mkRow = (i, revealed) => {
+      const gr = D.groups[i];
+      return { name: gr.name, words: gr.words.join(', '), style: rowStyle(gr.lv, revealed), shape: this.shape(D.levels[gr.lv].s, m ? 13 : 16, D.levels[gr.lv].ink) };
+    };
+    const rows = [...g.solved.map((i) => mkRow(i, false)), ...g.revealed.map((i) => mkRow(i, true))];
+    const left = 4 - g.mistakes;
+    const lives = [0, 1, 2, 3].map((i) => i < left
+      ? 'display:block;width:16px;height:16px;border-radius:50%;background:var(--ink);border:2.5px solid var(--ink);box-sizing:border-box;'
+      : 'display:block;width:16px;height:16px;border-radius:50%;background:transparent;border:2.5px dashed var(--mute);box-sizing:border-box;');
+    const btn = 'display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 ' + (m ? 12 : 22) + 'px;border-radius:999px;border:2.5px solid var(--line);font-family:var(--fd);font-weight:700;font-size:' + (m ? 15 : 17) + 'px;cursor:pointer;' + (m ? 'flex:1;' : '');
+    const noSel = g.sel.length === 0;
+    const noSubmit = g.sel.length !== 4;
+
+    return {
+      m, d: !m, gap, toast,
+      root: vars + base + 'width:100%;min-height:' + (m ? 844 : 1000) + 'px;box-sizing:border-box;background:var(--bg);color:var(--ink);font-family:var(--fb);',
+      wrap: m ? 'display:flex;flex-direction:column;padding:20px 16px 24px;' : 'display:flex;gap:48px;justify-content:center;align-items:flex-start;padding:44px 40px 56px;max-width:1120px;margin:0 auto;',
+      playCol: 'display:flex;flex-direction:column;gap:' + (m ? 22 : 28) + 'px;' + (m ? '' : 'flex:0 1 640px;min-width:0;'),
+      titleStyle: 'margin:0;font-family:var(--fd);font-weight:800;letter-spacing:-0.035em;line-height:1;font-size:' + (m ? 32 : 46) + 'px;',
+      rowTitle: m ? 15 : 19, rowWords: m ? 13 : 16,
+      rows, tiles, lives, livesLabel: left + ' of 4 mistakes left',
+      playing: !g.over, won: g.over === 'won', lost: g.over === 'lost', mistakesText: "Solved with " + g.mistakes + (g.mistakes === 1 ? " mistake" : " mistakes") + ". Most people needed three.",
+      shuffle, deselect, submit, noSel, noSubmit,
+      btnSec: btn + 'background:var(--surf);color:var(--ink);box-shadow:0 3px 0 var(--shadow);',
+      btnDes: btn + 'background:var(--surf);color:var(--ink);box-shadow:0 3px 0 var(--shadow);' + (noSel ? 'opacity:.45;cursor:not-allowed;' : ''),
+      btnSub: btn + 'background:var(--inv);color:var(--invInk);box-shadow:0 3px 0 var(--shadow);' + (noSubmit ? 'opacity:.4;cursor:not-allowed;' : ''),
+      setGrid: (el) => { this.grid = el; },
+      setRows: (el) => { this.rows = el; },
+    };
+  }
+}
+</script>
+</body>
+</html>

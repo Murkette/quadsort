@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My puzzles — dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="{{root}}">
+
+  <sc-if value="{{d}}" hint-placeholder-val="{{ true }}">
+    <header style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 40px; border-bottom: 2.5px solid var(--line); background: var(--surf)">
+      <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink)">
+        <span aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; width: 30px; height: 30px">
+          <span style="border-radius: 5px; background: var(--d1); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d2); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d3); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 5px; background: var(--d4); border: 2px solid var(--line)"></span>
+        </span>
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 22px; letter-spacing: -0.03em">Sort Yourself Out</span>
+      </a>
+      <nav aria-label="Main" style="display: flex; align-items: center; gap: 6px">
+        <a href="Browse.dc.html" style="padding: 12px 16px; border-radius: 999px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 16px">Browse</a>
+        <a href="Dashboard.dc.html" aria-current="page" style="padding: 12px 16px; border-radius: 999px; background: var(--surf2); color: var(--ink); text-decoration: none; font-weight: 700; font-size: 16px">My puzzles</a>
+        <a href="Profile.dc.html" aria-label="Your profile" style="width: 40px; height: 40px; margin-left: 8px; border-radius: 50%; background: var(--d2); border: 2.5px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--fd); font-weight: 800; font-size: 14px; color: #17142A; text-decoration: none">PM</a>
+      </nav>
+    </header>
+  </sc-if>
+  <sc-if value="{{m}}" hint-placeholder-val="{{ false }}">
+    <header style="display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 8px 16px; border-bottom: 2.5px solid var(--line); background: var(--surf)">
+      <a href="Landing.dc.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink)">
+        <span aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; width: 24px; height: 24px">
+          <span style="border-radius: 4px; background: var(--d1); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d2); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d3); border: 2px solid var(--line)"></span>
+          <span style="border-radius: 4px; background: var(--d4); border: 2px solid var(--line)"></span>
+        </span>
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 17px; letter-spacing: -0.03em">Sort Yourself Out</span>
+      </a>
+      <a href="Profile.dc.html" aria-label="Your profile" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; text-decoration: none"><span style="width: 34px; height: 34px; border-radius: 50%; background: var(--d2); border: 2.5px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--fd); font-weight: 800; font-size: 12px; color: #17142A; box-sizing: border-box">PM</span></a>
+    </header>
+  </sc-if>
+
+  <main style="{{wrap}}">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+      <div>
+        <h1 style="{{h1}}">My puzzles</h1>
+        <p style="margin: 8px 0 0; font-size: 16px; color: var(--mute)">Your people have been busy failing. Here’s the damage.</p>
+      </div>
+      <a href="Create.dc.html" style="{{newBtn}}">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>New puzzle</a>
+    </div>
+
+    <div style="{{statGrid}}">
+      <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+        <div style="padding: 18px 20px; border-radius: 22px; background: var(--surf); border: 2.5px solid var(--line); box-shadow: 0 4px 0 var(--shadow)">
+          <div style="font-family: var(--fd); font-weight: 800; font-size: {{statSize}}px; letter-spacing: -0.02em">{{s.v}}</div>
+          <div style="font-size: 14px; font-weight: 600; color: var(--mute)">{{s.k}}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{d}}" hint-placeholder-val="{{ true }}">
+      <div style="border-radius: 26px; background: var(--surf); border: 2.5px solid var(--line); box-shadow: 0 4px 0 var(--shadow); overflow-x: auto">
+        <div role="table" aria-label="Your puzzles" style="min-width: 980px">
+          <div role="row" style="display: grid; grid-template-columns: minmax(0, 2.2fr) 110px 180px minmax(0, 2fr) 210px; gap: 20px; padding: 16px 24px; border-bottom: 2.5px solid var(--line); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mute)">
+            <span role="columnheader">Puzzle</span><span role="columnheader">Plays</span><span role="columnheader">Solve rate</span><span role="columnheader">Most common wrong guess</span><span role="columnheader" style="text-align: right">Actions</span>
+          </div>
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+            <div role="row" style="display: grid; grid-template-columns: minmax(0, 2.2fr) 110px 180px minmax(0, 2fr) 210px; gap: 20px; align-items: center; padding: 16px 24px; border-bottom: 1.5px solid var(--surf2)">
+              <span role="cell" style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+                <span style="font-family: var(--fd); font-weight: 800; font-size: 18px">{{r.title}}</span>
+                <span style="{{r.statusStyle}}">{{r.status}}</span>
+              </span>
+              <span role="cell" style="font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums">{{r.plays}}</span>
+              <span role="cell" style="display: flex; align-items: center; gap: 10px">
+                <span style="flex: 1; height: 12px; border-radius: 6px; background: var(--surf2); overflow: hidden"><span style="{{r.bar}}"></span></span>
+                <span style="font-weight: 700; font-size: 15px; width: 40px; text-align: right">{{r.solve}}</span>
+              </span>
+              <span role="cell" style="font-size: 15px; line-height: 1.35">{{r.wrong}}</span>
+              <span role="cell" style="display: flex; gap: 8px; justify-content: flex-end">
+                <a href="Create.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 2.5px solid var(--line); background: var(--surf); color: var(--ink); font-family: var(--fd); font-weight: 700; font-size: 15px; text-decoration: none">Edit</a>
+                <button type="button" onClick="{{r.share}}" style="{{r.shareStyle}}">{{r.shareLabel}}</button>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{m}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+          <div style="padding: 18px; border-radius: 22px; background: var(--surf); border: 2.5px solid var(--line); box-shadow: 0 4px 0 var(--shadow); display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
+              <span style="font-family: var(--fd); font-weight: 800; font-size: 19px; line-height: 1.15">{{r.title}}</span>
+              <span style="{{r.statusStyle}}">{{r.status}}</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+              <div><div style="font-family: var(--fd); font-weight: 800; font-size: 22px">{{r.plays}}</div><div style="font-size: 13px; font-weight: 600; color: var(--mute)">plays</div></div>
+              <div><div style="font-family: var(--fd); font-weight: 800; font-size: 22px">{{r.solve}}</div><div style="font-size: 13px; font-weight: 600; color: var(--mute)">solve rate</div></div>
+            </div>
+            <div style="padding: 10px 12px; border-radius: 14px; background: var(--surf2); font-size: 14px; line-height: 1.35"><span style="font-weight: 700">Most common wrong guess: </span>{{r.wrong}}</div>
+            <div style="display: flex; gap: 8px">
+              <a href="Create.dc.html" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 46px; border-radius: 999px; border: 2.5px solid var(--line); background: var(--surf); color: var(--ink); font-family: var(--fd); font-weight: 700; font-size: 15px; text-decoration: none">Edit</a>
+              <button type="button" onClick="{{r.share}}" style="{{r.shareStyleM}}">{{r.shareLabel}}</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"device":{"editor":"enum","options":["desktop","mobile"],"default":"desktop"},"dark":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const m = (this.props.device ?? 'desktop') === 'mobile';
+    const vars = dark
+      ? '--bg:#13111C;--surf:#1E1B2A;--surf2:#2A2639;--ink:#F3F1FA;--mute:#A9A4BE;--line:#4A4561;--tile:#2A2639;--tileInk:#F3F1FA;--shadow:#000000;--inv:#F3F1FA;--invInk:#13111C;'
+      : '--bg:#EFEEF6;--surf:#FFFFFF;--surf2:#E3E1EE;--ink:#17142A;--mute:#5B5770;--line:#17142A;--tile:#FFFFFF;--tileInk:#17142A;--shadow:#17142A;--inv:#17142A;--invInk:#FFFFFF;';
+    const base = '--d1:#FFD84D;--d2:#5EC4E6;--d3:#FF8B4A;--d4:#5A3DE0;--fd:"Bricolage Grotesque",sans-serif;--fb:"Figtree",sans-serif;';
+    const P = [
+      ['Group Chat Chaos', 'Live · 2 days ago', 12408, 61, 'Mouse, Door, Swing + Battery'],
+      ['Reality TV or Medieval Torture?', 'Live', 21730, 29, 'Rack, Stocks, Pillory + Love Island'],
+      ['Words That Sound Rude But Aren’t', 'Live', 30210, 48, 'Gubbins, Kerfuffle, Bamboozle + Whoopsie'],
+      ['Villains With Good Points', 'Live', 8812, 34, 'Ursula, Scar, Jafar + Gaston'],
+      ['Famous Steves', 'Live', 5530, 58, 'Irwin, Jobs, Coogan + Martin'],
+      ['Office Jargon Bingo', 'Draft', 0, null, 'Nobody’s played it. It’s a draft.'],
+    ];
+    const copied = (this.state && this.state.copied) ?? -1;
+    const btn = 'display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:999px;border:2.5px solid var(--line);font-family:var(--fd);font-weight:700;font-size:15px;cursor:pointer;';
+    const rows = P.map((p, i) => {
+      const live = p[1] !== 'Draft';
+      const on = copied === i;
+      const look = !live ? 'background:var(--surf2);color:var(--mute);cursor:not-allowed;' : on ? 'background:var(--d1);color:#17142A;' : 'background:var(--inv);color:var(--invInk);';
+      return {
+        title: p[0], status: p[1],
+        statusStyle: 'align-self:flex-start;flex:none;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;' + (live ? 'background:var(--d2);color:#17142A;' : 'border:2px dashed var(--mute);color:var(--mute);'),
+        plays: live ? p[2].toLocaleString('en-GB') : '—',
+        solve: p[3] == null ? '—' : p[3] + '%',
+        bar: 'display:block;height:100%;width:' + (p[3] || 0) + '%;border-radius:6px;background:var(--ink);',
+        wrong: p[4],
+        share: () => { if (!live) return; this.setState({ copied: i }); clearTimeout(this.tm); this.tm = setTimeout(() => this.setState({ copied: -1 }), 1800); },
+        shareLabel: !live ? 'Publish first' : on ? 'Link copied' : 'Copy share link',
+        shareStyle: btn + look,
+        shareStyleM: btn + 'flex:1;' + look,
+      };
+    });
+    return {
+      m, d: !m, rows,
+      stats: [
+        { v: '214,038', k: 'total plays' },
+        { v: '+18.2k', k: 'plays this week' },
+        { v: '51%', k: 'average solve rate' },
+        { v: '3,140', k: 'clicks to your socials' },
+      ],
+      statSize: m ? 26 : 34,
+      root: vars + base + 'width:100%;box-sizing:border-box;background:var(--bg);color:var(--ink);font-family:var(--fb);',
+      wrap: 'display:flex;flex-direction:column;gap:' + (m ? 20 : 28) + 'px;max-width:1240px;margin:0 auto;padding:' + (m ? '24px 16px 48px' : '48px 40px 80px') + ';box-sizing:border-box;',
+      h1: 'margin:0;font-family:var(--fd);font-weight:800;letter-spacing:-0.04em;line-height:1;font-size:' + (m ? 38 : 60) + 'px;',
+      newBtn: 'display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;border:2.5px solid var(--line);background:var(--d1);color:#17142A;font-family:var(--fd);font-weight:700;font-size:17px;text-decoration:none;box-shadow:0 4px 0 var(--shadow);' + (m ? 'flex:1 1 100%;' : ''),
+      statGrid: 'display:grid;grid-template-columns:' + (m ? 'repeat(2,minmax(0,1fr))' : 'repeat(4,minmax(0,1fr))') + ';gap:' + (m ? 12 : 20) + 'px;',
+    };
+  }
+  componentWillUnmount() { clearTimeout(this.tm); }
+}
+</script>
+</body>
+</html>

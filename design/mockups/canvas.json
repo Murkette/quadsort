@@ -1,0 +1,48 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-10-09T12:00:00Z"},
+  "title": "Sort Yourself Out",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 1440, "h": 1000, "title": "Wordmark, palette & voice"},
+    "Components.dc.html": {"x": 1520, "y": 0, "w": 1440, "h": 1900, "title": "Components"},
+    "Landing.dc.html": {"x": 0, "y": 2300, "w": 1440, "h": 2500, "title": "Landing — desktop", "expand": "fill", "is_interactive": true},
+    "Landing-Mobile.dc.html": {"x": 1520, "y": 2300, "w": 390, "h": 3300, "title": "Landing — mobile", "is_interactive": true},
+    "Play.dc.html": {"x": 0, "y": 6000, "w": 1440, "h": 1000, "title": "Play — desktop (fully playable)", "is_interactive": true},
+    "Play-States.dc.html": {"x": 1520, "y": 6000, "w": 2708, "h": 1060, "title": "Play — mobile, every state", "is_interactive": true},
+    "Play-Dark.dc.html": {"x": 4308, "y": 6000, "w": 1394, "h": 1060, "title": "Play — dark theme", "is_interactive": true},
+    "Results.dc.html": {"x": 0, "y": 7460, "w": 1440, "h": 1700, "title": "Results — win, desktop", "expand": "fill", "is_interactive": true},
+    "Results-Mobile.dc.html": {"x": 1520, "y": 7460, "w": 956, "h": 2300, "title": "Results — mobile, win & lose", "is_interactive": true},
+    "Results-Lose.dc.html": {"x": 2556, "y": 7460, "w": 1440, "h": 1700, "title": "Results — lose, desktop", "is_interactive": true},
+    "Create.dc.html": {"x": 0, "y": 10160, "w": 1440, "h": 1900, "title": "Puzzle creator — desktop", "expand": "fill", "is_interactive": true},
+    "Create-Mobile.dc.html": {"x": 1520, "y": 10160, "w": 390, "h": 3300, "title": "Puzzle creator — mobile", "is_interactive": true},
+    "Create-Published.dc.html": {"x": 1990, "y": 10160, "w": 390, "h": 1100, "title": "Publish step — mobile", "is_interactive": true},
+    "Profile.dc.html": {"x": 0, "y": 13860, "w": 1440, "h": 1500, "title": "Creator profile — desktop", "expand": "fill", "is_interactive": true},
+    "Profile-Mobile.dc.html": {"x": 1520, "y": 13860, "w": 390, "h": 2300, "title": "Creator profile — mobile", "is_interactive": true},
+    "Browse.dc.html": {"x": 1990, "y": 13860, "w": 1440, "h": 1700, "title": "Browse — desktop", "expand": "fill", "is_interactive": true},
+    "Browse-Mobile.dc.html": {"x": 3510, "y": 13860, "w": 390, "h": 2700, "title": "Browse — mobile", "is_interactive": true},
+    "Dashboard.dc.html": {"x": 3980, "y": 13860, "w": 1440, "h": 1200, "title": "Creator dashboard — desktop", "expand": "fill", "is_interactive": true},
+    "Dashboard-Mobile.dc.html": {"x": 5500, "y": 13860, "w": 390, "h": 2200, "title": "Creator dashboard — mobile", "is_interactive": true}
+  },
+  "order": [
+    "Main.dc.html", "Components.dc.html",
+    "Landing.dc.html", "Landing-Mobile.dc.html",
+    "Play.dc.html", "Play-States.dc.html", "Play-Dark.dc.html",
+    "Results.dc.html", "Results-Mobile.dc.html", "Results-Lose.dc.html",
+    "Create.dc.html", "Create-Mobile.dc.html", "Create-Published.dc.html",
+    "Profile.dc.html", "Profile-Mobile.dc.html",
+    "Browse.dc.html", "Browse-Mobile.dc.html",
+    "Dashboard.dc.html", "Dashboard-Mobile.dc.html"
+  ],
+  "notes": {
+    "t_brand": {"x": 0, "y": -280, "text": "Brand & components", "kind": "title1", "maxW": 2960},
+    "t_landing": {"x": 0, "y": 2020, "text": "Landing", "kind": "title1", "maxW": 1910},
+    "t_play": {"x": 0, "y": 5720, "text": "Play — the main event", "kind": "title1", "maxW": 5700},
+    "motion": {"x": 5782, "y": 6000, "w": 380, "fill": "orange", "text": "Motion spec\n\n• Select: tile presses in 2px, ink fill, 140ms spring (overshoot 1.6).\n• Shuffle: tiles flip out/in on Y, staggered 20ms, 260ms total.\n• Wrong guess: grid shakes ±8px ×3, 380ms; a life pops out.\n• One away: toast drops in from the top, holds 1.8s.\n• Correct: the four tiles fly to the top row, merge into the coloured group row, 420ms ease-out, then the category name types on.\n• Respect prefers-reduced-motion: swap movement for fades."},
+    "t_results": {"x": 0, "y": 7180, "text": "Results", "kind": "title1", "maxW": 3996},
+    "t_create": {"x": 0, "y": 9880, "text": "Make a puzzle", "kind": "title1", "maxW": 2380},
+    "t_rest": {"x": 0, "y": 13580, "text": "Profile · Browse · Dashboard", "kind": "title1", "maxW": 5890}
+  },
+  "designSystems": []
+}

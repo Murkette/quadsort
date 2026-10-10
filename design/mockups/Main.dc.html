@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sort Yourself Out — wordmark and palette</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="{{root}}">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 64px">
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <div style="font-family: var(--fb); font-weight: 600; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute)">Wordmark</div>
+      <h1 style="margin: 0; font-family: var(--fd); font-weight: 800; font-size: 148px; line-height: 0.84; letter-spacing: -0.045em">Sort<br>Yourself<br>Out<span style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; background: var(--d1); border: 4px solid var(--line); margin-left: 8px; vertical-align: baseline"></span></h1>
+      <p style="margin: 8px 0 0; font-size: 20px; color: var(--mute); max-width: 560px; line-height: 1.45">Make a word-grouping puzzle in two minutes. Send the link. Watch your mates crumble.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 20px; align-items: flex-end">
+      <div style="font-family: var(--fb); font-weight: 600; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute)">Mark &amp; lockups</div>
+      <div style="display: flex; gap: 20px; align-items: center">
+        <div style="width: 200px; height: 200px; border-radius: 44px; background: var(--inv); display: flex; align-items: center; justify-content: center">
+          <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 120px; height: 120px">
+            <sc-for list="{{levels}}" as="lv" hint-placeholder-count="4">
+              <div style="border-radius: 14px; background: {{lv.c}}; display: flex; align-items: center; justify-content: center"><span style="{{lv.shapeSmInk}}"></span></div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="width: 200px; height: 200px; border-radius: 44px; background: var(--d1); border: 4px solid var(--line); box-sizing: border-box; display: flex; align-items: center; justify-content: center">
+          <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 112px; height: 112px">
+            <div style="border-radius: 12px; background: #FFFFFF; border: 3px solid #17142A"></div>
+            <div style="border-radius: 12px; background: #FFFFFF; border: 3px solid #17142A"></div>
+            <div style="border-radius: 12px; background: #17142A; border: 3px solid #17142A"></div>
+            <div style="border-radius: 12px; background: #FFFFFF; border: 3px solid #17142A"></div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 22px; border-radius: 20px; background: var(--surf); border: 2.5px solid var(--line); box-shadow: 0 4px 0 var(--shadow)">
+        <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; width: 32px; height: 32px">
+          <sc-for list="{{levels}}" as="lv" hint-placeholder-count="4">
+            <div style="border-radius: 5px; background: {{lv.c}}; border: 2px solid var(--line)"></div>
+          </sc-for>
+        </div>
+        <span style="font-family: var(--fd); font-weight: 800; font-size: 26px; letter-spacing: -0.03em">Sort Yourself Out</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 18px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline">
+      <div style="font-family: var(--fb); font-weight: 600; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute)">Difficulty palette — colour, lightness and shape all change</div>
+      <div style="font-size: 15px; color: var(--mute)">Easiest → most devious</div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px">
+      <sc-for list="{{levels}}" as="lv" hint-placeholder-count="4">
+        <div style="border-radius: 24px; border: 2.5px solid var(--line); box-shadow: 0 5px 0 var(--shadow); overflow: hidden; background: var(--surf)">
+          <div style="height: 132px; background: {{lv.c}}; color: {{lv.ink}}; display: flex; align-items: flex-end; justify-content: space-between; padding: 18px 20px; box-sizing: border-box; border-bottom: 2.5px solid var(--line)">
+            <span style="font-family: var(--fd); font-weight: 800; font-size: 36px; letter-spacing: -0.02em">{{lv.name}}</span>
+            <span style="{{lv.shapeLg}}"></span>
+          </div>
+          <div style="padding: 14px 20px; display: flex; justify-content: space-between; font-size: 15px">
+            <span style="font-weight: 700">Level {{lv.n}} · {{lv.cue}}</span>
+            <span style="color: var(--mute); font-variant-numeric: tabular-nums">{{lv.c}}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-family: var(--fb); font-weight: 600; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute)">Voice — dry, bossy, brief</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px">
+        <span style="padding: 12px 18px; border-radius: 999px; background: var(--inv); color: var(--invInk); font-family: var(--fd); font-weight: 700; font-size: 20px">Sort yourself out.</span>
+        <span style="padding: 12px 18px; border-radius: 999px; background: var(--inv); color: var(--invInk); font-family: var(--fd); font-weight: 700; font-size: 20px">Not even close.</span>
+        <span style="padding: 12px 18px; border-radius: 999px; background: var(--inv); color: var(--invInk); font-family: var(--fd); font-weight: 700; font-size: 20px">One away. Painful.</span>
+        <span style="padding: 12px 18px; border-radius: 999px; background: var(--inv); color: var(--invInk); font-family: var(--fd); font-weight: 700; font-size: 20px">You tried that. Focus.</span>
+        <span style="padding: 12px 18px; border-radius: 999px; background: var(--inv); color: var(--invInk); font-family: var(--fd); font-weight: 700; font-size: 20px">Sorted. Smug yet?</span>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="font-family: var(--fb); font-weight: 600; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute)">Type</div>
+      <div style="display: flex; gap: 28px; align-items: flex-end">
+        <div>
+          <div style="font-family: var(--fd); font-weight: 800; font-size: 64px; line-height: 1; letter-spacing: -0.03em">Aa</div>
+          <div style="font-size: 14px; color: var(--mute); margin-top: 6px">Bricolage Grotesque — display &amp; tiles<br>condenses for long words</div>
+        </div>
+        <div>
+          <div style="font-family: var(--fb); font-weight: 500; font-size: 64px; line-height: 1">Aa</div>
+          <div style="font-size: 14px; color: var(--mute); margin-top: 6px">Figtree — body &amp; UI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  shape(s, size, color) {
+    const b = 'display:inline-block;flex:none;width:' + size + 'px;height:' + size + 'px;background:' + color + ';';
+    if (s === 'circle') return b + 'border-radius:50%;';
+    if (s === 'triangle') return b + 'clip-path:polygon(50% 6%,100% 94%,0 94%);';
+    if (s === 'square') return b + 'border-radius:3px;';
+    return b + 'transform:rotate(45deg) scale(0.8);border-radius:3px;';
+  }
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const vars = dark
+      ? '--bg:#13111C;--surf:#1E1B2A;--surf2:#2A2639;--ink:#F3F1FA;--mute:#A9A4BE;--line:#4A4561;--tile:#2A2639;--tileInk:#F3F1FA;--shadow:#000000;--inv:#F3F1FA;--invInk:#13111C;'
+      : '--bg:#EFEEF6;--surf:#FFFFFF;--surf2:#E3E1EE;--ink:#17142A;--mute:#5B5770;--line:#17142A;--tile:#FFFFFF;--tileInk:#17142A;--shadow:#17142A;--inv:#17142A;--invInk:#FFFFFF;';
+    const base = '--d1:#FFD84D;--d2:#5EC4E6;--d3:#FF8B4A;--d4:#5A3DE0;--fd:"Bricolage Grotesque",sans-serif;--fb:"Figtree",sans-serif;';
+    const L = [
+      { n: 1, name: 'Gentle', c: '#FFD84D', ink: '#17142A', s: 'circle', cue: 'circle' },
+      { n: 2, name: 'Tricky', c: '#5EC4E6', ink: '#17142A', s: 'triangle', cue: 'triangle' },
+      { n: 3, name: 'Sneaky', c: '#FF8B4A', ink: '#17142A', s: 'square', cue: 'square' },
+      { n: 4, name: 'Devious', c: '#5A3DE0', ink: '#FFFFFF', s: 'diamond', cue: 'diamond' },
+    ];
+    return {
+      root: vars + base + 'width:1440px;height:1000px;box-sizing:border-box;padding:72px 80px;background:var(--bg);color:var(--ink);font-family:var(--fb);display:flex;flex-direction:column;gap:56px;',
+      levels: L.map((l) => ({ ...l, shapeLg: this.shape(l.s, 40, l.ink), shapeSmInk: this.shape(l.s, 24, '#17142A' === l.ink ? 'rgba(23,20,42,.85)' : '#FFFFFF') })),
+    };
+  }
+}
+</script>
+</body>
+</html>
