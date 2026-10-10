@@ -19,11 +19,8 @@
   const S = { sel: [], solved: [], mistakes: 0, guesses: [], over: null, solution: null, busy: false };
 
   // ---------- persistence (a reload from a social app's in-app browser must not reset your lives) ----------
-  const KEY = 'qs:' + id;
-  const store = {
-    get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
-    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode: play on */ } },
-  };
+  const store = QS.store;
+  const KEY = `qs:${id}:${root.dataset.rev}`; // rev changes when the puzzle is edited
   const save = () => store.set(KEY, { guesses: S.guesses, solution: S.solution });
   const uid = () => {
     let k = store.get('qs:player');
@@ -39,14 +36,18 @@
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const anim = (el, frames, opts) => (el.animate ? el.animate(frames, opts) : { finished: Promise.resolve() });
 
-  // Shrink any tile whose word doesn't fit. Starting sizes come from CSS by word length.
+  // Shrink any tile whose word doesn't fit; if it still can't at a readable size, let it wrap mid-word
+  // rather than clip. Starting sizes come from CSS by word length.
   function fit(el) {
-    el.style.fontSize = '';
-    let s = parseFloat(getComputedStyle(el).fontSize);
-    while ((el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) && s > 9) {
-      s -= 0.5;
-      el.style.fontSize = s + 'px';
-    }
+    el.classList.remove('brk');
+    const over = () => el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight;
+    const shrink = (floor) => {
+      el.style.fontSize = '';
+      let s = parseFloat(getComputedStyle(el).fontSize);
+      while (over() && s > floor) { s -= 0.5; el.style.fontSize = s + 'px'; }
+    };
+    shrink(10);
+    if (over()) { el.classList.add('brk'); shrink(9); }
   }
   const fitAll = () => remaining().forEach(fit);
   let rt;

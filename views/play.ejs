@@ -1,11 +1,11 @@
 <%- include('partials/head') %>
-<div class="play" data-puzzle="<%= puzzle.id %>">
+<div class="play" data-puzzle="<%= puzzle.id %>" data-rev="<%= rev %>">
   <section class="play-col" aria-label="Puzzle">
     <div class="puzzle-head">
       <h1><%= puzzle.title %></h1>
       <p class="by">by
-        <% if (creator) { %><a href="/u/<%= creator.username %>"><%= creator.name %></a>
-          <% if (creator.social) { %><a class="chip" href="<%= creator.social %>" rel="nofollow noopener ugc" target="_blank"><%= creator.host %> ↗</a><% } %>
+        <% if (creator) { %><% if (creator.username) { %><a href="/u/<%= creator.username %>"><%= creator.name %></a><% } else { %><strong><%= creator.name %></strong><% } %>
+          <% if (creator.social) { %><a class="chip" href="<%= creator.social %>" rel="nofollow noopener ugc" target="_blank"><%= creator.handle || creator.host %> ↗</a><% } %>
         <% } else { %><strong>Quadsort</strong><% } %>
       </p>
       <% if (puzzle.description) { %><p class="desc"><%= puzzle.description %></p><% } %>
@@ -95,12 +95,12 @@
         <div>
           <div class="eyebrow">Made by</div>
           <div class="cname"><%= creator.name %></div>
-          <div class="csub"><%= creator.handle ? creator.handle + ' · ' : '' %><%= creator.puzzles %> puzzle<%= creator.puzzles === 1 ? '' : 's' %></div>
+          <div class="csub"><%= [creator.handle, creator.puzzles !== null ? creator.puzzles + ' puzzle' + (creator.puzzles === 1 ? '' : 's') : null].filter(Boolean).join(' · ') %></div>
         </div>
       </div>
       <div class="cbtns">
         <% if (creator.social) { %><a class="pill dark" href="<%= creator.social %>" rel="nofollow noopener ugc" target="_blank"><%= creator.handle ? 'Follow ' + creator.handle : 'Visit ' + creator.host %></a><% } %>
-        <a class="pill light" href="/u/<%= creator.username %>">More by <%= creator.name.split(/\s+/)[0] %></a>
+        <% if (creator.username) { %><a class="pill light" href="/u/<%= creator.username %>">More by <%= creator.name.split(/\s+/)[0] %></a><% } %>
       </div>
       <% if (creator.more.length) { %><div class="more">
         <% creator.more.forEach(function (m) { %><a href="/p/<%= m.id %>"><span><%= m.title %></span><span class="sr"><%= m.solveRate === null ? 'new' : Math.round(m.solveRate * 100) + '% solve' %></span></a>

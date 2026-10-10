@@ -18,7 +18,7 @@ function createApp(db = open()) {
     res.type('text').send('ok');
   });
   app.use('/api', rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false }));
-  app.use('/api', express.json({ limit: '4kb' }), require('./routes/api')(db));
+  app.use('/api', express.json({ limit: '16kb' }), require('./routes/api')(db));
   app.use(require('./routes/pages')(db));
   app.use((req, res) => res.status(404).render('404'));
   return app;

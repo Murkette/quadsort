@@ -88,23 +88,10 @@
   const show = () => { play.hidden = true; root.hidden = false; scrollTo(0, 0); };
   const hide = () => { root.hidden = true; play.hidden = false; scrollTo(0, 0); };
 
-  async function copy(text) {
-    try { await navigator.clipboard.writeText(text); return true; } catch { /* not a secure context, etc. */ }
-    const ta = h('textarea');
-    ta.value = text;
-    ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.append(ta);
-    ta.select();
-    let ok = false;
-    try { ok = document.execCommand('copy'); } catch { /* fall through */ }
-    ta.remove();
-    return ok;
-  }
-
   let t;
   $('#copy').onclick = async () => {
     const btn = $('#copy'), label = $('#copy-label');
-    const ok = await copy(shareText);
+    const ok = await QS.copy(shareText);
     label.textContent = ok ? 'Copied' : 'Copy failed';
     btn.classList.toggle('done', ok);
     clearTimeout(t);
