@@ -42,7 +42,7 @@
     <a class="nav-daily" href="/daily">Daily</a>
     <a href="/browse">Browse</a>
     <a class="nav-play" href="/random">Play one</a>
-    <% if (user) { %><a href="/dashboard">My puzzles</a><a class="avatar-sm" href="/u/<%= user.username %>"><span aria-hidden="true"><%= initials(user.display_name) %></span><span class="sr">Your profile</span></a>
+    <% if (user) { %><a href="/dashboard">My puzzles</a><% if (user.is_admin) { %><a class="nav-admin" href="/admin">Admin</a><% } %><a class="avatar-sm" href="/u/<%= user.username %>"><span aria-hidden="true"><%= initials(user.display_name) %></span><span class="sr">Your profile</span></a>
     <% } else { %><a class="nav-login" href="/login">Log in</a><% } %>
     <a class="btn btn-primary btn-sm" href="/create">Make a puzzle</a>
   </nav>

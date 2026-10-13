@@ -167,3 +167,13 @@ test('make-admin script', () => {
   assert.equal(run().status, 2);
   fs.rmSync(dir, { recursive: true });
 });
+
+test('admins get an Admin link; nobody else does', async (t) => {
+  const { anon, priya, boss } = await world(t);
+  for (const [who, expected] of [[boss, true], [priya, false], [anon, false]]) {
+    const html = await (await who.get('/')).text();
+    assert.equal(/href="\/admin"/.test(html), expected, expected ? 'admin sees it' : 'others do not');
+  }
+  assert.match(await (await boss.get('/dashboard')).text(), /<a href="\/admin">Admin<\/a><\/p>/);
+  assert.doesNotMatch(await (await priya.get('/dashboard')).text(), /href="\/admin"/);
+});
