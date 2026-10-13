@@ -557,3 +557,10 @@ main:focus { outline: none; } /* main is only focused by the skip link */
 .theme { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surf2); }
 .theme button { min-height: 36px; padding: 0 14px; border: 0; border-radius: 999px; background: transparent; color: var(--ink); font: 700 13px var(--fb); cursor: pointer; }
 .theme button[aria-pressed="true"] { background: var(--inv); color: var(--invInk); }
+
+/* ---------- the Daily ---------- */
+.daily-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 0; padding: 8px 14px; align-self: flex-start; border: 2.5px solid var(--line); border-radius: 999px; background: var(--d1); color: #17142A; font-size: 14px; font-weight: 700; box-shadow: 0 3px 0 var(--shadow); }
+.daily-banner b { font: 800 14px var(--fd); letter-spacing: .06em; text-transform: uppercase; }
+.daily-banner a { color: #17142A; text-underline-offset: 3px; }
+.daily-tag { margin: 0; }
+.daily-tag a { display: inline-block; padding: 4px 12px; border: 2px solid var(--line); border-radius: 999px; background: var(--surf); color: var(--ink); font-size: 13px; font-weight: 700; text-decoration: none; }

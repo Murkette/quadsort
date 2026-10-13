@@ -11,7 +11,7 @@ const blankGroup = (level) => ({ name: '', level, words: ['', '', '', ''] });
 const need = (req, res, next) => (req.user ? next() : res.redirect('/login?next=' + encodeURIComponent(req.originalUrl)));
 const rate = (c) => (c.solveRate === null ? '–' : Math.round(c.solveRate * 100) + '%');
 
-module.exports = (db) => {
+module.exports = (db, daily) => {
   const r = express.Router();
   const find = db.prepare(`
     SELECT p.id, p.title, p.description, p.groups_json, p.user_id, p.is_flagged,
@@ -105,8 +105,9 @@ module.exports = (db) => {
   });
 
   // ---------- playing ----------
-  r.get('/p/:id', (req, res, next) => {
-    const row = find.get(req.params.id);
+  // One play screen for /p/:id, /daily and /daily/:day. `d` is the Daily this view is for (if any);
+  // `tag` is set when an ordinary /p/:id link happens to be a Daily, so it can say so.
+  function playPage(req, res, next, row, { d = null, tag = null } = {}) {
     if (!row) return next();
     // Hidden by a moderator: gone for the public; the creator and admins can still open it (with a banner).
     const mayView = req.user && (req.user.is_admin || req.user.id === row.user_id);
@@ -124,16 +125,38 @@ module.exports = (db) => {
     const challenge = stats.plays >= 20 ? ` ${pct < 50 ? 'Only ' : ''}${pct}% of ${stats.plays.toLocaleString('en-US')} players solve it.` : '';
     const lead = row.description || 'Sixteen words, four hidden groups. Can you sort them?';
     res.render('play', {
-      title: row.title,
+      title: d ? `Daily #${d.number}: ${row.title}` : row.title,
       noindex: !!row.is_flagged,
-      description: `${lead} A Quadsort puzzle${creator ? ' by ' + creator.name : ''}.${challenge}`.slice(0, 220),
+      description: `${d ? `The Quadsort Daily, ${d.label}. ` : ''}${lead} A Quadsort puzzle${creator ? ' by ' + creator.name : ''}.${challenge}`.slice(0, 220),
       puzzle: { id: row.id, title: row.title, description: row.description }, hidden: !!row.is_flagged, REASONS,
       // changes whenever the words change, so a player's saved progress never outlives the puzzle it was for
       rev: crypto.createHash('sha1').update(row.groups_json).digest('hex').slice(0, 8),
       creator, words, stats,
+      dailyBanner: d, dailyTag: tag,
+      // what the share text links to: today's Daily lives at /daily, an older one at its dated address
+      sharePath: d ? (d.isToday ? '/daily' : `/daily/${d.day}`) : `/p/${row.id}`,
       lenClass: (w) => (w.length <= 5 ? 1 : w.length <= 7 ? 2 : w.length <= 9 ? 3 : 4),
       scripts: ['/js/common.js', '/js/results.js', '/js/play.js', '/js/report.js'], // results first so it is listening when play finishes
     });
+  }
+
+  r.get('/p/:id', (req, res, next) => {
+    const row = find.get(req.params.id);
+    if (!row) return next();
+    const info = daily.info(row.id);
+    playPage(req, res, next, row, { tag: ['today', 'was'].includes(info.state) ? info : null });
+  });
+
+  // The Daily: today's puzzle (picked on first request of the day), or an earlier day's.
+  r.get('/daily', (req, res, next) => {
+    const d = daily.current();
+    playPage(req, res, next, d && find.get(d.puzzleId), { d });
+  });
+  r.get('/daily/:day', (req, res, next) => {
+    const d = daily.forDay(req.params.day);
+    if (!d) return next();
+    if (d.isToday) return res.redirect('/daily');
+    playPage(req, res, next, find.get(d.puzzleId), { d });
   });
 
   // ---------- creators ----------

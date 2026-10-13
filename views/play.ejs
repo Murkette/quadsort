@@ -1,8 +1,10 @@
 <%- include('partials/head') %>
 <% if (hidden) { %><p class="hidden-note" role="status">This puzzle is hidden by a moderator. Only you and the admins can see it.</p><% } %>
-<div class="play" data-puzzle="<%= puzzle.id %>" data-rev="<%= rev %>">
+<div class="play" data-puzzle="<%= puzzle.id %>" data-rev="<%= rev %>" data-share="<%= sharePath %>"<%- dailyBanner ? ' data-daily="' + dailyBanner.number + '" data-daily-day="' + dailyBanner.day + '"' + (dailyBanner.isToday ? ' data-daily-today="1"' : '') : '' %>>
   <section class="play-col" aria-label="Puzzle">
     <div class="puzzle-head">
+      <% if (dailyBanner) { %><p class="daily-banner"><b>The Daily</b> <span>#<%= dailyBanner.number %></span> <span><%= dailyBanner.label %></span><% if (!dailyBanner.isToday) { %> <a href="/daily">Play today's</a><% } %></p>
+      <% } else if (dailyTag) { %><p class="daily-tag"><% if (dailyTag.state === 'today') { %><a href="/daily">Today's Daily · #<%= dailyTag.number %></a><% } else { %><a href="/daily/<%= dailyTag.day %>">Daily #<%= dailyTag.number %> · <%= dailyTag.short %></a><% } %></p><% } %>
       <h1><%= puzzle.title %></h1>
       <p class="by">by
         <% if (creator) { %><% if (creator.username) { %><a href="/u/<%= creator.username %>"><%= creator.name %></a><% } else { %><strong><%= creator.name %></strong><% } %>

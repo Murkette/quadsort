@@ -4,8 +4,11 @@ const path = require('path');
 const open = require('./db');
 const { sessions } = require('./lib/auth');
 const { initials } = require('./lib/util');
+const { makeDaily } = require('./lib/daily');
 
-function createApp(db = open()) {
+// opts.now and opts.onPick exist so tests can control the clock and capture notifications.
+function createApp(db = open(), opts = {}) {
+  const daily = makeDaily(db, { now: opts.now, onPick: opts.onPick });
   const app = express();
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, 'views'));
@@ -29,11 +32,11 @@ function createApp(db = open()) {
     next();
   });
   app.use('/api', rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false }));
-  app.use('/api', express.json({ limit: '16kb' }), require('./routes/api')(db));
-  app.use('/admin', require('./routes/admin')(db));
+  app.use('/api', express.json({ limit: '16kb' }), require('./routes/api')(db, daily));
+  app.use('/admin', require('./routes/admin')(db, daily));
   app.use(require('./routes/auth')(db, auth));
   app.use(require('./routes/reset')(db, auth));
-  app.use(require('./routes/pages')(db));
+  app.use(require('./routes/pages')(db, daily));
   app.use((req, res) => res.status(404).render('404', { title: 'Not even close', noindex: true }));
   return app;
 }

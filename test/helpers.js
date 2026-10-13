@@ -2,8 +2,8 @@ const createApp = require('../server');
 const open = require('../db');
 
 // An app on a random port with a tiny client that keeps one cookie jar per "person".
-async function serve(t, db = open(':memory:')) {
-  const srv = createApp(db).listen(0);
+async function serve(t, db = open(':memory:'), opts = {}) {
+  const srv = createApp(db, opts).listen(0);
   t.after(() => srv.close());
   const url = `http://127.0.0.1:${srv.address().port}`;
   const person = () => {
