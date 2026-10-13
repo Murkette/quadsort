@@ -9,7 +9,7 @@ const { REASONS } = require('../lib/reports');
 const B62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const newId = () => Array.from({ length: 8 }, () => B62[crypto.randomInt(62)]).join('');
 
-module.exports = (db) => {
+module.exports = (db, daily) => {
   const r = express.Router();
   const find = db.prepare('SELECT groups_json FROM puzzles WHERE id = ? AND is_published = 1');
   const played = db.prepare('SELECT 1 FROM plays WHERE puzzle_id = ? AND player_key = ?');
@@ -81,7 +81,8 @@ module.exports = (db) => {
       const id = newId();
       try {
         make.run(id, req.user.id, p.title, p.description, JSON.stringify(p.groups), p.tags.join(','));
-        return res.status(201).json({ id, url: `/p/${id}` });
+        if (req.body.daily === true) daily.join(id); // opted in at publish: this is the spot a paywall goes later
+        return res.status(201).json({ id, url: `/p/${id}`, daily: daily.info(id) });
       } catch (e) {
         if (e.code !== 'SQLITE_CONSTRAINT_PRIMARYKEY') throw e; // id collision: roll again
       }
@@ -90,6 +91,8 @@ module.exports = (db) => {
   });
 
   // Edit. Changing the words or groups makes old plays and stats meaningless, so they are cleared.
+  // Daily rules: a puzzle that is (or was) a Daily keeps its words for good, and one waiting in line
+  // keeps them while it waits. To change the words you leave the line first (and rejoin at the back).
   r.put('/puzzles/:id', login, publishLimit, (req, res) => {
     const row = owned.get(req.params.id, req.user.id);
     if (!row) return res.status(404).json({ error: 'no such puzzle' });
@@ -98,14 +101,34 @@ module.exports = (db) => {
     const p = v.value;
     const groupsJson = JSON.stringify(p.groups);
     const changed = groupsJson !== row.groups_json;
+    const before = daily.info(req.params.id).state;
+    const ran = before === 'today' || before === 'was' || before === 'scheduled';
+    const wants = req.body.daily; // true, false, or absent (leave as is)
+    if (changed && ran) return res.status(409).json({ error: 'This puzzle is, or was, the Daily, so its words are locked. You can still change the title and description.' });
+    if (changed && before === 'queued' && wants !== false) {
+      return res.status(409).json({ error: 'The words are locked while this is in line for the Daily. Untick the Daily box to change them. It rejoins at the back of the line if you tick it again.' });
+    }
     db.transaction(() => {
       update.run(p.title, p.description, groupsJson, p.tags.join(','), req.params.id, req.user.id);
       if (changed) wipePlays.run(req.params.id);
+      if (!ran) { if (wants === true) daily.join(req.params.id); else if (wants === false) daily.leave(req.params.id); }
     })();
-    res.json({ id: req.params.id, url: `/p/${req.params.id}`, statsReset: changed });
+    res.json({ id: req.params.id, url: `/p/${req.params.id}`, statsReset: changed, daily: daily.info(req.params.id) });
   });
 
+  // Join or leave the Daily line without editing anything (the dashboard buttons).
+  r.post('/puzzles/:id/daily', login, publishLimit, (req, res) => {
+    if (!owned.get(req.params.id, req.user.id)) return res.status(404).json({ error: 'no such puzzle' });
+    if (!['none', 'queued'].includes(daily.info(req.params.id).state)) return res.status(409).json({ error: 'This puzzle already has its Daily.' });
+    if (req.body && req.body.in === true) daily.join(req.params.id); else daily.leave(req.params.id);
+    res.json({ daily: daily.info(req.params.id) });
+  });
+
+  // A Daily stays in the archive, so it can't be deleted (hiding it is a moderator's call).
   r.delete('/puzzles/:id', login, (req, res) => {
+    if (owned.get(req.params.id, req.user.id) && !['none', 'queued'].includes(daily.info(req.params.id).state)) {
+      return res.status(409).json({ error: 'This puzzle is, or was, a Daily, so it stays in the archive. Ask us if it needs to come down.' });
+    }
     remove.run(req.params.id, req.user.id).changes ? res.json({ ok: true }) : res.status(404).json({ error: 'no such puzzle' });
   });
 

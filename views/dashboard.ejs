@@ -20,14 +20,17 @@
     <div class="dhead" role="row"><span role="columnheader">Puzzle</span><span role="columnheader">Plays</span><span role="columnheader">Solve rate</span><span role="columnheader">Most common wrong guess</span><span role="columnheader">Actions</span></div>
     <% list.forEach(function (r) { %>
     <div class="drow2" role="row" data-id="<%= r.id %>">
-      <span class="dtitle" role="cell"><a href="/p/<%= r.id %>"><%= r.title %></a><small class="status <%= r.flagged ? 'flag' : r.plays ? 'live' : '' %>"><%= r.flagged ? 'Hidden by moderators' : r.plays ? 'Live' : 'Waiting for players' %></small></span>
+      <span class="dtitle" role="cell"><a href="/p/<%= r.id %>"><%= r.title %></a><small class="status <%= r.flagged ? 'flag' : r.plays ? 'live' : '' %>"><%= r.flagged ? 'Hidden by moderators' : r.plays ? 'Live' : 'Waiting for players' %></small>
+        <% if (r.daily.state !== 'none') { %><small class="astatus daily-line"><%= dailyLine(r.daily) %></small><% } %></span>
       <span role="cell" data-label="Plays"><b><%= r.plays.toLocaleString('en-US') %></b></span>
       <span role="cell" data-label="Solve rate" class="solve"><span class="meter"><span style="width: <%= r.solveRate === null ? 0 : Math.round(r.solveRate * 100) %>%"></span></span><b><%= rate(r) %></b></span>
       <span role="cell" data-label="Most common wrong guess" class="wrong"><%= r.wrong ? r.wrong.words.join(', ') + ' (' + r.wrong.count + ' players)' : (r.plays < 2 ? 'Not enough plays yet.' : 'No clear favourite.') %></span>
       <span role="cell" class="acts">
         <a class="btn btn-sm" href="/p/<%= r.id %>/edit" aria-label="Edit <%= r.title %>">Edit</a>
         <button type="button" class="btn btn-sm" data-copy="/p/<%= r.id %>" aria-label="Copy link to <%= r.title %>">Copy link</button>
-        <button type="button" class="btn btn-sm danger" data-delete="<%= r.id %>" data-title="<%= r.title %>" aria-label="Delete <%= r.title %>">Delete</button>
+        <% if (r.daily.state === 'queued') { %><button type="button" class="btn btn-sm" data-daily="leave" data-id="<%= r.id %>" aria-label="Leave the Daily line: <%= r.title %>">Leave Daily line</button>
+        <% } else if (r.daily.state === 'none') { %><button type="button" class="btn btn-sm" data-daily="join" data-id="<%= r.id %>" aria-label="Add to the Daily line: <%= r.title %>">Add to Daily</button><% } %>
+        <% if (['none', 'queued'].includes(r.daily.state)) { %><button type="button" class="btn btn-sm danger" data-delete="<%= r.id %>" data-title="<%= r.title %>" aria-label="Delete <%= r.title %>">Delete</button><% } %>
       </span>
     </div>
     <% }) %>

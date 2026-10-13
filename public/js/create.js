@@ -15,10 +15,14 @@
   let puzzleId = root.dataset.id || '';
   const isNew = !puzzleId;
   let busy = false;
+  const dailyBox = byId('daily-opt');                       // absent once a puzzle has run as the Daily
+  const dailyState = root.dataset.daily || 'none';
+  let initialGroups = null;                                 // the words as saved, to notice edits while waiting in line
 
   const read = () => ({
     title: f.title.value, description: f.description.value,
     tags: tagBoxes.filter((b) => b.checked).map((b) => b.value),
+    daily: dailyBox ? dailyBox.checked : undefined,
     groups: cards.map((c) => ({
       level: Number(c.querySelector('.glevel').value), name: c.querySelector('.gname').value,
       words: [...c.querySelectorAll('.wi')].map((i) => i.value),
@@ -28,6 +32,7 @@
   function fill(d) {
     f.title.value = d.title || ''; f.description.value = d.description || '';
     tagBoxes.forEach((b) => (b.checked = (d.tags || []).includes(b.value)));
+    if (dailyBox) dailyBox.checked = !!d.daily;
     cards.forEach((c, i) => {
       const g = (d.groups || [])[i] || {};
       c.querySelector('.glevel').value = String(g.level || i + 1);
@@ -122,11 +127,15 @@
     byId('pv-title').textContent = V.clean(raw.title) || 'Your puzzle title';
     byId('pv-by').textContent = 'by ' + (myName || 'you');
 
+    // While waiting in line the words are frozen. Changing them needs the box unticked (and costs your place).
+    const locked = dailyState === 'queued' && dailyBox && dailyBox.checked && initialGroups !== null && JSON.stringify(res.value.groups) !== initialGroups;
+    if (locked) issues.push('The words are locked while this waits for the Daily. Untick the Daily box to change them.');
+
     byId('issues').hidden = !issues.length;
     byId('ready').hidden = !!issues.length;
     byId('issues-title').textContent = issues.length === 1 ? 'One thing to fix.' : `${issues.length} things to fix.`;
     byId('issues-list').replaceChildren(...issues.map((m) => el('li', '', m)));
-    publishBtn.disabled = busy || !res.ok;
+    publishBtn.disabled = busy || !res.ok || locked;
     publishBtn.textContent = busy ? 'Publishing…' : puzzleId ? 'Save changes' : 'Publish puzzle';
   }
 
@@ -217,6 +226,10 @@
       clearTimeout(t);
       t = setTimeout(() => { label.textContent = 'Copy link'; b.classList.remove('done'); }, 1800);
     };
+    const dl = byId('pub-daily'), info = body.daily || { state: 'none' };
+    dl.hidden = info.state !== 'queued';
+    if (!dl.hidden) dl.textContent = `You're in line for the Daily. ${info.daysAway <= 0 ? 'It runs today.' : info.daysAway === 1 ? 'It runs tomorrow.' : `About ${info.daysAway} days away.`} We'll email you when it's up.`;
+    initialGroups = JSON.stringify(V.validate(read()).value.groups); // the saved words are the new baseline
     root.hidden = true; published.hidden = false; scrollTo(0, 0);
   }
 
@@ -229,5 +242,7 @@
   }
   cards.forEach((c) => { const s = c.querySelector('.glevel'); s.dataset.prev = s.value; });
   reorder();
+  if (['today', 'was', 'scheduled'].includes(dailyState)) $$('.gname, .wi, .glevel').forEach((e) => (e.disabled = true)); // already the Daily: words are final
+  initialGroups = JSON.stringify(V.validate(read()).value.groups);
   render();
 })();

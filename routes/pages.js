@@ -91,16 +91,17 @@ module.exports = (db, daily) => {
   // ---------- making ----------
   const editor = (res, form, puzzleId = '', plays = 0) => res.render('create', {
     title: puzzleId ? 'Edit puzzle' : 'Make a puzzle', noindex: true, form, puzzleId, plays, LEVELS, TAGS,
+    dailyInfo: puzzleId ? daily.info(puzzleId) : { state: 'none' },
     scripts: ['/js/common.js', '/js/validate.js', '/js/create.js'],
   });
 
-  r.get('/create', (req, res) => editor(res, { title: '', description: '', tags: [], groups: [1, 2, 3, 4].map(blankGroup) }));
+  r.get('/create', (req, res) => editor(res, { title: '', description: '', tags: [], daily: false, groups: [1, 2, 3, 4].map(blankGroup) }));
 
   r.get('/p/:id/edit', need, (req, res, next) => {
     const p = mine.get(req.params.id, req.user.id);
     if (!p) return next();
     editor(res, {
-      title: p.title, description: p.description, tags: p.tags ? p.tags.split(',') : [], groups: JSON.parse(p.groups_json),
+      title: p.title, description: p.description, tags: p.tags ? p.tags.split(',') : [], groups: JSON.parse(p.groups_json), daily: daily.info(p.id).state === 'queued',
     }, p.id, counts(db, p.id).plays);
   });
 
@@ -188,7 +189,7 @@ module.exports = (db, daily) => {
   r.get('/dashboard', need, (req, res) => {
     const list = listAll.all(req.user.id).map((p) => {
       const c = counts(db, p.id);
-      return { id: p.id, title: p.title, flagged: !!p.is_flagged, ...c, wrong: topWrong(db, p.id, JSON.parse(p.groups_json), 500) };
+      return { id: p.id, title: p.title, flagged: !!p.is_flagged, daily: daily.info(p.id), ...c, wrong: topWrong(db, p.id, JSON.parse(p.groups_json), 500) };
     });
     res.render('dashboard', { title: 'My puzzles', noindex: true, list, totals: totals(list), rate, scripts: ['/js/common.js', '/js/dashboard.js'] });
   });

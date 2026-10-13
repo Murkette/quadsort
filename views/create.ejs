@@ -1,5 +1,5 @@
 <%- include('partials/head') %>
-<div class="create" id="create" data-id="<%= puzzleId %>" data-plays="<%= plays %>" data-auth="<%= user ? 1 : 0 %>" data-name="<%= user ? user.display_name : '' %>">
+<div class="create" id="create" data-id="<%= puzzleId %>" data-plays="<%= plays %>" data-auth="<%= user ? 1 : 0 %>" data-daily="<%= dailyInfo.state %>" data-name="<%= user ? user.display_name : '' %>">
   <form class="create-main" id="form" novalidate autocomplete="off">
     <div class="create-head">
       <h1><%= puzzleId ? 'Edit your puzzle' : 'Make a puzzle' %></h1>
@@ -83,6 +83,14 @@
         <ul id="issues-list"></ul>
       </div>
       <p class="ready" id="ready" hidden>All sixteen present and correct. Suspicious.</p>
+      <% if (['none', 'queued'].includes(dailyInfo.state)) { %>
+      <label class="daily-opt">
+        <input type="checkbox" id="daily-opt"<%= form.daily ? ' checked' : '' %>>
+        <span><b>Put this in the Daily rotation.</b>
+          <small>We feature one puzzle a day. Yours goes in line, first come first served. Your words lock while it waits.</small></span>
+      </label>
+      <% if (dailyInfo.state === 'queued') { %><p class="warn-note"><%= dailyLine(dailyInfo) %> Untick the box to change the words; it rejoins at the back of the line.</p><% } %>
+      <% } else { %><p class="warn-note"><%= dailyLine(dailyInfo) %> Its words are locked for good. The title and description can still change.</p><% } %>
       <% if (plays > 0) { %><p class="warn-note">⚠ <%= plays %> player<%= plays === 1 ? ' has' : 's have' %> played this. Changing the words or groups clears the plays and stats.</p><% } %>
       <p class="as"><% if (user) { %>Publishing as <b><%= user.display_name %></b> · <a href="/settings">change</a><% } else { %>You’ll make a free account when you publish. Your puzzle waits for you.<% } %></p>
       <button type="button" class="btn btn-primary btn-wide" id="publish" disabled><%= puzzleId ? 'Save changes' : 'Publish puzzle' %></button>
@@ -96,6 +104,7 @@
     <%- include('partials/mark') %>
     <h1 id="pub-h">Published.</h1>
     <p id="pub-sub">Now go and ruin someone’s afternoon.</p>
+    <p class="pub-daily" id="pub-daily" hidden></p>
   </div>
   <div class="panel">
     <label for="share-link">Your share link</label>

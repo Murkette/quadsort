@@ -1,4 +1,4 @@
-// Dashboard actions: copy a puzzle link, delete a puzzle.
+// Dashboard actions: copy a puzzle link, join or leave the Daily line, delete a puzzle.
 document.addEventListener('click', async (e) => {
   const copy = e.target.closest('[data-copy]');
   if (copy) {
@@ -6,6 +6,13 @@ document.addEventListener('click', async (e) => {
     const was = copy.textContent;
     copy.textContent = ok ? 'Copied' : 'Copy failed';
     setTimeout(() => (copy.textContent = was), 1800);
+    return;
+  }
+  const dly = e.target.closest('[data-daily]');
+  if (dly) {
+    dly.disabled = true;
+    const res = await fetch(`/api/puzzles/${dly.dataset.id}/daily`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ in: dly.dataset.daily === 'join' }) }).catch(() => null);
+    if (res && res.ok) location.reload(); else { dly.disabled = false; alert('Could not change that. Try again.'); }
     return;
   }
   const del = e.target.closest('[data-delete]');

@@ -564,3 +564,9 @@ main:focus { outline: none; } /* main is only focused by the skip link */
 .daily-banner a { color: #17142A; text-underline-offset: 3px; }
 .daily-tag { margin: 0; }
 .daily-tag a { display: inline-block; padding: 4px 12px; border: 2px solid var(--line); border-radius: 999px; background: var(--surf); color: var(--ink); font-size: 13px; font-weight: 700; text-decoration: none; }
+.daily-opt { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 2.5px solid var(--line); border-radius: 16px; background: var(--surf2); cursor: pointer; }
+.daily-opt input { flex: none; width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--d4); cursor: pointer; }
+.daily-opt b { display: block; font: 800 16px/1.2 var(--fd); }
+.daily-opt small { display: block; margin-top: 4px; font-size: 13px; font-weight: 500; color: var(--mute); }
+.pub-daily { margin: 0; padding: 10px 16px; border-radius: 999px; background: var(--d1); color: #17142A; font-weight: 700; text-align: center; }
+.daily-line { color: var(--ink); font-weight: 700; }

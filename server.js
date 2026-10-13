@@ -3,7 +3,7 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 const open = require('./db');
 const { sessions } = require('./lib/auth');
-const { initials } = require('./lib/util');
+const { initials, dailyLine } = require('./lib/util');
 const { makeDaily } = require('./lib/daily');
 
 // opts.now and opts.onPick exist so tests can control the clock and capture notifications.
@@ -26,6 +26,7 @@ function createApp(db = open(), opts = {}) {
   app.use((req, res, next) => { // who is this? (after static + healthz, so assets never hit the database)
     res.locals.user = req.user = auth.user(req);
     res.locals.initials = initials;
+    res.locals.dailyLine = dailyLine;
     // Absolute URLs for canonical links and share images. Production pins the real address (never trust the Host header there).
     res.locals.origin = process.env.SITE_URL || (process.env.NODE_ENV === 'production' ? 'https://quadsort.com' : `${req.protocol}://${req.get('host')}`);
     res.locals.canonical = res.locals.origin + req.path;
