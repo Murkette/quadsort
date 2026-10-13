@@ -8,7 +8,7 @@ const { makeDaily } = require('./lib/daily');
 
 // opts.now and opts.onPick exist so tests can control the clock and capture notifications.
 function createApp(db = open(), opts = {}) {
-  const daily = makeDaily(db, { now: opts.now, onPick: opts.onPick });
+  const daily = makeDaily(db, { now: opts.now, onPick: 'onPick' in opts ? opts.onPick : require('./lib/notify')(db) });
   const app = express();
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, 'views'));

@@ -16,13 +16,36 @@
 
   <nav class="tabs" aria-label="Admin sections">
     <a href="/admin"<%- tab === 'reports' ? ' aria-current="true"' : '' %>>Reports<%= stats.reported ? ' (' + stats.reported + ')' : '' %></a>
+    <a href="/admin?tab=daily"<%- tab === 'daily' ? ' aria-current="true"' : '' %>>Daily line</a>
     <a href="/admin?tab=puzzles"<%- tab === 'puzzles' ? ' aria-current="true"' : '' %>>All puzzles</a>
   </nav>
 
   <%# one small form per action, so the whole page works without JavaScript %>
   <% function act(id, action, label, cls, title) { %><form method="post" action="/admin/puzzles/<%= id %>" class="inline"><input type="hidden" name="back" value="<%= back %>"><button class="btn btn-sm <%= cls || '' %>" name="action" value="<%= action %>" aria-label="<%= label %>: <%= title %>"><%= label %></button></form><% } %>
 
-  <% if (tab === 'reports') { %>
+  <% if (tab === 'daily') { %>
+    <div class="panel qitem">
+      <h2>Running now</h2>
+      <% if (todays) { %><p class="qby"><b>Today, Daily #<%= todays.number %></b> · <a class="qtitle" href="/p/<%= todays.id %>"><%= todays.title %></a> by <%= todays.by || 'Quadsort' %></p><% } %>
+      <p class="qby"><b>Tomorrow:</b> <%= tomorrows ? 'Daily #' + tomorrows.number + ' · ' + tomorrows.title + ' by ' + (tomorrows.by || 'Quadsort') : 'not picked yet. The next in line below will run, or a house puzzle if the line is empty.' %></p>
+    </div>
+    <h2 class="qh">The line (<%= line.length %>)</h2>
+    <% if (!line.length) { %><div class="panel emptybox"><h2>Nobody in line.</h2><p>House puzzles will fill in until creators opt in.</p></div><% } %>
+    <% line.forEach(function (p) { %>
+    <div class="panel qitem">
+      <div class="qhead">
+        <div>
+          <a class="qtitle" href="/p/<%= p.id %>"><%= p.position %>. <%= p.title %></a>
+          <div class="qby">by <%= p.name ? p.name + ' (@' + p.username + ')' : 'Quadsort' %> · opted in <%= p.optedIn %> · about <%= p.daysAway <= 0 ? 'today' : p.daysAway === 1 ? 'tomorrow' : p.daysAway + ' days away' %></div>
+        </div>
+      </div>
+      <div class="acts">
+        <% act(p.id, 'tomorrow', "Make tomorrow's Daily", '', p.title) %>
+        <% act(p.id, 'unqueue', 'Remove from line', 'danger', p.title) %>
+      </div>
+    </div>
+    <% }) %>
+  <% } else if (tab === 'reports') { %>
     <% if (!reports.length) { %>
     <div class="panel emptybox"><h2>All clear.</h2><p>No open reports. Suspiciously well-behaved.</p></div>
     <% } %>

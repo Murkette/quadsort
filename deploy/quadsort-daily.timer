@@ -1,0 +1,9 @@
+[Unit]
+Description=Pick the Daily just after midnight Eastern
+
+[Timer]
+OnCalendar=*-*-* 00:05:00 America/New_York
+Persistent=true
+
+[Install]
+WantedBy=timers.target

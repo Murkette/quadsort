@@ -45,6 +45,18 @@ the Facebook Sharing Debugger, the LinkedIn Post Inspector, and the X card valid
 
 The share image is `public/og.png`. It is rendered from `design/assets.html` (instructions inside).
 
+## The Daily
+
+A timer picks each day's puzzle just after midnight Eastern (the first visitor of the day would also trigger it, so this only guarantees there is no gap). Install once:
+
+```bash
+cp /opt/quadsort/deploy/quadsort-daily.service /opt/quadsort/deploy/quadsort-daily.timer /etc/systemd/system/
+systemctl daemon-reload && systemctl enable --now quadsort-daily.timer
+systemctl list-timers quadsort-daily   # shows the next run
+```
+
+Run it by hand any time with `systemctl start quadsort-daily`; it is safe to repeat. Logs: `journalctl -u quadsort-daily`.
+
 ## Making yourself an admin
 
 Sign up on the site first, then on the droplet:

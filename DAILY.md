@@ -1,4 +1,4 @@
-# The Daily — build spec
+# The Daily — spec (built)
 
 One puzzle a day that everyone plays. Creators get into the rotation by ticking a box when
 they publish. Free for now; the tick box is the exact spot a paywall goes later.
@@ -16,9 +16,10 @@ they publish. Free for now; the tick box is the exact spot a paywall goes later.
   ones). The Daily never fails to exist.
 - **Hidden or deleted puzzles** drop out of the queue automatically (they already vanish from
   everything else).
-- **Frozen words:** once a puzzle is in the queue its words cannot be edited. Title and
-  description can. Editing the groups withdraws it from the queue (a puzzle that has already
-  been a Daily cannot have its groups edited at all, so the archive stays honest).
+- **Frozen words:** while a puzzle waits in line its words cannot be edited; the title and
+  description can. To change the words, untick the Daily box (which leaves the line) and save;
+  ticking it again rejoins at the back. Once a puzzle has run as a Daily its words are locked for
+  good, so the archive stays honest, and it cannot be deleted either (moderators can still hide it).
 - **Picked when first needed:** the first visitor after midnight ET triggers the pick. It is
   written once, inside a transaction, so two simultaneous first visitors get the same puzzle.
 - **A puzzle is a Daily once.** After its day it goes back to being an ordinary puzzle, with
@@ -45,7 +46,7 @@ the checkbox. Nothing else changes.
 
 | Route | What |
 |---|---|
-| `/daily` | Today's puzzle. Same play screen, with a banner: *"The Daily · #14 · Monday, October 13"* and the creator's credit. Canonical URL is `/daily` so shares land on today's puzzle. |
+| `/daily` | Today's puzzle. Same play screen, with a banner: *"The Daily · #14 · Tuesday, October 13"* and the creator's credit. Canonical URL is `/daily` so shares land on today's puzzle. |
 | `/daily/2026-10-12` | Yesterday's and older, same screen, banner says the date. 404 for the future. |
 | `/p/:id` | Unchanged. If that puzzle is today's Daily it shows a small "Today's Daily" tag; if it was one, "Daily #9 · Oct 8". |
 | `/` landing | A "Today's Daily" card above Staff Picks: title, creator, play count, one big button. |
@@ -69,7 +70,7 @@ When a puzzle becomes the Daily, email its creator: *"Your puzzle is today's Dai
 link. One email, sent at pick time, through the Resend setup that already exists. Skipped
 silently if email fails.
 
-## 6. Build order
+## 6. Build order (all seven steps done)
 
 1. Migration, the picker (`lib/daily.js`: `today()`, `forDay(day)`, `pick(day)`), and tests for
    the rules in section 1 (order, 7-day fairness, fallback, hidden puzzles, same answer twice).
@@ -96,3 +97,13 @@ Each step ships on its own. Estimated size: about the same as the accounts step.
 
 Archive browsing page (a list of past Dailies), leaderboards, time-to-solve, notifications or
 push, "Daily for your group chat" private rotations. All later, all cheap to add on top of this.
+
+## 9. As built
+
+- `lib/daily.js` is the whole rule set; `test/daily*.test.js` pin every rule above.
+- `scripts/pick-daily.js` runs nightly at 12:05am Eastern from a systemd timer
+  (`deploy/quadsort-daily.timer`), so the day exists even if no visitor arrives first. The first
+  visitor of the day also triggers the pick, so a stopped timer cannot leave a gap.
+- Hiding today's Daily swaps in another puzzle under the same number.
+- Admin: the **Daily line** tab. "Make tomorrow's Daily" settles today's first so numbers stay in order.
+- Streaks live in the player's browser (`qs:streak`) and only count today's Daily.

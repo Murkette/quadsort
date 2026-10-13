@@ -58,9 +58,10 @@
   <div class="res-a">
     <div class="res-head">
       <button type="button" class="back" id="back">← Back to the puzzle</button>
-      <span class="kicker"><%= puzzle.title %> · by <%= creator ? creator.name : 'Quadsort' %></span>
+      <span class="kicker"><%= dailyBanner ? 'Daily #' + dailyBanner.number + ' · ' : '' %><%= puzzle.title %> · by <%= creator ? creator.name : 'Quadsort' %></span>
       <h1 id="r-head"></h1>
       <p id="r-sub"></p>
+      <p class="streak" id="r-streak" hidden></p>
     </div>
 
     <div class="share-card">

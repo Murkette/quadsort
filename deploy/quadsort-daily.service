@@ -1,0 +1,14 @@
+[Unit]
+Description=Quadsort: pick today's Daily puzzle
+After=network.target
+
+[Service]
+Type=oneshot
+User=quadsort
+WorkingDirectory=/opt/quadsort
+Environment=NODE_ENV=production DB_PATH=/var/lib/quadsort/quadsort.db
+EnvironmentFile=-/etc/quadsort.env
+ExecStart=/usr/bin/node scripts/pick-daily.js
+NoNewPrivileges=true
+ProtectSystem=full
+ReadWritePaths=/var/lib/quadsort

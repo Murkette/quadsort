@@ -2,24 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert');
 const { serve } = require('./helpers');
 
-// Stands in for Resend: records what would have been sent and never touches the network.
-function resend(t, { status = 200, key = 're_test_key' } = {}) {
-  const real = global.fetch, sent = [];
-  const env = { key: process.env.RESEND_API_KEY, from: process.env.MAIL_FROM };
-  if (key) process.env.RESEND_API_KEY = key; else delete process.env.RESEND_API_KEY;
-  delete process.env.MAIL_FROM;
-  global.fetch = async (u, o) => {
-    if (!String(u).startsWith('https://api.resend.com')) return real(u, o);
-    sent.push({ url: String(u), headers: o.headers, body: JSON.parse(o.body) });
-    return new Response(status === 200 ? '{"id":"abc"}' : 'rejected', { status });
-  };
-  t.after(() => {
-    global.fetch = real;
-    for (const [k, v] of [['RESEND_API_KEY', env.key], ['MAIL_FROM', env.from]]) v === undefined ? delete process.env[k] : (process.env[k] = v);
-  });
-  return sent;
-}
-const until = async (fn, ms = 1500) => { const t = Date.now(); while (Date.now() - t < ms) { if (fn()) return true; await new Promise((r) => setTimeout(r, 15)); } return false; };
+const { resend, until } = require('./helpers');
 const tokenIn = (mail) => /\/reset\/([\w-]+)/.exec(mail.body.text)[1];
 const GENERIC = /If that email has an account, a reset link is on its way/;
 

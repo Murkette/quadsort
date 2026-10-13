@@ -33,9 +33,13 @@ module.exports = (db, daily) => {
   const madeThisWeek = db.prepare('SELECT COUNT(*) n FROM puzzles WHERE is_published = 1 AND created_at > ?');
 
   r.get('/', (req, res) => {
+    const d = daily.current();
+    const row = d && find.get(d.puzzleId);
+    const c = row && counts(db, row.id);
     const weekly = madeThisWeek.get(Math.floor(Date.now() / 1000) - 7 * 86400).n;
     res.render('index', {
       fullTitle: 'Quadsort · Make a word puzzle. Send the link.',
+      todays: row && { ...d, id: row.id, title: row.title, by: row.display_name || 'Quadsort', plays: c.plays, solveRate: c.solveRate },
       trending: search(db, { sort: 'trending', per: 4 }).rows, LEVELS, rate,
       picks: search(db, { featured: true, sort: 'new', per: 4 }).rows,
       weekly: weekly >= 10 ? weekly : 0, // a tiny number looks sad, so only brag when it's real
@@ -81,7 +85,7 @@ module.exports = (db, daily) => {
     const url = (path, t) => `  <url><loc>${xml(o + path)}</loc>${t ? `<lastmod>${day(t)}</lastmod>` : ''}</url>`;
     res.type('application/xml').set('Cache-Control', 'public, max-age=3600').send([
       '<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-      url('/'), url('/browse'),
+      url('/'), url('/daily'), url('/browse'),
       ...sitemapPuzzles.all().map((p) => url('/p/' + p.id, p.updated_at)),
       ...sitemapUsers.all().map((u) => url('/u/' + u.username, u.t)),
       '</urlset>', '',

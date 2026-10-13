@@ -7,7 +7,7 @@ const { clean } = require('../public/js/validate');
 
 const PER_PAGE = 30;
 
-module.exports = (db) => {
+module.exports = (db, daily) => {
   const r = express.Router();
   r.use((req, res, next) => {
     if (!req.user) return res.redirect('/login?next=' + encodeURIComponent(req.originalUrl)); // so a real admin can sign in
@@ -23,7 +23,7 @@ module.exports = (db) => {
   const notesOf = db.prepare("SELECT note FROM reports WHERE puzzle_id = ? AND resolved = 0 AND note != '' ORDER BY created_at DESC LIMIT 5");
 
   r.get('/', (req, res) => {
-    const tab = req.query.tab === 'puzzles' ? 'puzzles' : 'reports';
+    const tab = ['puzzles', 'daily'].includes(req.query.tab) ? req.query.tab : 'reports';
     const q = clean(req.query.q).slice(0, 60);
     const stats = {
       puzzles: count('SELECT COUNT(*) n FROM puzzles'), hidden: count('SELECT COUNT(*) n FROM puzzles WHERE is_flagged = 1'),
@@ -32,7 +32,14 @@ module.exports = (db) => {
     };
     const out = { title: 'Admin', noindex: true, tab, q, stats, REASONS, back: req.originalUrl, reports: [], list: [], page: 1, pages: 1, total: 0 };
 
-    if (tab === 'reports') {
+    if (tab === 'daily') {
+      const titleOf = db.prepare('SELECT p.id, p.title, u.display_name AS by FROM puzzles p LEFT JOIN users u ON u.id = p.user_id WHERE p.id = ?');
+      const cur = daily.current();
+      const t = daily.peek(daily.addDays(cur.day, 1));
+      out.todays = cur && { ...cur, ...titleOf.get(cur.puzzleId) };
+      out.tomorrows = t && { ...t, ...titleOf.get(t.puzzleId) };
+      out.line = daily.queue().map((p) => ({ ...p, optedIn: new Date(p.at * 1000).toISOString().slice(0, 10) }));
+    } else if (tab === 'reports') {
       out.reports = queue.all().map((p) => ({ ...p, reasons: reasonsOf.all(p.id), notes: notesOf.all(p.id).map((x) => x.note) }));
     } else {
       const like = escapeLike(q);
@@ -59,6 +66,8 @@ module.exports = (db) => {
     hide: (id) => { db.prepare('UPDATE puzzles SET is_flagged = 1, is_featured = 0 WHERE id = ?').run(id); resolve.run(id); },
     unhide: (id) => db.prepare('UPDATE puzzles SET is_flagged = 0 WHERE id = ?').run(id),
     dismiss: (id) => resolve.run(id),
+    unqueue: (id) => daily.leave(id),
+    tomorrow: (id) => daily.makeTomorrows(id), // quietly does nothing for a hidden puzzle
   };
   r.post('/puzzles/:id', express.urlencoded({ extended: false, limit: '2kb' }), (req, res, next) => {
     const act = Object.hasOwn(actions, req.body.action) && actions[req.body.action];

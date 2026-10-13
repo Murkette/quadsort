@@ -8,6 +8,24 @@
   const EMOJI = ['🟨', '🟦', '🟧', '🟪']; // levels 1-4
   const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
   let data, shareText = '';
+  const daily = play.dataset.daily ? { number: play.dataset.daily, day: play.dataset.dailyDay, today: play.dataset.dailyToday === '1' } : null;
+
+  // Streak: consecutive (US Eastern) days on which you finished the Daily, win or lose. Kept on this device, no account.
+  const prevDay = (day) => { const x = new Date(day + 'T12:00:00Z'); x.setUTCDate(x.getUTCDate() - 1); return x.toISOString().slice(0, 10); };
+  function streak() {
+    const el = $('#r-streak');
+    el.hidden = true;
+    if (!daily || !daily.today) return; // only today's Daily counts, so old ones can't be used to pad a streak
+    const s = QS.store.get('qs:streak', { last: '', count: 0, best: 0 });
+    if (s.last !== daily.day) { // a game restored from storage must not count twice
+      s.count = s.last === prevDay(daily.day) ? s.count + 1 : 1;
+      s.last = daily.day;
+      s.best = Math.max(s.best || 0, s.count);
+      QS.store.set('qs:streak', s);
+    }
+    el.textContent = s.count > 1 ? `${s.count} days in a row. Don't blow it.` : 'Day one of your streak. Don’t blow it.';
+    el.hidden = false;
+  }
 
   const h = (tag, cls, text) => {
     const e = document.createElement(tag);
@@ -38,9 +56,9 @@
     const right = d.guesses.length - d.mistakes;
     grid.setAttribute('aria-label', `${plural(d.guesses.length, 'guess')}: ${right} correct, ${d.mistakes} wrong`);
 
-    const url = `${location.origin}/p/${d.id}`;
+    const url = location.origin + (play.dataset.share || `/p/${d.id}`); // a Daily shares its dated address, not the puzzle's
     $('#r-url').textContent = url.replace(/^https?:\/\//, '');
-    shareText = [`Quadsort — "${document.querySelector('.puzzle-head h1').textContent}"`,
+    shareText = [daily ? `Quadsort Daily #${daily.number}` : `Quadsort — "${document.querySelector('.puzzle-head h1').textContent}"`,
       ...rows.map((r) => r.map((lv) => EMOJI[lv - 1]).join('')), url].join('\n');
 
     $('#r-answers').replaceChildren(...d.solution.map((g) => {
@@ -54,6 +72,7 @@
     }));
 
     stats(d);
+    streak();
   }
 
   function stats(d) {

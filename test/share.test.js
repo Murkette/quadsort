@@ -130,6 +130,7 @@ test('sitemap lists live puzzles and creators, never hidden or unpublished ones'
   assert.match(xml, /^<\?xml version="1\.0" encoding="UTF-8"\?>/);
   assert.match(xml, new RegExp(`<loc>${url}/</loc>`));
   assert.match(xml, new RegExp(`<loc>${url}/browse</loc>`));
+  assert.match(xml, new RegExp(`<loc>${url}/daily</loc>`));
   assert.match(xml, new RegExp(`<loc>${url}/p/${live}</loc><lastmod>\\d{4}-\\d{2}-\\d{2}</lastmod>`));
   assert.match(xml, new RegExp(`<loc>${url}/u/priya</loc>`));
   assert.match(xml, /<loc>[^<]*\/p\/demo0001<\/loc>/);

@@ -40,7 +40,8 @@ main, .top-in { width: min(100% - 32px, 1120px); margin-inline: auto; }
 .top-in { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 0; }
 .nav { display: flex; align-items: center; gap: 6px; }
 .nav a:not(.btn) { padding: 12px 16px; border-radius: 999px; color: inherit; text-decoration: none; font-weight: 600; white-space: nowrap; }
-@media (max-width: 479px) { .nav a:not(.btn):not(.avatar-sm):not(.nav-login) { display: none; } }
+@media (max-width: 719px) { .nav a:not(.btn):not(.avatar-sm):not(.nav-login):not(.nav-daily) { display: none; } }
+@media (max-width: 999px) { .nav .nav-play { display: none; } } /* links appear as room allows; the footer has them all */ /* the Daily is why people come back, so it stays on phones */
 @media (max-width: 479px) {
   .top-in { gap: 8px; }
   .brand { font-size: 20px; gap: 8px; }
@@ -49,9 +50,10 @@ main, .top-in { width: min(100% - 32px, 1120px); margin-inline: auto; }
   .nav .btn-sm { padding: 0 14px; font-size: 14px; }
   .nav a.nav-login { padding: 12px 8px; }
 }
-@media (max-width: 359px) { .nav .nav-login { display: none; } }
-/* hide the word on tiny screens but keep it for screen readers (display:none would leave the link nameless) */
-@media (max-width: 339px) { .brand span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
+@media (max-width: 519px) { .nav .nav-login { display: none; } } /* logging in is in the footer and the publish flow */
+/* on narrow phones the mark carries the brand; the word stays for screen readers (display:none would leave the link nameless) */
+@media (max-width: 519px) { .top.in .brand span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } } /* logged in: the mark is enough, and the nav needs the room */
+@media (max-width: 389px) { .brand span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
 .nav a.nav-login { padding: 12px 10px; }
 .nav a.avatar-sm { color: #17142A; } /* beats .nav a:not(.btn) { color: inherit }, which made the initials pale in dark mode */
 .avatar-sm { flex: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2.5px solid var(--line); border-radius: 50%; background: var(--d2); color: #17142A; font: 800 14px var(--fd); text-decoration: none; }
@@ -570,3 +572,15 @@ main:focus { outline: none; } /* main is only focused by the skip link */
 .daily-opt small { display: block; margin-top: 4px; font-size: 13px; font-weight: 500; color: var(--mute); }
 .pub-daily { margin: 0; padding: 10px 16px; border-radius: 999px; background: var(--d1); color: #17142A; font-weight: 700; text-align: center; }
 .daily-line { color: var(--ink); font-weight: 700; }
+.daily-card { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; padding: clamp(20px, 4vw, 36px); border: 2.5px solid var(--line); border-radius: 32px; background: var(--d1); color: #17142A; box-shadow: 0 5px 0 var(--shadow); text-decoration: none; }
+.daily-card:hover { transform: translateY(-2px); }
+.daily-card:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.dc-copy { flex: 1 1 320px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; }
+.dc-copy .eyebrow { opacity: .85; }
+.dc-copy h2 { margin: 0; font: 800 clamp(30px, 6vw, 52px)/1 var(--fd); letter-spacing: -0.04em; overflow-wrap: anywhere; }
+.dc-copy p { margin: 0; font-weight: 600; }
+.dc-copy .btn { margin-top: 6px; background: #17142A; color: #fff; }
+.daily-card .cover { flex: 0 1 260px; min-width: 200px; padding: 12px; gap: 6px; border: 2.5px solid #17142A; border-radius: 20px; background: rgba(255, 255, 255, .55); }
+.daily-card .cover span { height: 34px; border-color: #17142A; }
+.streak { margin: 0; padding: 6px 14px; border: 2.5px solid var(--line); border-radius: 999px; background: var(--d1); color: #17142A; font-weight: 700; font-size: 15px; box-shadow: 0 3px 0 var(--shadow); }
+.qh { margin: 8px 0 0; font: 800 22px/1.1 var(--fd); }

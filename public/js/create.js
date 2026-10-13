@@ -167,6 +167,7 @@
     changed();
   });
   $('#form').addEventListener('submit', (e) => e.preventDefault());
+  if (dailyBox) dailyBox.addEventListener('change', changed); // it lives in the side panel, outside the form, so the form's listeners never see it
 
   // ---------- publish ----------
   const say = (t) => { msg.textContent = t; msg.hidden = !t; };

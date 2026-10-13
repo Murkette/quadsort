@@ -26,6 +26,19 @@
   </div>
 </section>
 
+<% if (todays) { %>
+<section class="band">
+  <a class="daily-card" href="/daily">
+    <div class="dc-copy">
+      <span class="eyebrow">Today's Daily · #<%= todays.number %> · <%= todays.label %></span>
+      <h2><%= todays.title %></h2>
+      <p>by <%= todays.by %><%= todays.plays ? ' · ' + todays.plays.toLocaleString('en-US') + ' played' : '' %><%= todays.plays >= 5 ? ' · ' + Math.round(todays.solveRate * 100) + '% solve it' : '' %></p>
+      <span class="btn btn-primary">Play today's Daily</span>
+    </div>
+    <div class="cover" aria-hidden="true"><% for (var i = 0; i < 8; i++) { %><span class="lv" data-level="<%= todays.id.charCodeAt(i % todays.id.length) % 4 + 1 %>"></span><% } %></div>
+  </a>
+</section>
+<% } %>
 <% if (picks.length) { %>
 <section class="band">
   <div class="band-head">
