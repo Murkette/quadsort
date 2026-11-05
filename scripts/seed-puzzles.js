@@ -2,6 +2,7 @@
 // House puzzles, credited to Quadsort. Safe to re-run: existing ids are left alone.
 //   node scripts/seed-puzzles.js            (uses DB_PATH like the server)
 // Groups go Gentle (1) -> Devious (4). Every puzzle is checked with the same validator the site uses.
+// The harder ones are not in this file: see puzzles/*.json.
 const { validate } = require('../public/js/validate');
 
 const PUZZLES = [
@@ -72,6 +73,14 @@ const PUZZLES = [
     { level: 4, name: 'Second word of a chain', words: ['Bell', 'Queen', 'Express', 'Guys'] },
   ] },
 ];
+
+// Hard puzzles are written as themes in puzzles/*.json and built by the formatter (scripts/make-puzzle.js).
+const fs = require('fs'), path = require('path');
+const { make } = require('./make-puzzle');
+const themed = path.join(__dirname, '../puzzles');
+for (const f of fs.readdirSync(themed).filter((x) => x.endsWith('.json')).sort()) {
+  PUZZLES.push(make(JSON.parse(fs.readFileSync(path.join(themed, f), 'utf8')))[0].puzzle);
+}
 
 function check() {
   const problems = [];

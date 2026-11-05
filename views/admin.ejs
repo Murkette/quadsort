@@ -85,6 +85,7 @@
         <span class="acts">
           <% if (p.is_flagged) { act(p.id, 'unhide', 'Unhide', '', p.title); } else { %>
             <% if (p.is_featured) { act(p.id, 'unfeature', 'Remove pick', '', p.title); } else { act(p.id, 'feature', 'Make staff pick', '', p.title); } %>
+            <% act(p.id, 'tomorrow', "Make tomorrow's Daily", '', p.title) %>
             <% act(p.id, 'hide', 'Hide', 'danger', p.title) %>
           <% } %>
         </span>

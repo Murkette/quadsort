@@ -1,0 +1,14 @@
+{
+  "id": "feelings", "title": "Mixed Feelings", "tags": ["tv-film", "pop-culture", "wordplay"], "featured": 1,
+  "description": "Feelings everywhere. Four of these are hiding one.",
+  "themes": [
+    {"name": "Emotions in “Inside Out”", "words": ["Joy", "Anger", "Fear", "Disgust", "Envy", "Anxiety", "Ennui"], "bait": ["Glee", "Euphoria", "Curiosity"]},
+    {"name": "TV shows", "words": ["Euphoria", "Glee", "Felicity", "Lost", "Entourage", "Shameless"]},
+    {"name": "Mars rovers", "words": ["Spirit", "Opportunity", "Curiosity", "Perseverance"]},
+    {"name": "Movies and shows hiding a feeling", "words": ["Gladiator", "Nomadland", "Entourage", "Shameless"]}
+  ],
+  "fakes": [
+    {"name": "Happiness", "words": ["Joy", "Glee", "Euphoria", "Felicity"]},
+    {"name": "Good qualities", "words": ["Spirit", "Curiosity", "Perseverance", "Shameless"]}
+  ]
+}
