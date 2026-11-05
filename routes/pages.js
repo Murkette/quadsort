@@ -38,7 +38,7 @@ module.exports = (db, daily) => {
     const c = row && counts(db, row.id);
     const weekly = madeThisWeek.get(Math.floor(Date.now() / 1000) - 7 * 86400).n;
     res.render('index', {
-      fullTitle: 'Quadsort · Make a word puzzle. Send the link.',
+      fullTitle: 'Quadsort · Four groups of four',
       todays: row && { ...d, id: row.id, title: row.title, by: row.display_name || 'Quadsort', plays: c.plays, solveRate: c.solveRate },
       trending: search(db, { sort: 'trending', per: 4 }).rows, LEVELS, rate,
       picks: search(db, { featured: true, sort: 'new', per: 4 }).rows,

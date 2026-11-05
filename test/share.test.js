@@ -24,10 +24,10 @@ test('every page links the icons and states a canonical address', async (t) => {
   assert.match(html, /<link rel="icon" href="\/favicon\.ico" sizes="32x32">/);
   assert.match(html, /<link rel="icon" href="\/favicon\.svg" type="image\/svg\+xml">/);
   assert.match(html, /<link rel="apple-touch-icon" href="\/apple-touch-icon\.png">/);
-  assert.match(html, /name="theme-color" content="#13111C" media="\(prefers-color-scheme: dark\)"/);
+  assert.match(html, /name="theme-color" content="#2F2F2F" media="\(prefers-color-scheme: dark\)"/);
   assert.match(html, new RegExp(`<link rel="canonical" href="${url}/">`));
   assert.doesNotMatch(html, /noindex/);
-  assert.match(html, /<title>Quadsort · Make a word puzzle\. Send the link\.<\/title>/);
+  assert.match(html, /<title>Quadsort · Four groups of four<\/title>/);
 });
 
 test('share tags use absolute URLs, so WhatsApp, X, iMessage and Slack can fetch the image', async (t) => {
@@ -65,7 +65,7 @@ test('a puzzle link previews as that puzzle; the solve rate appears once there a
   assert.match(meta(await page(), 'og:description'), / 70% of 20 players solve it\.$/);
 
   const demo = await person().get('/p/demo0001').then((r) => r.text());
-  assert.equal(meta(demo, 'og:description'), 'Make four groups of four. The group chat managed it. Allegedly. A Quadsort puzzle.', 'no "by" when nobody made it');
+  assert.equal(meta(demo, 'og:description'), 'Four groups of four. A Quadsort puzzle.', 'no "by" when nobody made it');
 
   db.prepare("UPDATE puzzles SET description = '' WHERE id = ?").run(id);
   assert.match(meta(await page(), 'og:description'), /^Sixteen words, four hidden groups\. Can you sort them\?/);

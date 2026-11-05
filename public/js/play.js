@@ -11,7 +11,7 @@
   const btn = { shuffle: $('#shuffle'), deselect: $('#deselect'), submit: $('#submit') };
   const LIVES = 4;
   const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const PRAISE = ['Sorted. Smug yet?', 'Fine. Two down.', 'Alright, show-off.'];
+  const PRAISE = ['One group.', 'Two groups.', 'Three groups.'];
 
   const tiles = {}; // word -> button
   grid.querySelectorAll('.tile').forEach((t) => (tiles[t.dataset.w] = t));
@@ -42,8 +42,7 @@
     clearTimeout(toastTimer);
     toastEl.textContent = msg;
     toastEl.hidden = false;
-    const base = 'translate(-50%, -50%)';
-    if (!reduced()) anim(toastEl, [{ transform: base + ' translateY(-14px)', opacity: 0 }, { transform: base, opacity: 1 }], { duration: 220, easing: 'cubic-bezier(.3,1.4,.5,1)' });
+    if (!reduced()) anim(toastEl, [{ opacity: 0 }, { opacity: 1 }], { duration: 120, easing: 'ease-out' });
     toastTimer = setTimeout(() => (toastEl.hidden = true), hold);
   }
 
@@ -74,14 +73,6 @@
     return row;
   }
 
-  const typeOn = (el, text) => {
-    if (reduced()) return;
-    el.textContent = '';
-    const step = Math.max(14, Math.min(30, 420 / text.length));
-    let i = 0;
-    const t = setInterval(() => { el.textContent = text.slice(0, ++i); if (i >= text.length) clearInterval(t); }, step);
-  };
-
   const box = (rects) => {
     const l = Math.min(...rects.map((r) => r.left)), t = Math.min(...rects.map((r) => r.top));
     return { left: l, top: t, width: Math.max(...rects.map((r) => r.right)) - l, height: Math.max(...rects.map((r) => r.bottom)) - t };
@@ -105,15 +96,13 @@
     const to = row.getBoundingClientRect();
     remaining().forEach((t) => {
       const a = before.get(t), b = t.getBoundingClientRect();
-      if (a.left !== b.left || a.top !== b.top) anim(t, [{ transform: `translate(${a.left - b.left}px, ${a.top - b.top}px)` }, { transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.9,.3,1.25)' });
+      if (a.left !== b.left || a.top !== b.top) anim(t, [{ transform: `translate(${a.left - b.left}px, ${a.top - b.top}px)` }, { transform: 'none' }], { duration: 280, easing: 'ease-out' });
     });
-    const label = row.querySelector('.label');
-    const name = g.name;
     row.classList.add('merging'); // keep the text hidden while the row is stretched, so it never looks squashed
     anim(row, [
       { transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width}, ${from.height / to.height})`, opacity: 0.7 },
       { transform: 'none', opacity: 1 },
-    ], { duration: 420, easing: 'cubic-bezier(.2,.9,.3,1.1)' }).finished.then(() => { row.classList.remove('merging'); typeOn(label, name); });
+    ], { duration: 280, easing: 'ease-out' }).finished.then(() => row.classList.remove('merging'));
   }
 
   // ---------- end of game ----------
@@ -124,10 +113,10 @@
     endEl.hidden = false;
     const m = S.mistakes;
     endEl.innerHTML = S.over === 'won'
-      ? `<h2>Sorted. Annoyingly well.</h2><p>${m ? `Solved with ${m} mistake${m > 1 ? 's' : ''}.` : 'No mistakes. Show-off.'}</p>`
-      : '<h2>Sort yourself out.</h2><p>Out of lives. The answers are above, for your shame.</p>';
+      ? `<h2>Solved.</h2><p>${m ? `${m} mistake${m > 1 ? 's' : ''}.` : 'No mistakes.'}</p>`
+      : '<h2>Out of guesses.</h2><p>The answers are shown above.</p>';
     if (hasResults) endEl.insertAdjacentHTML('beforeend', '<button type="button" class="btn" data-act="results">See how you did</button>');
-    if (!reduced()) anim(endEl, [{ transform: 'translateY(16px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 320, easing: 'cubic-bezier(.2,.9,.3,1.25)' });
+    if (!reduced()) anim(endEl, [{ opacity: 0 }, { opacity: 1 }], { duration: 160, easing: 'ease-out' });
   }
   const endSpoken = () => (S.over === 'won'
     ? `You solved it${S.mistakes ? ` with ${S.mistakes} mistake${S.mistakes > 1 ? 's' : ''}` : ' with no mistakes'}.`
@@ -160,7 +149,7 @@
       for (const g of open) {
         const row = addRow(g, true);
         Object.keys(tiles).forEach((w) => g.words.includes(w) && (tiles[w].remove(), delete tiles[w]));
-        if (animate && !reduced()) { anim(row, [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 300 }); await sleep(180); }
+        if (animate && !reduced()) { anim(row, [{ opacity: 0 }, { opacity: 1 }], { duration: 160 }); await sleep(120); }
       }
       sync();
     }
@@ -196,14 +185,14 @@
     const order = remaining();
     for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
     order.forEach((t) => grid.appendChild(t));
-    if (!reduced()) order.forEach((t, i) => anim(t, [{ transform: 'rotateY(90deg) scale(.9)', opacity: 0.2 }, { transform: 'none', opacity: 1 }], { duration: 200, delay: (i % 4) * 20, easing: 'ease-out', fill: 'backwards' }));
+    if (!reduced()) order.forEach((t) => anim(t, [{ opacity: 0.2 }, { opacity: 1 }], { duration: 140, easing: 'ease-out' }));
   };
 
   btn.submit.onclick = async () => {
     if (S.sel.length !== 4 || S.busy || S.over) return;
     const words = S.sel.slice();
     const key = words.slice().sort().join('|');
-    if (S.guesses.some((g) => g.words.slice().sort().join('|') === key)) return toast('You tried that. Focus.');
+    if (S.guesses.some((g) => g.words.slice().sort().join('|') === key)) return toast('Already tried.');
     S.busy = true; sync();
     let out;
     try {
@@ -215,7 +204,7 @@
       out = await res.json();
     } catch {
       S.busy = false; sync();
-      return toast('Network hiccup. Try again.');
+      return toast('Connection problem. Try again.');
     }
     S.busy = false;
     S.guesses.push({ words, result: out.result, group: out.group || null });
@@ -229,15 +218,13 @@
     }
     S.mistakes++;
     sync();
-    const gone = dots[LIVES - S.mistakes];
     if (!reduced()) {
-      anim(gone, [{ transform: 'scale(1)' }, { transform: 'scale(1.6)' }, { transform: 'scale(1)' }], { duration: 300 });
-      anim(grid, [0, -8, 8, -8, 8, -5, 0].map((x) => ({ transform: `translateX(${x}px)` })), { duration: 380 });
+      anim(grid, [0, -6, 6, -6, 6, -3, 0].map((x) => ({ transform: `translateX(${x}px)` })), { duration: 240 });
     }
     save();
     if (S.mistakes >= LIVES) return finish(true);
     const left = LIVES - S.mistakes;
-    const verdict = out.result === 'one_away' ? 'One away. Painful.' : 'Not even close.';
+    const verdict = out.result === 'one_away' ? 'One away.' : 'Not quite.';
     toast(verdict, 1800, `${verdict} ${left} mistake${left === 1 ? '' : 's'} left.`);
   };
 

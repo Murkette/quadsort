@@ -39,7 +39,7 @@ module.exports = (db, auth) => {
       // Not awaited: an existing account must not answer slower than a missing one. Failures are logged, never shown.
       send({ to: email, ...resetEmail({ name: u.display_name, link }) }).catch((e) => console.error('password reset email failed:', e.message));
     }
-    notice(res, 200, 'Check your inbox.', 'If that email has an account, a reset link is on its way. It works for an hour. Check spam if it is shy.',
+    notice(res, 200, 'Check your inbox.', 'If that email has an account, a reset link is on its way. It works for an hour. Check your spam folder if it does not arrive.',
       { href: '/login', label: 'Back to log in' });
   });
 

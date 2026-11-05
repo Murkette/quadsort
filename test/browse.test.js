@@ -112,7 +112,7 @@ test('browse page renders, keeps your filters in its links, and has an empty sta
   const { person } = await serve(t, db);
   const anon = person();
   let html = await (await anon.get('/browse?tag=food&sort=new&q=cheese')).text();
-  assert.match(html, /Find something to fail at\./);
+  assert.match(html, /Find a puzzle\./);
   assert.match(html, /1 puzzle for “cheese”/);
   assert.match(html, /Cheese Quiz/);
   assert.match(html, /href="\/browse\?q=cheese&amp;tag=food"[^>]*>Trending/, 'switching sort keeps search and topic');
@@ -120,7 +120,7 @@ test('browse page renders, keeps your filters in its links, and has an empty sta
   assert.match(html, /aria-current="true">Food &amp; drink</);
 
   html = await (await anon.get('/browse?q=zzzz')).text();
-  assert.match(html, /Nothing\. Not a sausage\./);
+  assert.match(html, /No puzzles match\./);
   html = await (await anon.get('/browse?q=<script>alert(1)</script>')).text();
   assert.doesNotMatch(html, /<script>alert/, 'search text is escaped');
 });
@@ -131,9 +131,9 @@ test('landing: playable demo, trending cards, no fake numbers', async (t) => {
   puzzle('low00000', 'Low Puzzle');
   const { person } = await serve(t, db);
   const html = await (await person().get('/')).text();
-  assert.match(html, /Make a word puzzle\. Send the link\./);
+  assert.match(html, /Four groups of four\./);
   assert.match(html, /id="demo"/);
-  assert.match(html, /src="\/js\/demo\.js"/);
+  assert.match(html, /src="\/js\/demo\.js\?v=[0-9a-f]{8}"/);
   assert.ok(html.indexOf('Top Puzzle') < html.indexOf('Low Puzzle'), 'trending order');
   assert.doesNotMatch(html, /puzzles made this week/, 'hidden until the number is worth showing');
   for (let i = 0; i < 10; i++) puzzle('wk' + String(i).padStart(6, '0'), 'Week ' + i);

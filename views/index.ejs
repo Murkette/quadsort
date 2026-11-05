@@ -2,8 +2,8 @@
 <section class="lhero">
   <div class="hero-copy">
     <% if (weekly) { %><span class="pill-note"><i></i><%= weekly.toLocaleString('en-US') %> puzzles made this week</span><% } %>
-    <h1>Make a word puzzle. Send the link. Watch them suffer.</h1>
-    <p class="lede">Sixteen words, four hidden groups. Build one in two minutes, share it anywhere, and see exactly how badly your followers did.</p>
+    <h1>Four groups of four.</h1>
+    <p class="lede">Make a word puzzle, share one link, see how everyone did.</p>
     <div class="actions">
       <a class="btn btn-primary" href="/create">Make a puzzle</a>
       <a class="btn" href="/random">Play one</a>
@@ -19,10 +19,10 @@
       <div class="grid" id="demo-grid"></div>
     </div>
     <div class="demo-done" id="demo-done" hidden>
-      <b>Easy, was it? Make a harder one.</b>
-      <a class="btn btn-primary btn-sm" href="/create">Go on then</a>
+      <b>Now make your own.</b>
+      <a class="btn btn-sm" href="/create">Make one</a>
     </div>
-    <span class="hint" id="demo-hint">Hint: one of these is not a planet. Or is it?</span>
+    <span class="hint" id="demo-hint">Find the two groups of four.</span>
   </div>
 </section>
 
@@ -33,7 +33,7 @@
       <span class="eyebrow">Today's Daily · #<%= todays.number %> · <%= todays.label %></span>
       <h2><%= todays.title %></h2>
       <p>by <%= todays.by %><%= todays.plays ? ' · ' + todays.plays.toLocaleString('en-US') + ' played' : '' %><%= todays.plays >= 5 ? ' · ' + Math.round(todays.solveRate * 100) + '% solve it' : '' %></p>
-      <span class="btn btn-primary">Play today's Daily</span>
+      <span class="btn">Play today's Daily</span>
     </div>
     <div class="cover" aria-hidden="true"><% for (var i = 0; i < 8; i++) { %><span class="lv" data-level="<%= todays.id.charCodeAt(i % todays.id.length) % 4 + 1 %>"></span><% } %></div>
   </a>
@@ -44,7 +44,7 @@
   <div class="band-head">
     <div>
       <h2>Staff picks.</h2>
-      <p>Handpicked. Allegedly with taste.</p>
+      <p>Chosen by the Quadsort team.</p>
     </div>
   </div>
   <div class="pgrid2 four"><% picks.forEach(function (p) { %><%- include('partials/card', { p: p, rate: rate, LEVELS: LEVELS }) %><% }) %></div>
@@ -54,8 +54,8 @@
 <section class="band">
   <div class="band-head">
     <div>
-      <h2>Trending. Apparently.</h2>
-      <p>What everyone’s getting wrong this week.</p>
+      <h2>Trending</h2>
+      <p>What people are playing this week.</p>
     </div>
     <a class="seeall" href="/browse" aria-label="See all puzzles">See all</a>
   </div>
@@ -65,9 +65,9 @@
 <section class="band">
   <h2>How it works</h2>
   <div class="steps">
-    <div class="step"><span class="num lv" data-level="1" aria-hidden="true">1</span><h3>Write it</h3><p>Sixteen words, four sneaky groups, one colour each from Gentle to Devious. Two minutes, tops.</p></div>
+    <div class="step"><span class="num lv" data-level="1" aria-hidden="true">1</span><h3>Write it</h3><p>Sixteen words in four groups, each with a difficulty from Gentle to Devious. It takes about two minutes.</p></div>
     <div class="step"><span class="num lv" data-level="2" aria-hidden="true">2</span><h3>Share it</h3><p>You get one short link. Bio, story, newsletter, group chat. Nobody has to sign up to play.</p></div>
-    <div class="step"><span class="num lv" data-level="3" aria-hidden="true">3</span><h3>Watch people struggle</h3><p>Solve rates, average mistakes, and the wrong guess everyone makes. Enjoy it. Responsibly.</p></div>
+    <div class="step"><span class="num lv" data-level="3" aria-hidden="true">3</span><h3>See how they did</h3><p>Solve rate, average mistakes, and the wrong guess most people make.</p></div>
   </div>
 </section>
 
@@ -75,13 +75,13 @@
   <div class="creator-band">
     <div class="cb-copy">
       <span class="eyebrow">For creators, teachers, group chats</span>
-      <h2>Your puzzle. Your name on it. Your followers, humbled.</h2>
+      <h2>Your puzzle, with your name on it.</h2>
       <p>Every puzzle credits you and links back to your profile. Results cards send players straight to “more by you”.</p>
-      <a class="btn btn-primary" href="/create">Start making</a>
+      <a class="btn" href="/create">Start making</a>
     </div>
     <div class="cb-stats">
       <div><b>2 min</b><span>to build one</span></div>
-      <div><b>0</b><span>sign-up walls for players</span></div>
+      <div><b>0</b><span>accounts needed to play</span></div>
       <div><b>Live</b><span>solve rate &amp; mistakes</span></div>
       <div><b>1 link</b><span>quadsort.com/p/…</span></div>
     </div>

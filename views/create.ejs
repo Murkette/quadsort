@@ -3,7 +3,7 @@
   <form class="create-main" id="form" novalidate autocomplete="off">
     <div class="create-head">
       <h1><%= puzzleId ? 'Edit your puzzle' : 'Make a puzzle' %></h1>
-      <p>Four groups of four. Make one obvious and one evil. Everyone else does.</p>
+      <p>Four groups of four. Give each a difficulty from Gentle to Devious.</p>
     </div>
 
     <section class="panel">
@@ -16,7 +16,7 @@
         </div>
         <div class="field">
           <label for="f-desc">Description <span class="opt">(optional)</span></label>
-          <input id="f-desc" value="<%= form.description %>" placeholder="A little taunt for the players">
+          <input id="f-desc" value="<%= form.description %>" placeholder="A short note for players">
           <span class="ferr" data-for="description" aria-live="polite"></span>
         </div>
       </div>
@@ -82,7 +82,7 @@
         <h3 id="issues-title"></h3>
         <ul id="issues-list"></ul>
       </div>
-      <p class="ready" id="ready" hidden>All sixteen present and correct. Suspicious.</p>
+      <p class="ready" id="ready" hidden>Ready to publish.</p>
       <% if (['none', 'queued'].includes(dailyInfo.state)) { %>
       <label class="daily-opt">
         <input type="checkbox" id="daily-opt"<%= form.daily ? ' checked' : '' %>>
@@ -103,7 +103,7 @@
   <div class="pub-top">
     <%- include('partials/mark') %>
     <h1 id="pub-h">Published.</h1>
-    <p id="pub-sub">Now go and ruin someone’s afternoon.</p>
+    <p id="pub-sub">Share the link and see how people do.</p>
     <p class="pub-daily" id="pub-daily" hidden></p>
   </div>
   <div class="panel">

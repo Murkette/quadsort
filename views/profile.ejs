@@ -4,7 +4,7 @@
     <span class="avatar big" aria-hidden="true"><%= p.initials %></span>
     <div class="pinfo">
       <h1><%= p.display_name %></h1>
-      <div class="psub">@<%= p.username %> · puzzling since <%= p.since %></div>
+      <div class="psub">@<%= p.username %> · member since <%= p.since %></div>
       <% if (p.bio) { %><p class="bio"><%= p.bio %></p><% } %>
       <% if (p.social) { %><div class="links"><a class="chip" href="<%= p.social %>" rel="nofollow noopener ugc" target="_blank"><%= p.handle || p.host %> ↗</a></div><% } %>
       <% if (user && user.id === p.id) { %><div class="links"><a class="chip" href="/settings">Edit profile</a></div><% } %>

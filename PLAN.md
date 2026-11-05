@@ -17,7 +17,7 @@ Design source of truth: `design/BRIEF.md` and the 19 boards in `design/mockups/`
 | Templates | Server-rendered HTML with `ejs` | Shareable links need real HTML for OG previews; no SPA, no bundler |
 | Front-end | Vanilla JS + CSS, one `app.js` per page | The game logic is ~300 lines; a framework would be heavier than the app |
 | Auth | Email + password hashed with Node's built-in `scrypt`, cookie sessions in SQLite (only a hash of the token is stored) | No dependency, no email provider needed on day one |
-| Fonts | Bricolage Grotesque + Figtree, self-hosted woff2 | Matches mockups; no Google round-trip on a phone |
+| Fonts | EB Garamond (headlines) + Archivo (interface and tiles), self-hosted woff2 | The Platinum rebrand; no Google round-trip on a phone |
 | Proxy / TLS | Caddy | Auto HTTPS with a two-line config |
 | Process | systemd | Restart on crash, start on boot |
 

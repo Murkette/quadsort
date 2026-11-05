@@ -23,7 +23,7 @@
       s.best = Math.max(s.best || 0, s.count);
       QS.store.set('qs:streak', s);
     }
-    el.textContent = s.count > 1 ? `${s.count} days in a row. Don't blow it.` : 'Day one of your streak. Don’t blow it.';
+    el.textContent = s.count > 1 ? `${s.count} days in a row.` : 'Streak started.';
     el.hidden = false;
   }
 
@@ -41,10 +41,10 @@
     const rows = d.guesses.map((ws) => ws.map((w) => level[w]).sort());
     const found = d.found.length;
 
-    $('#r-head').textContent = d.won ? 'Sorted.' : 'Sort yourself out.';
+    $('#r-head').textContent = d.won ? 'Solved.' : 'Out of guesses.';
     $('#r-sub').textContent = d.won
-      ? `All four groups, ${d.mistakes ? plural(d.mistakes, 'mistake') : 'no mistakes'}. Insufferable, frankly.`
-      : found ? `${plural(found, 'group')} found. The other ${4 - found} found you.` : 'Not one group. Remarkable.';
+      ? `All four groups, ${d.mistakes ? plural(d.mistakes, 'mistake') : 'no mistakes'}.`
+      : found ? `${plural(found, 'group')} found.` : 'No groups found.';
     $('#r-score').textContent = d.won ? `4/4 · ${plural(d.mistakes, 'mistake')}` : `${found}/4 · out of lives`;
 
     const grid = $('#r-grid');
@@ -98,10 +98,10 @@
     }));
     const worse = st.dist.reduce((a, n, i) => (i > mine ? a + n : a), 0); // players who did worse than you
     $('#s-verdict').textContent = st.plays < 5
-      ? `Early days: only ${plural(st.plays, 'person')} ${st.plays === 1 ? 'has' : 'have'} played this. Tell your friends.`
-      : !d.won ? `You’re with the ${pct[4]}% who didn’t make it. Big club. Not a good one.`
-      : worse ? `You beat ${Math.round((worse / st.plays) * 100)}% of players. Don’t let it go to your head.`
-      : 'Joint best. Nobody did better. Allegedly.';
+      ? `${plural(st.plays, 'person')} ${st.plays === 1 ? 'has' : 'have'} played this so far.`
+      : !d.won ? `${pct[4]}% of players didn’t solve it.`
+      : worse ? `You did better than ${Math.round((worse / st.plays) * 100)}% of players.`
+      : 'Best possible score. Nobody did better.';
     const w = $('#s-wrong');
     w.hidden = !st.topWrong;
     if (st.topWrong) w.textContent = `Most common wrong guess: ${st.topWrong.words.join(', ')}.`;

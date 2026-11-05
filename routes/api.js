@@ -49,7 +49,7 @@ module.exports = (db, daily) => {
   const live = db.prepare('SELECT 1 FROM puzzles WHERE id = ? AND is_published = 1 AND is_flagged = 0');
   const addReport = db.prepare('INSERT OR IGNORE INTO reports (puzzle_id, reporter_key, reason, note) VALUES (?, ?, ?, ?)');
   const reportLimit = rateLimit({ windowMs: 3600_000, limit: 20, standardHeaders: 'draft-7', legacyHeaders: false,
-    message: { error: 'Too many reports from one place. Thanks, we have the message.' } });
+    message: { error: 'Too many reports from one place. We have your message.' } });
 
   // One report per player per puzzle; repeats are accepted silently. A person decides what happens next.
   r.post('/puzzles/:id/report', reportLimit, (req, res) => {
@@ -64,7 +64,7 @@ module.exports = (db, daily) => {
 
   // ---------- publishing (accounts only) ----------
   const publishLimit = rateLimit({ windowMs: 3600_000, limit: 30, standardHeaders: 'draft-7', legacyHeaders: false,
-    message: { error: 'Too many puzzles from one place. Take a breather and try again later.' } });
+    message: { error: 'Too many puzzles from one place. Try again later.' } });
   const login = (req, res, next) => (req.user ? next() : res.status(401).json({ error: 'login' }));
   const make = db.prepare('INSERT INTO puzzles (id, user_id, title, description, groups_json, tags) VALUES (?, ?, ?, ?, ?, ?)');
   const owned = db.prepare('SELECT groups_json FROM puzzles WHERE id = ? AND user_id = ?');

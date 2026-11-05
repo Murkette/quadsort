@@ -22,7 +22,7 @@ test('counts: solve rate, average mistakes and distribution', () => {
 test('topWrong: needs two players, ignores correct guesses', () => {
   const db = open(':memory:');
   const bad = ['Mouse', 'Door', 'Swing', 'Battery'];
-  const good = ['Brie', 'Feta', 'Edam', 'Halloumi'];
+  const good = ['Brie', 'Feta', 'Edam', 'Gouda'];
   play(db, 'a', 1, 1, [bad, good]);
   assert.equal(topWrong(db, 'demo0001', groups), null, 'one player is not "common"');
   play(db, 'b', 1, 1, [[...bad].reverse(), good]);

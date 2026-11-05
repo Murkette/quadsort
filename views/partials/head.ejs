@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <script>try{var t=localStorage.getItem('qs:theme');if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
-<% const desc = locals.description || 'Make a word-grouping puzzle in two minutes. Send the link. Watch your mates crumble.';
-   const ogTitle = typeof title === 'string' ? title : 'Quadsort: make a word puzzle, send the link';
-   const alt = 'A solved Quadsort puzzle: sixteen word tiles in four colour-coded groups.'; %>
+<% const desc = locals.description || 'Make a word puzzle in two minutes, share one link, and see how your friends do.';
+   const ogTitle = typeof title === 'string' ? title : 'Quadsort: four groups of four';
+   const alt = 'A solved Quadsort puzzle: sixteen word tiles in four color-coded groups.'; %>
 <title><%= locals.fullTitle || (typeof title === 'string' ? title + ' · Quadsort' : 'Quadsort') %></title>
 <meta name="description" content="<%= desc %>">
 <link rel="canonical" href="<%= canonical %>">
@@ -15,8 +15,8 @@
 <% } %><link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#EFEEF6" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#13111C" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F2F2F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#2F2F2F" media="(prefers-color-scheme: dark)">
 <meta property="og:site_name" content="Quadsort">
 <meta property="og:type" content="website">
 <meta property="og:url" content="<%= canonical %>">
@@ -31,11 +31,13 @@
 <meta name="twitter:description" content="<%= desc %>">
 <meta name="twitter:image" content="<%= origin %>/og.png">
 <meta name="twitter:image:alt" content="<%= alt %>">
-<link rel="preload" href="/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/site.css">
+<link rel="preload" href="/fonts/garamond.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="<%= asset('/css/site.css') %>">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="rainbow" aria-hidden="true"></div>
 <header class="top<%= user ? ' in' : '' %>"><div class="top-in">
   <a class="brand" href="/"><%- include('mark') %><span>Quadsort</span></a>
   <nav class="nav" aria-label="Main">
@@ -44,7 +46,7 @@
     <a class="nav-play" href="/random">Play one</a>
     <% if (user) { %><a href="/dashboard">My puzzles</a><% if (user.is_admin) { %><a class="nav-admin" href="/admin">Admin</a><% } %><a class="avatar-sm" href="/u/<%= user.username %>"><span aria-hidden="true"><%= initials(user.display_name) %></span><span class="sr">Your profile</span></a>
     <% } else { %><a class="nav-login" href="/login">Log in</a><% } %>
-    <a class="btn btn-primary btn-sm" href="/create">Make a puzzle</a>
+    <a class="btn btn-sm" href="/create">Make a puzzle</a>
   </nav>
 </div></header>
 <main id="main" tabindex="-1">

@@ -7,9 +7,9 @@ const { validate, normUrl } = require('../public/js/validate');
 const good = () => ({
   title: 'Group Chat Chaos', description: 'Allegedly.', tags: ['food'],
   groups: [
-    { level: 1, name: 'Cheeses', words: ['Brie', 'Feta', 'Edam', 'Halloumi'] },
+    { level: 1, name: 'Cheeses', words: ['Brie', 'Feta', 'Edam', 'Gouda'] },
     { level: 2, name: '___board', words: ['Surf', 'Key', 'Cup', 'Skate'] },
-    { level: 3, name: 'Things that squeak', words: ['Mouse', 'Trainers', 'Door', 'Swing'] },
+    { level: 3, name: 'Things that squeak', words: ['Mouse', 'Sneakers', 'Door', 'Swing'] },
     { level: 4, name: 'Hiding an animal', words: ['Catastrophe', 'Pigment', 'Battery', 'Rational'] },
   ],
 });
@@ -73,9 +73,9 @@ test('publishing needs an account, and the puzzle is credited to it', async (t) 
 
   const html = await (await anon.get(path)).text();
   assert.match(html, /href="\/u\/priya">Priya Makes Puzzles/);
-  assert.match(html, /data-w="Halloumi"/);
+  assert.match(html, /data-w="Gouda"/);
   assert.doesNotMatch(html, /Things that squeak/, 'answers still hidden');
-  const check = await (await anon.post('/api/plays/check', { puzzleId: id, words: ['Brie', 'Feta', 'Edam', 'Halloumi'] })).json();
+  const check = await (await anon.post('/api/plays/check', { puzzleId: id, words: ['Brie', 'Feta', 'Edam', 'Gouda'] })).json();
   assert.equal(check.result, 'correct');
 });
 

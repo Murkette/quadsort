@@ -76,7 +76,7 @@ test('creators get one email when their puzzle is picked; house puzzles send not
   assert.equal(mail.subject, 'Your puzzle is the Daily on Tuesday, October 13');
   assert.match(mail.text, /"Email Me" is Quadsort Daily #1 on Tuesday, October 13/);
   assert.match(mail.text, new RegExp(`/p/${id}`));
-  assert.match(mail.html, /You're the Daily\./);
+  assert.match(mail.html, /Your puzzle is the Daily/);
   await anon.get('/daily'); await anon.get('/');
   advance(1);
   await anon.get('/daily');                                // a house puzzle fills in tomorrow

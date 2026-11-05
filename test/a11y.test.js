@@ -10,10 +10,6 @@ const vars = (block) => Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(#[
 const light = vars(css.match(/:root \{[^}]*--bg:[^}]*\}/)[0]);
 const darkMedia = vars(css.match(/@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\[data-theme="light"\]\) \{([^}]*)\}/)[1]);
 const darkForced = vars(css.match(/:root\[data-theme="dark"\] \{([^}]*)\}/)[1]);
-// the error colour lives in its own small blocks, further down the file
-light.err = css.match(/:root \{ --err: (#\w+)/)[1];
-darkMedia.err = css.match(/:root:not\(\[data-theme="light"\]\) \{ --err: (#\w+)/)[1];
-darkForced.err = css.match(/:root\[data-theme="dark"\] \{ --err: (#\w+)/)[1];
 
 const lum = (hex) => {
   const h = hex.length === 4 ? '#' + [...hex.slice(1)].map((c) => c + c).join('') : hex;
@@ -32,6 +28,7 @@ for (const [name, t] of [['light', light], ['dark', darkMedia]]) {
       assert.ok(ratio(t.ink, t[bg]) >= 4.5, `ink on ${bg}`);
       assert.ok(ratio(t.mute, t[bg]) >= 4.5, `mute on ${bg}`);
       assert.ok(ratio(t.err, t[bg]) >= 4.5, `error on ${bg}`);
+      assert.ok(ratio(t.link, t[bg]) >= 4.5, `links on ${bg}`);
       assert.ok(ratio(t.line, t[bg]) >= 3, `borders on ${bg} (WCAG 1.4.11)`);
       assert.ok(ratio(t.focus, t[bg]) >= 3, `focus ring on ${bg}`);
     }
@@ -42,9 +39,9 @@ for (const [name, t] of [['light', light], ['dark', darkMedia]]) {
 }
 
 test('difficulty colours carry their text at AA in both themes (they do not change)', () => {
-  assert.ok(ratio('#17142A', light.d1) >= 4.5);
-  assert.ok(ratio('#17142A', light.d2) >= 4.5);
-  assert.ok(ratio('#17142A', light.d3) >= 4.5);
+  assert.ok(ratio('#1A1A1A', light.d1) >= 4.5);
+  assert.ok(ratio('#1A1A1A', light.d2) >= 4.5);
+  assert.ok(ratio('#1A1A1A', light.d3) >= 4.5);
   assert.ok(ratio('#FFFFFF', light.d4) >= 4.5);
   assert.deepEqual(light.d1 && [light.d1, light.d2, light.d3, light.d4].length, 4);
 });
@@ -83,6 +80,10 @@ test('repeated buttons say which puzzle they belong to, and the name contains th
   assert.match(html, /aria-label="Edit Label Test"/);
   assert.match(html, /aria-label="Copy link to Label Test"/);
   assert.match(html, /aria-label="Delete Label Test"/);
+  // a button's spoken name must contain its visible text (WCAG 2.5.3), so check every labelled button against its own label
+  for (const m of html.matchAll(/<(?:button|a)[^>]*aria-label="([^"]+)"[^>]*>([^<]+)</g)) {
+    assert.ok(m[1].toLowerCase().includes(m[2].trim().toLowerCase()), `"${m[1]}" should contain its visible text "${m[2].trim()}"`);
+  }
 });
 
 test('the avatar link has a text name that includes nothing hidden from view', async (t) => {

@@ -14,7 +14,7 @@
   </div>
 </div></footer>
 <div id="qs-live" class="sr" aria-live="polite" aria-atomic="true"></div>
-<script src="/js/theme.js" defer></script>
-<% (typeof scripts !== 'undefined' ? scripts : []).forEach(function (s) { %><script src="<%= s %>" defer></script>
+<script src="<%= asset('/js/theme.js') %>" defer></script>
+<% (typeof scripts !== 'undefined' ? scripts : []).forEach(function (s) { %><script src="<%= asset(s) %>" defer></script>
 <% }) %></body>
 </html>

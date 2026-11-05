@@ -201,7 +201,7 @@
     const url = location.origin + body.url;
     const title = V.clean(f.title.value);
     byId('pub-h').textContent = wasNew ? 'Published.' : 'Saved.';
-    byId('pub-sub').textContent = body.statsReset ? 'The groups changed, so the old plays and stats were cleared.' : 'Now go and ruin someone’s afternoon.';
+    byId('pub-sub').textContent = body.statsReset ? 'The groups changed, so the old plays and stats were cleared.' : 'Share the link and see how people do.';
     byId('share-link').value = url.replace(/^https?:\/\//, '');
     byId('pub-play').href = body.url;
 

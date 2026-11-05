@@ -4,7 +4,7 @@
   <h1><%= signup ? 'Make an account.' : 'Welcome back.' %></h1>
   <p class="lede"><%= signup
       ? (next === '/create' ? 'Your puzzle is saved on this device. Make an account and it will be waiting for you.' : 'Free. Takes a minute. Needed to publish, never to play.')
-      : 'Your puzzles are where you left them. So are the people who failed them.' %></p>
+      : 'Your puzzles are where you left them.' %></p>
   <form class="panel" method="post" action="/<%= mode %>" novalidate>
     <input type="hidden" name="next" value="<%= next %>">
     <% if (errors.form) { %><p class="pub-msg" role="alert"><%= errors.form %></p><% } %>

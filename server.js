@@ -1,12 +1,28 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
 const open = require('./db');
 const { sessions } = require('./lib/auth');
 const { initials, dailyLine } = require('./lib/util');
 const { makeDaily } = require('./lib/daily');
 
 // opts.now and opts.onPick exist so tests can control the clock and capture notifications.
+// Asset URLs carry a fingerprint of the file (/css/site.css?v=3f9a1c2e). Browsers may keep them for a week,
+// and the fingerprint changes the moment a file does, so nobody ever gets new pages with old styles.
+const PUBLIC = path.join(__dirname, 'public');
+const fingerprints = new Map();
+function asset(p) {
+  const prod = process.env.NODE_ENV === 'production';
+  if (!prod || !fingerprints.has(p)) {
+    let v = '0';
+    try { v = crypto.createHash('sha1').update(fs.readFileSync(path.join(PUBLIC, p))).digest('hex').slice(0, 8); } catch { /* missing file: unversioned */ }
+    fingerprints.set(p, v);
+  }
+  return `${p}?v=${fingerprints.get(p)}`;
+}
+
 function createApp(db = open(), opts = {}) {
   const daily = makeDaily(db, { now: opts.now, onPick: 'onPick' in opts ? opts.onPick : require('./lib/notify')(db) });
   const app = express();
@@ -27,6 +43,7 @@ function createApp(db = open(), opts = {}) {
     res.locals.user = req.user = auth.user(req);
     res.locals.initials = initials;
     res.locals.dailyLine = dailyLine;
+    res.locals.asset = asset;
     // Absolute URLs for canonical links and share images. Production pins the real address (never trust the Host header there).
     res.locals.origin = process.env.SITE_URL || (process.env.NODE_ENV === 'production' ? 'https://quadsort.com' : `${req.protocol}://${req.get('host')}`);
     res.locals.canonical = res.locals.origin + req.path;
@@ -38,7 +55,7 @@ function createApp(db = open(), opts = {}) {
   app.use(require('./routes/auth')(db, auth));
   app.use(require('./routes/reset')(db, auth));
   app.use(require('./routes/pages')(db, daily));
-  app.use((req, res) => res.status(404).render('404', { title: 'Not even close', noindex: true }));
+  app.use((req, res) => res.status(404).render('404', { title: 'Page not found', noindex: true }));
   return app;
 }
 

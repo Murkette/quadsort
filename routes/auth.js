@@ -52,7 +52,7 @@ module.exports = (db, auth) => {
     const email = clean(req.body.email).toLowerCase(), pw = typeof req.body.password === 'string' ? req.body.password : '';
     const u = pw.length <= 200 && byEmail.get(email);
     const ok = await checkPassword(pw.slice(0, 200), u ? u.password_hash : await DUMMY);
-    if (!u || !ok) return page(res, 'login', req, { email }, { form: 'Wrong email or password. Not even close.' }, 401);
+    if (!u || !ok) return page(res, 'login', req, { email }, { form: 'Wrong email or password.' }, 401);
     auth.start(res, u.id);
     res.redirect(safeNext(req.body.next));
   });

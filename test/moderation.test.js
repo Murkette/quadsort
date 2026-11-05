@@ -44,7 +44,7 @@ test('the play page offers a report button', async (t) => {
   const html = await (await anon.get(`/p/${id}`)).text();
   assert.match(html, /id="report-open"/);
   assert.match(html, /<option value="offensive">Offensive or hateful<\/option>/);
-  assert.match(html, /src="\/js\/report\.js"/);
+  assert.match(html, /src="\/js\/report\.js\?v=[0-9a-f]{8}"/);
 });
 
 test('admin area: sign in to see it, 404 for everyone who is not an admin', async (t) => {
@@ -69,7 +69,7 @@ test('non-admins cannot change anything', async (t) => {
 
 test('reports queue: counts, reasons and notes, with notes escaped', async (t) => {
   const { anon, boss, id } = await world(t);
-  assert.match(await (await boss.get('/admin')).text(), /All clear/);
+  assert.match(await (await boss.get('/admin')).text(), /No open reports\./);
   await report(anon, id, { playerKey: 'k-offensive-1', reason: 'offensive', note: '<script>alert(1)</script>' });
   await report(anon, id, { playerKey: 'k-offensive-2', reason: 'offensive', note: '' });
   await report(anon, id, { playerKey: 'k-spam-000001', reason: 'spam', note: 'buy now' });
@@ -130,7 +130,7 @@ test('dismiss closes the reports and leaves the puzzle up', async (t) => {
   const { anon, boss, id } = await world(t);
   await report(anon, id);
   await adminPost(boss, id, 'dismiss');
-  assert.match(await (await boss.get('/admin')).text(), /All clear/);
+  assert.match(await (await boss.get('/admin')).text(), /No open reports\./);
   assert.equal((await anon.get(`/p/${id}`)).status, 200);
 });
 

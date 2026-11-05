@@ -31,9 +31,9 @@ async function serve(t, db = open(':memory:'), opts = {}) {
 const good = () => ({
   title: 'Group Chat Chaos', description: 'Allegedly.', tags: ['food'],
   groups: [
-    { level: 1, name: 'Cheeses', words: ['Brie', 'Feta', 'Edam', 'Halloumi'] },
+    { level: 1, name: 'Cheeses', words: ['Brie', 'Feta', 'Edam', 'Gouda'] },
     { level: 2, name: '___board', words: ['Surf', 'Key', 'Cup', 'Skate'] },
-    { level: 3, name: 'Things that squeak', words: ['Mouse', 'Trainers', 'Door', 'Swing'] },
+    { level: 3, name: 'Things that squeak', words: ['Mouse', 'Sneakers', 'Door', 'Swing'] },
     { level: 4, name: 'Hiding an animal', words: ['Catastrophe', 'Pigment', 'Battery', 'Rational'] },
   ],
 });

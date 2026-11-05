@@ -3,7 +3,7 @@
   <div class="dash-head">
     <div>
       <h1>Admin</h1>
-      <p>Decide what stays up. Be fair, be quick, be a little merciless.</p>
+      <p>Review reports, manage the Daily line, and feature puzzles.</p>
     </div>
   </div>
 
@@ -47,7 +47,7 @@
     <% }) %>
   <% } else if (tab === 'reports') { %>
     <% if (!reports.length) { %>
-    <div class="panel emptybox"><h2>All clear.</h2><p>No open reports. Suspiciously well-behaved.</p></div>
+    <div class="panel emptybox"><h2>No open reports.</h2><p>Nothing needs review.</p></div>
     <% } %>
     <% reports.forEach(function (p) { %>
     <div class="panel qitem">

@@ -28,15 +28,15 @@ const serve = async (t, db = open(':memory:')) => {
   const post = (p, body) => fetch(url + p, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   return { url, post, db };
 };
-const CHEESE = ['Brie', 'Feta', 'Edam', 'Halloumi'];
+const CHEESE = ['Brie', 'Feta', 'Edam', 'Gouda'];
 const BOARD = ['Surf', 'Key', 'Cup', 'Skate'];
-const SQUEAK = ['Mouse', 'Trainers', 'Door', 'Swing'];
+const SQUEAK = ['Mouse', 'Sneakers', 'Door', 'Swing'];
 const ANIMAL = ['Catastrophe', 'Pigment', 'Battery', 'Rational'];
 
 test('play page lists the words but never the answers', async (t) => {
   const { url } = await serve(t);
   const html = await (await fetch(url + '/p/demo0001')).text();
-  assert.match(html, /data-w="Halloumi"/);
+  assert.match(html, /data-w="Gouda"/);
   assert.doesNotMatch(html, /Cheeses|Hiding an animal|Things that squeak/);
   assert.equal((await fetch(url + '/p/nope')).status, 404);
 });
@@ -111,5 +111,5 @@ test('play page without a creator has no creator card but still asks you to make
   const { url } = await serve(t);
   const html = await (await fetch(url + '/p/demo0001')).text();
   assert.doesNotMatch(html, /Made by/);
-  assert.match(html, /Reckon you could do meaner/);
+  assert.match(html, /Make your own\./);
 });

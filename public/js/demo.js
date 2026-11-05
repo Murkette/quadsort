@@ -54,9 +54,9 @@
         grid.hidden = true;
         root.querySelector('#demo-hint').hidden = true;
         root.querySelector('#demo-done').hidden = false;
-      } else say('Sorted. Smug yet?', `Correct. ${g.name}: ${g.words.join(', ')}.`);
+      } else say('Correct.', `Correct. ${g.name}: ${g.words.join(', ')}.`);
     } else {
-      say(hits === 3 || hits === 1 ? 'One away. Painful.' : 'Not even close.');
+      say(hits === 3 || hits === 1 ? 'One away.' : 'Not quite.');
       grid.classList.remove('shake'); void grid.offsetWidth; grid.classList.add('shake');
     }
     sel = [];

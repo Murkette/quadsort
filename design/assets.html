@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>Quadsort asset renderer</title>
 <!--
-  Renders the brand images. Not part of the site. To regenerate (needs the dev server running):
+  Renders the brand images (the share card, plus the icons, which are unchanged). Not part of the site. To regenerate (needs the dev server running):
     cp design/assets.html public/_assets.html
     open /_assets.html?kind=og            at a 1200x630 viewport  -> public/og.png
     open /_assets.html?kind=icon&size=180&rx=0   at 180x180      -> public/apple-touch-icon.png
@@ -11,18 +11,21 @@
 -->
 <link rel="stylesheet" href="/css/site.css">
 <style>
-  html, body { margin: 0; padding: 0; background: #EFEEF6; overflow: hidden; }
-  .og { width: 1200px; height: 630px; box-sizing: border-box; padding: 64px 72px; display: flex; align-items: center; justify-content: space-between; gap: 48px; background: #EFEEF6; color: #17142A; }
-  .left { flex: 1; display: flex; flex-direction: column; gap: 30px; }
-  .brandrow { display: flex; align-items: center; gap: 18px; font: 800 60px/1 var(--fd); letter-spacing: -0.035em; }
-  .brandrow svg { width: 68px; height: 68px; }
-  .og h1 { margin: 0; font: 800 56px/1.02 var(--fd); letter-spacing: -0.04em; }
-  .og .pill-url { align-self: flex-start; padding: 10px 24px; border: 3px solid #17142A; border-radius: 999px; background: #FFD84D; box-shadow: 0 4px 0 #17142A; font: 700 28px/1 var(--fd); }
-  .board { display: grid; grid-template-columns: repeat(4, 112px); gap: 10px; }
-  .t { height: 86px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; box-sizing: border-box; padding: 0 4px;
-       border: 3px solid #17142A; border-radius: 16px; box-shadow: 0 5px 0 #17142A; font: 700 20px/1 var(--fd); text-transform: uppercase; }
-  .t.long { font-size: 16px; font-stretch: 75%; letter-spacing: 0; }
-  .t .shape { width: 12px; height: 12px; }
+  html, body { margin: 0; padding: 0; background: #fff; overflow: hidden; }
+  .og { width: 1200px; height: 630px; display: flex; flex-direction: column; background: #fff; color: #1A1A1A; }
+  .og-band { height: 6px; background: var(--rainbow); }
+  .og-in { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 56px; padding: 0 72px; }
+  .og-left { flex: 1; display: flex; flex-direction: column; gap: 28px; }
+  .og-brand { display: flex; align-items: center; gap: 16px; font: 500 46px/1 var(--fd); }
+  .og-brand svg { width: 50px; height: 50px; }
+  .og h1 { margin: 0; font: 500 112px/.94 var(--fd); letter-spacing: -0.02em; }
+  .og-sub { margin: 0; max-width: 470px; font: 400 27px/1.35 var(--fb); color: #5C5C5C; }
+  .og-url { align-self: flex-start; padding: 12px 26px; border: 1px solid #7F7F7F; border-bottom-color: #595959; border-radius: 999px; background: linear-gradient(#fff, #E8E8E8); box-shadow: inset 0 1px 0 #fff; font: 500 26px/1 var(--fb); }
+  .og-board { display: grid; grid-template-columns: repeat(4, 112px); gap: 10px; }
+  .og-t { height: 86px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; box-sizing: border-box; padding: 0 4px;
+          border: 1px solid rgba(0, 0, 0, .35); border-radius: 6px; font: 600 17px/1 var(--fb); text-transform: uppercase; letter-spacing: .02em; }
+  .og-t.long { font-size: 15px; font-stretch: 70%; letter-spacing: 0; }
+  .og-t .shape { width: 12px; height: 12px; }
 </style>
 <div id="app"></div>
 <script>
@@ -40,16 +43,17 @@
     app.innerHTML = mark(q.get('rx') ?? 14);
   } else {
     const rows = [
-      [1, ['Brie', 'Feta', 'Edam', 'Halloumi']], [2, ['Surf', 'Key', 'Cup', 'Skate']],
-      [3, ['Mouse', 'Trainers', 'Door', 'Swing']], [4, ['Catastrophe', 'Pigment', 'Battery', 'Rational']],
+      [1, ['Brie', 'Feta', 'Edam', 'Gouda']], [2, ['Surf', 'Key', 'Cup', 'Skate']],
+      [3, ['Mouse', 'Sneakers', 'Door', 'Swing']], [4, ['Catastrophe', 'Pigment', 'Battery', 'Rational']],
     ];
-    const tiles = rows.flatMap(([lv, ws]) => ws.map((w) => `<div class="t lv" data-level="${lv}"><span class="shape" data-level="${lv}"></span>${w}</div>`)).join('');
+    const tiles = rows.flatMap(([lv, ws]) => ws.map((w) => `<div class="og-t lv" data-level="${lv}"><span class="shape" data-level="${lv}"></span>${w}</div>`)).join('');
     const small = (new DOMParser().parseFromString(mark(14), 'image/svg+xml').documentElement).outerHTML.replace('width:100vw;height:100vh', '');
-    app.innerHTML = `<div class="og"><div class="left">
-        <div class="brandrow">${small}<span>Quadsort</span></div>
-        <h1>Make a word puzzle. Send the link. Watch them suffer.</h1>
-        <span class="pill-url">quadsort.com</span></div>
-      <div class="board">${tiles}</div></div>`;
-    document.querySelectorAll('.t').forEach((t) => { if (t.textContent.trim().length > 8) t.classList.add('long'); });
+    app.innerHTML = `<div class="og"><div class="og-band"></div><div class="og-in"><div class="og-left">
+        <div class="og-brand">${small}<span>Quadsort</span></div>
+        <h1>Four groups of four.</h1>
+        <p class="og-sub">Make a word puzzle, share one link, see how everyone did.</p>
+        <span class="og-url">quadsort.com</span></div>
+      <div class="og-board">${tiles}</div></div></div>`;
+    document.querySelectorAll('.og-t').forEach((t) => { if (t.textContent.trim().length > 8) t.classList.add('long'); });
   }
 </script>
